@@ -32,6 +32,8 @@ desarrollo de TI.
 | D14 | 2026-10-14 | Repo `<usuario>.github.io` → URL en la raíz |
 | D15 | 2026-10-14 | Sin `gh auth login` (rompería la sesión de la empresa que usa el otro agente). Push por SSH con el alias `github-academico`; PR con un token fine-grained de solo este repo, usado como `GH_TOKEN` por comando, nunca impreso |
 | D16 | 2026-10-14 | Formulario de contacto en un modal que abre `[ escríbeme ]` en el pie de todas las páginas |
+| D17 | 2026-10-14 | Tamamon (`C:\Tamamon`) es un port de una app de terceros sin licencia conocida: no se publica; solo inspira a bit (una mascota que reacciona a lo que haces) |
+| D18 | 2026-10-14 | Estructura híbrida: el inicio es una landing de un solo recorrido (océano con bit → quién soy → habilidades → proyectos destacados → contacto); Sobre mí y Proyectos son páginas de detalle |
 
 ## Supuestos (JD puede vetarlos)
 - El repo es esta carpeta: `sitio/` (lo que se publica y se empaqueta), `videos/`, `docs/`, `pruebas/`, `scripts/`.
@@ -123,8 +125,9 @@ método `estado()` que las pruebas leen.
 ### F3 · El ecosistema
 - **Objetivo:** cada habilidad es una criatura del océano, sincronizada con la sección «Habilidades» (FontAwesome).
   Enfocar o tocar una habilidad lleva a bit hasta su criatura. Los proyectos son islas en el horizonte, que son
-  enlaces reales a `projects.html#<slug>`. Bit cuenta el «Sobre mí» corto en un globo, y el mismo texto vive en la
-  sección HTML.
+  enlaces reales a `projects.html#<slug>`, con nombre y una línea visibles (proyectos destacados, D18). Bit cuenta el
+  «Sobre mí» corto en un globo, y el mismo texto vive en la sección HTML. El recorrido termina con un llamado a
+  contacto.
 - **Archivos:** crea `js/oceano/ecosistema.js`; modifica `index.html`, `js/oceano/bit.js` y `css/estilos.css`.
 - **Contratos:** `data-criatura="<habilidad>"` en cada ítem de Habilidades; las islas son `<a>` posicionados sobre el
   canvas; `Portafolio.Oceano.estado().criaturas` lista las criaturas.
@@ -281,9 +284,9 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7. Desde la F11: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** replan aprobado (12 fases), 2026-10-14. Rama `feat/portafolio-f1` con el plan. Los 2 commits
-  existentes salieron con la identidad global y se reescriben con la académica antes del primer push.
-- **Pendiente de JD:** usuario de GitHub académico (bloquea la F1); qué es Tammamon; el identificador de Formspree
-  (F6); el nombre exacto del certificado profesional y las URL de verificación de los CS50 (F4); confirmar que mostrar
-  los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F1.
+- **Dónde quedamos:** F1 cerrada y publicada en https://ffdalsu.github.io/ (PR #1, 2026-10-14). D17 (Tamamon) y D18
+  (inicio tipo landing) agregadas. Rama `feat/portafolio-f2` creada.
+- **Pendiente de JD:** el identificador de Formspree (F6); el nombre exacto del certificado profesional y las URL de
+  verificación de los CS50 (F4); confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la
+  empresa.
+- **Siguiente paso:** F2 · el océano y bit, empezando por los 3 diseños de bit para que JD elija.
