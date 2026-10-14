@@ -17,7 +17,7 @@ Portafolio.Oceano = (function () {
   const MS_POR_CUADRO = 1000 / 30;
   const METROS_POR_FILA = 0.5;
 
-  let rejilla = null, hero = null, bit = null, sonda = null;
+  let rejilla = null, hero = null, bit = null, sonda = null, punteroPantalla = null, filaBitPantalla = 0;
   let colores = {};
   let ultimo = 0, msCuadro = 0, profundidad = 0;
   const reducir = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -35,7 +35,7 @@ Portafolio.Oceano = (function () {
   /** Fila del mundo (en filas de rejilla, desde el inicio de la página) donde está el nivel del mar. */
   function filaSuperficie() {
     const caja = hero.getBoundingClientRect();
-    return (window.scrollY + caja.top + caja.height * 0.58) / rejilla.ch;
+    return (window.scrollY + caja.top + caja.height * 0.64) / rejilla.ch;
   }
 
   // Estrellas fijas del cielo: pseudoaleatorio estable por celda, para que no titilen al moverse
@@ -85,6 +85,12 @@ Portafolio.Oceano = (function () {
     r.capas(medio, colores.texto);
     r.ctx.restore();
 
+    // criaturas de las habilidades e islas de los proyectos (js/oceano/ecosistema.js)
+    if (Portafolio.Ecosistema) {
+      Portafolio.Ecosistema.dibujar(r, t, camara, colores, punteroPantalla);
+      Portafolio.Ecosistema.moverIslas(r, t, (c, tt) => sup + Portafolio.Campo.superficie(c, tt) - camara);
+    }
+
     // bit, flotando a la altura de la ola bajo su centro
     bit.actualizar(ahora, r.cols, ESCALA_BIT);
     const s = bit.sprite;
@@ -92,6 +98,7 @@ Portafolio.Oceano = (function () {
     const centro = Math.round(bit.x + ancho / 2);
     const balanceo = bit.modo === 'habla' ? -Math.abs(Math.sin(t * 9)) * 0.5 : 0;
     const filaBit = sup + Portafolio.Campo.superficie(centro, t) - s.linea * ESCALA_BIT + balanceo - camara;
+    filaBitPantalla = filaBit;
     const cuadro = s.cuadro(bit.estadoSprite(), t, bit.ritmo());
     if (filaBit > -s.alto * ESCALA_BIT && filaBit < r.filas) {
       r.dibujo(cuadro, bit.x, filaBit, colores.acento, ESCALA_BIT, true, colores.fondo);
@@ -118,11 +125,22 @@ Portafolio.Oceano = (function () {
       r.dibujo([z === 2 ? 'Z' : 'z'], x + Math.ceil(ancho) + z, y - z, colores.tenue, 1);
     }
     if (bit.modo === 'habla') {
-      const ancho2 = bit.frase.length + 4;
-      const bx = Math.max(0, Math.min(r.cols - ancho2, x + Math.round(ancho / 2) - 2));
-      const by = Math.max(0, y - 4);
+      // el globo va al lado de la cabeza (arriba lo taparían los paneles del encabezado):
+      // a la derecha si cabe, si no a la izquierda, con una colita hacia bit
+      const ancho2 = Array.from(bit.frase).length + 4;
+      const derecha = x + Math.ceil(ancho) + 2 + ancho2 <= r.cols;
+      const izquierda = x - ancho2 - 2 >= 0;
       const linea = '─'.repeat(ancho2 - 2);
-      r.dibujo(['┌' + linea + '┐', '│ ' + bit.frase + ' │', '└' + linea + '┘', '   \\'], bx, by, colores.texto, 1, true, colores.fondo);
+      const globo = ['┌' + linea + '┐', '│ ' + bit.frase + ' │', '└' + linea + '┘'];
+      if (derecha || izquierda) {
+        const bx = derecha ? x + Math.ceil(ancho) + 2 : x - ancho2 - 2;
+        r.dibujo(globo, bx, y + 1, colores.texto, 1, true, colores.fondo);
+        r.dibujo(['─'], derecha ? bx - 1 : bx + ancho2, y + 2, colores.texto, 1);
+      } else {
+        // pantalla angosta: el globo va encima de bit, centrado y dentro de la pantalla
+        const bx = Math.max(0, Math.min(r.cols - ancho2, Math.round(x + ancho / 2 - ancho2 / 2)));
+        r.dibujo(globo.concat([' '.repeat(Math.max(0, Math.round(x + ancho / 2) - bx)) + '│']), bx, y - 4, colores.texto, 1, true, colores.fondo);
+      }
     }
   }
 
@@ -136,7 +154,8 @@ Portafolio.Oceano = (function () {
     hero = document.querySelector('.hero');
     if (!canvas || !hero) return;
     rejilla = Portafolio.Rejilla(canvas, { tamFuente: window.innerWidth < 640 ? 11 : 13 });
-    bit = Portafolio.Bit();
+    // las frases de bit viven en el HTML (data-frases del encabezado), separadas por «|»
+    bit = Portafolio.Bit((hero.dataset.frases || '').split('|').filter(Boolean));
     sonda = document.getElementById('sonda');
     leerColores();
 
@@ -149,9 +168,18 @@ Portafolio.Oceano = (function () {
     window.addEventListener('pointermove', (e) => {
       bit.actividad(ahora());
       Portafolio.Campo.moverPuntero(columna(e.clientX), fila(e.clientY));
+      punteroPantalla = { c: columna(e.clientX), f: e.clientY / rejilla.ch };
       bit.seguir(sobreHero(e.clientY) ? columna(e.clientX) : null, ahora());
     });
-    document.documentElement.addEventListener('pointerleave', () => { Portafolio.Campo.moverPuntero(null); bit.seguir(null, ahora()); });
+    // con el dedo, levantarlo también dispara pointerleave: solo el mouse «sale» de la página
+    document.documentElement.addEventListener('pointerleave', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      Portafolio.Campo.moverPuntero(null); punteroPantalla = null; bit.seguir(null, ahora());
+    });
+    // en pantallas táctiles no hay «pasar el puntero»: tocar el agua le dice a bit a dónde nadar
+    hero.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' && !e.target.closest('a, button, .panel')) bit.seguir(columna(e.clientX), ahora());
+    });
     hero.addEventListener('click', (e) => {
       if (e.target.closest('a, button, .panel')) return;
       const c = columna(e.clientX);
@@ -169,7 +197,7 @@ Portafolio.Oceano = (function () {
     // la sonda muestra la profundidad y el estado de bit cuatro veces por segundo
     if (sonda) setInterval(() => { sonda.textContent = 'prof ' + Math.round(profundidad) + ' m · bit: ' + bit.modo; }, 250);
 
-    bit.hablar(ahora(), '¡hola! soy bit');
+    bit.hablar(ahora());
     dibujar(ahora());
     if (!reducir.matches) requestAnimationFrame(cuadro);
   }
@@ -179,7 +207,8 @@ Portafolio.Oceano = (function () {
   return {
     estado: function () {
       return bit ? {
-        bit: { x: bit.x, modo: bit.modo, ancho: bit.sprite.ancho * ESCALA_BIT },
+        bit: { x: bit.x, modo: bit.modo, ancho: bit.sprite.ancho * ESCALA_BIT, frase: bit.frase, objetivo: bit.objetivo, fila: filaBitPantalla, ch: rejilla.ch },
+        ecosistema: Portafolio.Ecosistema ? Portafolio.Ecosistema.estado() : null,
         profundidad: profundidad,
         msCuadro: msCuadro,
         cw: rejilla.cw,

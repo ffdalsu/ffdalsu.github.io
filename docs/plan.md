@@ -134,7 +134,7 @@ método `estado()` que las pruebas leen.
 - **Archivos:** crea `js/oceano/ecosistema.js`; modifica `index.html`, `js/oceano/bit.js` y `css/estilos.css`.
 - **Contratos:** `data-criatura="<habilidad>"` en cada ítem de Habilidades; las islas son `<a>` posicionados sobre el
   canvas; `Portafolio.Oceano.estado().criaturas` lista las criaturas.
-- **Pruebas:** `test_cada_habilidad_tiene_criatura`, `test_enfocar_habilidad_lleva_a_bit`,
+- **Pruebas:** `test_cada_habilidad_tiene_criatura`, `test_enfocar_habilidad_resalta_criatura`,
   `test_isla_lleva_a_su_proyecto`, `test_sobre_mi_corta_presente`, `test_habilidades_con_iconos`,
   `test_toque_movil_mueve_a_bit`, `test_sin_scroll_horizontal[375|768|1440]`.
 - **Riesgos:** que con muchas criaturas el océano se sienta saturado; se limita a 8-10 criaturas, sin más de 3 a la
@@ -287,9 +287,13 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7. Desde la F11: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F2 terminada en `feat/portafolio-f2` (2026-10-14): motor ASCII (`js/ascii/`), bit como bot en
-  barquito (D19) e inmersión (D20) en el inicio; 24 pruebas en verde. PR abierto, pendiente del visto bueno de JD.
+- **Dónde quedamos:** F3 terminada en `feat/portafolio-f3` (2026-10-14): acuario con una criatura por habilidad
+  (resaltado en los dos sentidos: ítem ↔ criatura), 4 islas = proyectos destacados que flotan con la ola y llevan a
+  `projects.html#<slug>`, bit cuenta el «Sobre mí» corto (frases en `data-frases` del encabezado) y llamado a contacto.
+  En celular las islas van en dos planos. Enfocar una habilidad resalta su criatura (bit se queda en la superficie).
+  34 pruebas en verde. PR abierto, pendiente del visto bueno de JD.
+- **Para el refinamiento (F10-F11):** en celular las dos islas lejanas quedan algo en el aire.
 - **Pendiente de JD:** el identificador de Formspree (F6); el nombre exacto del certificado profesional y las URL de
   verificación de los CS50 (F4); confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la
   empresa.
-- **Siguiente paso:** F3 · el ecosistema (criaturas = habilidades, islas = proyectos destacados, llamado a contacto).
+- **Siguiente paso:** F4 · Sobre mí completa.

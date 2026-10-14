@@ -10,10 +10,11 @@
  */
 window.Portafolio = window.Portafolio || {};
 
-Portafolio.Bit = function () {
+Portafolio.Bit = function (frases) {
   const DORMIR_MS = 8000;
   const FRASE_MS = 2800;
-  const FRASES = ['¡hola! soy bit', 'baja: abajo hay más ↓', 'ψ = Σ sin(k·r − ωt)', 'haz clic en el agua'];
+  const PAUSA_MS = 3500;   // silencio entre frases cuando bit cuenta solo
+  const FRASES = (frases && frases.length) ? frases : ['¡hola! soy bit', 'baja: abajo hay más ↓'];
 
   const sprite = Portafolio.Sprite({
     flota: [[' .-. ', '[o_o]', ' /|\\ ', '\\___/'], [' .-. ', '[o_o]', ' /|\\ ', '\\___/'],
@@ -52,8 +53,15 @@ Portafolio.Bit = function () {
   /** Avanza la simulación un paso. escala = cuántas columnas ocupa cada celda del sprite. */
   b.actualizar = function (ahora, cols, escala) {
     const ancho = sprite.ancho * escala;
-    if (b.x === null) b.x = Math.max(0, cols * 0.18 - ancho / 2);
+    if (b.x === null) b.x = Math.max(0, cols * 0.5 - ancho / 2);   // empieza entre la 2.ª y la 3.ª isla
     const centro = b.x + ancho / 2;
+
+    // con el visitante quieto (pero aún despierto), bit cuenta la siguiente frase sin contar como actividad
+    const despierto = ahora - b.ultimaActividad < DORMIR_MS;
+    if (despierto && ahora > b.hablaHasta + PAUSA_MS) {
+      b.frase = FRASES[b.siguiente++ % FRASES.length];
+      b.hablaHasta = ahora + FRASE_MS;
+    }
 
     // bit puede nadar mientras habla: el movimiento no depende del modo que se muestra
     const lejos = b.objetivo !== null && Math.abs(b.objetivo - centro) > 1.2;

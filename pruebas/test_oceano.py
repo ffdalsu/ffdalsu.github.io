@@ -70,7 +70,7 @@ def test_clic_en_bit_lo_hace_hablar(page: Page, base_url: str):
     assert estado(page)["bit"]["modo"] != "habla"
     e = estado(page)
     x = centro_bit(e) * e["cw"]
-    y = page.evaluate("document.querySelector('.hero').getBoundingClientRect().height * 0.55")
+    y = (e["bit"]["fila"] + 4) * e["bit"]["ch"]  # a la altura del cuerpo de bit (fila 2 de 4, a escala 2,2)
     page.mouse.click(x, y)
     page.clock.run_for(100)
     assert estado(page)["bit"]["modo"] == "habla"
