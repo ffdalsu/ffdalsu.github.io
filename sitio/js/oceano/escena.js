@@ -13,13 +13,14 @@ window.Portafolio = window.Portafolio || {};
 
 Portafolio.Oceano = (function () {
   const ESCALA_BIT = 2.2;     // bit se dibuja 2,2 veces más grande que los caracteres del mar
-  const RAMPA = ' .·:-=+*#';  // de menos a más intensidad
+  const RAMPA = ' .·:-=+*#%@';  // de menos a más intensidad; «%» y «@» solo salen en las crestas de las salpicaduras
+  const CALIENTE = 9;            // desde este índice de la rampa el carácter se pinta en color de acento
   const MS_POR_CUADRO = 1000 / 30;
   const METROS_POR_FILA = 0.5;
 
   let rejilla = null, hero = null, bit = null, sonda = null, punteroPantalla = null, filaBitPantalla = 0;
   let colores = {};
-  let ultimo = 0, msCuadro = 0, profundidad = 0;
+  let ultimo = 0, msCuadro = 0, profundidad = 0, calientes = 0, tiempo = 0;
   const reducir = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   function leerColores() {
@@ -48,15 +49,16 @@ Portafolio.Oceano = (function () {
     const camara = window.scrollY / r.ch;          // fila del mundo que está en la parte de arriba de la pantalla
     const sup = filaSuperficie();
     const filasMundo = document.documentElement.scrollHeight / r.ch;
-    const tenue = [], medio = [];
+    const tenue = [], medio = [], fuerte = [];
+    let nCalientes = 0;
 
     for (let f = 0; f < r.filas; f++) {
       const y = Math.floor(camara) + f;
-      let lt = '', lm = '';
+      let lt = '', lm = '', lf = '';
       for (let c = 0; c < r.cols; c++) {
         const nivel = sup + Portafolio.Campo.superficie(c, t);
         const prof = y - nivel;
-        let ct = ' ', cm = ' ';
+        let ct = ' ', cm = ' ', cf = ' ';
         if (prof < -0.5) {
           if (esEstrella(c, y)) ct = '·';
         } else if (prof < 0.5) {
@@ -66,15 +68,17 @@ Portafolio.Oceano = (function () {
           const oscuro = Math.min(1, prof / Math.max(20, filasMundo - sup));
           const v = Portafolio.Campo.valor(c, y, t);
           // solo las crestas (v > 0,1) llevan carácter; los valles quedan vacíos y el mar respira
-          const i = v < 0.1 ? 0 : Math.max(1, Math.floor((v - 0.1) / 0.9 * (RAMPA.length - 1) * (1 - oscuro * 0.7)));
+          // las crestas normales llegan hasta «#»; solo las salpicaduras (v casi 1) alcanzan «%» y «@»
+          const i = v < 0.1 ? 0 : Math.max(1, Math.round((v - 0.1) / 0.9 * (RAMPA.length - 1) * (1 - oscuro * 0.5)));
           const salto = 1 + Math.floor(oscuro * 3);
-          if (i > 0 && (c + y) % salto === 0) {
-            if (prof < 4 && i > 3) cm = RAMPA[i]; else ct = RAMPA[i];
+          if (i >= CALIENTE) { cf = RAMPA[i]; nCalientes++; }
+          else if (i > 0 && (c + y) % salto === 0) {
+            if (prof < 4 && i > 3) cm = RAMPA[Math.min(i, 8)]; else ct = RAMPA[Math.min(i, 8)];
           }
         }
-        lt += ct; lm += cm;
+        lt += ct; lm += cm; lf += cf;
       }
-      tenue.push(lt); medio.push(lm);
+      tenue.push(lt); medio.push(lm); fuerte.push(lf);
     }
 
     // el ajuste fino entre filas enteras y la cámara evita saltos de una fila al desplazarse
@@ -83,7 +87,10 @@ Portafolio.Oceano = (function () {
     r.ctx.save(); r.ctx.translate(0, dy);
     r.capas(tenue, colores.tenue);
     r.capas(medio, colores.texto);
+    r.capas(fuerte, colores.acento);
     r.ctx.restore();
+    calientes = nCalientes;
+    tiempo = t;
 
     // criaturas de las habilidades e islas de los proyectos (js/oceano/ecosistema.js)
     if (Portafolio.Ecosistema) {
@@ -185,7 +192,7 @@ Portafolio.Oceano = (function () {
       const c = columna(e.clientX);
       const ancho = bit.sprite.ancho * ESCALA_BIT;
       if (c >= bit.x && c <= bit.x + ancho) bit.hablar(ahora());
-      else Portafolio.Campo.salpicar(c, ahora() / 1000);
+      else Portafolio.Campo.salpicar(c, ahora() / 1000, fila(e.clientY));
       redibujar();
     });
     window.addEventListener('scroll', () => { bit.actividad(ahora()); redibujar(); }, { passive: true });
@@ -195,7 +202,12 @@ Portafolio.Oceano = (function () {
       .observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
 
     // la sonda muestra la profundidad y el estado de bit cuatro veces por segundo
-    if (sonda) setInterval(() => { sonda.textContent = 'prof ' + Math.round(profundidad) + ' m · bit: ' + bit.modo; }, 250);
+    const nFuentes = document.getElementById('campo-fuentes'), nTiempo = document.getElementById('campo-t');
+    setInterval(() => {
+      if (sonda) sonda.textContent = 'prof ' + Math.round(profundidad) + ' m · bit: ' + bit.modo;
+      if (nFuentes) nFuentes.textContent = Portafolio.Campo.fuentes(tiempo);
+      if (nTiempo) nTiempo.textContent = tiempo.toFixed(1);
+    }, 250);
 
     bit.hablar(ahora());
     dibujar(ahora());
@@ -210,6 +222,8 @@ Portafolio.Oceano = (function () {
         bit: { x: bit.x, modo: bit.modo, ancho: bit.sprite.ancho * ESCALA_BIT, frase: bit.frase, objetivo: bit.objetivo, fila: filaBitPantalla, ch: rejilla.ch },
         ecosistema: Portafolio.Ecosistema ? Portafolio.Ecosistema.estado() : null,
         profundidad: profundidad,
+        calientes: calientes,
+        fuentes: Portafolio.Campo.fuentes(tiempo),
         msCuadro: msCuadro,
         cw: rejilla.cw,
         animado: !reducir.matches

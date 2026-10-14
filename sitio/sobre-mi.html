@@ -42,12 +42,182 @@
   <main>
     <section class="envoltura seccion" aria-labelledby="titulo-sobre-mi">
       <p class="comando">cat sobre-mi.txt</p>
-      <h1 class="titulo-grande" id="titulo-sobre-mi">Sobre mí</h1>
-      <div class="texto">
-        <p>Soy matemático puro de la Universidad Nacional y encontré la aplicación de mi carrera en la programación.</p>
-        <p>Estoy certificado por Harvard en <mark>CS50P</mark>, <mark>CS50 SQL</mark>, <mark>CS50</mark> y <mark>CS50AI</mark>, y cuento con el certificado profesional en ciencias de la computación que Harvard emite al completar los CS50 del área.</p>
-        <p>Trabajé en Bancolombia en el entrenamiento de modelos financieros y en automatizaciones. Hoy trabajo en Conaltura desde transformación digital, haciendo automatizaciones, webs e innovación con inteligencia artificial.</p>
+      <h1 class="titulo-grande" id="titulo-sobre-mi">Sobre mí<span class="cursor" aria-hidden="true"></span></h1>
+      <div class="dos-columnas">
+        <div class="texto">
+          <p>Soy <mark>matemático puro</mark> de la Universidad Nacional y encontré la aplicación de mi carrera en la programación: los problemas que antes resolvía en un tablero ahora los resuelvo con código.</p>
+          <p>Completé los cuatro CS50 de Harvard que tocan mi área (CS50x, CS50P, CS50 SQL y CS50AI) y con ellos los tres certificados profesionales de HarvardX que vienen con esa ruta.</p>
+          <p>Trabajé en Bancolombia entrenando modelos financieros y automatizando procesos. Hoy estoy en Conaltura, en transformación digital: automatizaciones, webs internas e innovación con inteligencia artificial, que es hacia donde quiero especializarme.</p>
+        </div>
+        <div class="panel panel-ficha" id="ficha">
+            <span class="etiqueta-panel">┤ ficha ├</span>
+            <dl class="ficha">
+            <dt>formación</dt><dd>Matemático puro · Universidad Nacional</dd>
+            <dt>certificados</dt><dd>CS50x, CS50P, CS50 SQL y CS50AI · HarvardX</dd>
+            <dt>trabajo</dt><dd>Transformación digital · Conaltura</dd>
+            <dt>antes</dt><dd>Modelos financieros · Bancolombia</dd>
+            <dt>ciudad</dt><dd>Medellín, Colombia</dd>
+            <dt>rumbo</dt><dd>Especializarme en IA</dd>
+          </dl>
+          </div>
       </div>
+    </section>
+
+    <section class="envoltura seccion" id="historia" aria-labelledby="titulo-historia">
+      <p class="comando">git log --hitos</p>
+      <h2 class="titulo" id="titulo-historia">Mi historia</h2>
+      <ol class="hitos">
+        <li class="hito" id="hito-grado">
+          <div class="hito-texto">
+            <time class="hito-fecha">2021</time>
+            <h3>Me gradué como matemático puro</h3>
+            <p>Universidad Nacional de Colombia. Cinco años de álgebra, análisis y topología me enseñaron a pensar en estructuras; la programación me dio dónde usarlas.</p>
+          </div>
+          <canvas class="hito-anim" data-anim="grado" aria-hidden="true"></canvas>
+        </li>
+        <li class="hito" id="hito-banco">
+          <div class="hito-texto">
+            <time class="hito-fecha">2022</time>
+            <h3>Entré a Bancolombia</h3>
+            <p>Entrené modelos financieros y automaticé procesos. Ahí vi por primera vez cómo un modelo bien medido cambia decisiones reales.</p>
+          </div>
+          <canvas class="hito-anim" data-anim="banco" aria-hidden="true"></canvas>
+        </li>
+        <li class="hito" id="hito-cs50x">
+          <div class="hito-texto">
+            <time class="hito-fecha">2023</time>
+            <h3>Hice CS50x en Harvard</h3>
+            <p>La introducción a las ciencias de la computación de David J. Malan: C, memoria, algoritmos y mi primer «hello, world» con todo el rigor.</p>
+          </div>
+          <canvas class="hito-anim" data-anim="cs50x" aria-hidden="true"></canvas>
+        </li>
+        <li class="hito" id="hito-red">
+          <div class="hito-texto">
+            <time class="hito-fecha">2023 – 2024</time>
+            <h3>Completé CS50P, CS50 SQL y CS50AI</h3>
+            <p>Python a fondo, bases de datos relacionales y los fundamentos de la inteligencia artificial: búsqueda, probabilidad, aprendizaje y redes neuronales.</p>
+          </div>
+          <canvas class="hito-anim" data-anim="red" aria-hidden="true"></canvas>
+        </li>
+        <li class="hito" id="hito-sellos">
+          <div class="hito-texto">
+            <time class="hito-fecha">2024</time>
+            <h3>Recibí tres certificados profesionales de HarvardX</h3>
+            <p>Cada CS50 especializado, sumado a CS50x, otorga un certificado profesional: Python, bases de datos con SQL e inteligencia artificial.</p>
+          </div>
+          <canvas class="hito-anim" data-anim="sellos" aria-hidden="true"></canvas>
+        </li>
+        <li class="hito" id="hito-obra">
+          <div class="hito-texto">
+            <time class="hito-fecha">2024 – hoy</time>
+            <h3>Llegué a Conaltura</h3>
+            <p>Estoy en transformación digital de una constructora: automatizo procesos, construyo webs internas e innovo con inteligencia artificial.</p>
+          </div>
+          <canvas class="hito-anim" data-anim="obra" aria-hidden="true"></canvas>
+        </li>
+      </ol>
+    </section>
+
+    <section class="envoltura seccion" id="certificados" aria-labelledby="titulo-certificados">
+      <p class="comando">ls certificados/</p>
+      <h2 class="titulo" id="titulo-certificados">Certificados de Harvard</h2>
+      <div class="dos-columnas">
+        <p class="texto">Cuatro cursos CS50 de la Universidad de Harvard, cada uno con su proyecto final aprobado. Sumados a CS50x, los tres cursos especializados otorgan tres certificados profesionales de HarvardX.</p>
+        <ul class="cursos">
+          <li><span class="check" aria-hidden="true">[✓]</span> <b>CS50x</b> Introduction to Computer Science</li>
+          <li><span class="check" aria-hidden="true">[✓]</span> <b>CS50P</b> Introduction to Programming with Python</li>
+          <li><span class="check" aria-hidden="true">[✓]</span> <b>CS50 SQL</b> Introduction to Databases with SQL</li>
+          <li><span class="check" aria-hidden="true">[✓]</span> <b>CS50AI</b> Introduction to Artificial Intelligence with Python</li>
+        </ul>
+      </div>
+      <div class="diplomas">
+        <article class="diploma">
+          <pre class="diploma-escudo" aria-hidden="true"> .-------. 
+ |VE | RI| 
+ |---+---| 
+ |  TAS  | 
+  \     /  
+   `---´   </pre>
+          <p class="diploma-emisor">HarvardX · Professional Certificate</p>
+          <h3 class="diploma-programa">Computer Science for Python Programming</h3>
+          <p class="diploma-otorgado">otorgado a</p>
+          <p class="diploma-nombre">Juan David</p>
+          <p class="diploma-cursos">CS50x + CS50P · 2023</p>
+          <p class="diploma-firma"><span>David J. Malan</span>CS50, Harvard University</p>
+        </article>
+        <article class="diploma">
+          <pre class="diploma-escudo" aria-hidden="true"> .-------. 
+ |VE | RI| 
+ |---+---| 
+ |  TAS  | 
+  \     /  
+   `---´   </pre>
+          <p class="diploma-emisor">HarvardX · Professional Certificate</p>
+          <h3 class="diploma-programa">Computer Science for Databases using SQL</h3>
+          <p class="diploma-otorgado">otorgado a</p>
+          <p class="diploma-nombre">Juan David</p>
+          <p class="diploma-cursos">CS50x + CS50 SQL · 2024</p>
+          <p class="diploma-firma"><span>David J. Malan</span>CS50, Harvard University</p>
+        </article>
+        <article class="diploma">
+          <pre class="diploma-escudo" aria-hidden="true"> .-------. 
+ |VE | RI| 
+ |---+---| 
+ |  TAS  | 
+  \     /  
+   `---´   </pre>
+          <p class="diploma-emisor">HarvardX · Professional Certificate</p>
+          <h3 class="diploma-programa">Computer Science for Artificial Intelligence</h3>
+          <p class="diploma-otorgado">otorgado a</p>
+          <p class="diploma-nombre">Juan David</p>
+          <p class="diploma-cursos">CS50x + CS50AI · 2024</p>
+          <p class="diploma-firma"><span>David J. Malan</span>CS50, Harvard University</p>
+        </article>
+      </div>
+      <p class="nota">Representación ilustrativa de los certificados emitidos por HarvardX en edX.</p>
+    </section>
+
+    <section class="envoltura seccion" id="habilidades" aria-labelledby="titulo-habilidades">
+      <p class="comando">tree habilidades/</p>
+      <h2 class="titulo" id="titulo-habilidades">Habilidades</h2>
+        <div class="arbol">
+          <div class="grupo">
+            <div class="rama">├── lenguajes/</div>
+            <ul class="habilidades">
+              <li tabindex="0"><i class="fa-brands fa-python" aria-hidden="true"></i><span class="sc">Python</span></li>
+              <li tabindex="0"><i class="fa-solid fa-database" aria-hidden="true"></i><span class="sc">SQL Server</span></li>
+              <li tabindex="0"><i class="fa-solid fa-hashtag" aria-hidden="true"></i><span class="sc">C# / .NET</span></li>
+              <li tabindex="0"><i class="fa-brands fa-js" aria-hidden="true"></i><span class="sc">JavaScript</span></li>
+            </ul>
+          </div>
+          <div class="grupo">
+            <div class="rama">├── web/</div>
+            <ul class="habilidades">
+              <li tabindex="0"><i class="fa-brands fa-html5" aria-hidden="true"></i><span class="sc">HTML y CSS</span></li>
+              <li tabindex="0"><i class="fa-brands fa-bootstrap" aria-hidden="true"></i><span class="sc">Bootstrap</span></li>
+              <li tabindex="0"><i class="fa-solid fa-code" aria-hidden="true"></i><span class="sc">jQuery</span></li>
+            </ul>
+          </div>
+          <div class="grupo">
+            <div class="rama">├── herramientas/</div>
+            <ul class="habilidades">
+              <li tabindex="0"><i class="fa-brands fa-git-alt" aria-hidden="true"></i><span class="sc">Git y GitHub</span></li>
+            </ul>
+          </div>
+          <div class="grupo">
+            <div class="rama">└── ia-y-mate/</div>
+            <ul class="habilidades">
+              <li tabindex="0"><i class="fa-solid fa-brain" aria-hidden="true"></i><span class="sc">Inteligencia artificial</span></li>
+              <li tabindex="0"><i class="fa-solid fa-square-root-variable" aria-hidden="true"></i><span class="sc">Matemáticas</span></li>
+            </ul>
+          </div>
+        </div>
+    </section>
+
+    <section class="envoltura seccion" id="rumbo" aria-labelledby="titulo-rumbo">
+      <p class="comando">echo $RUMBO</p>
+      <h2 class="titulo" id="titulo-rumbo">Hacia dónde voy</h2>
+      <p class="texto">Quiero especializarme en inteligencia artificial: entender cómo funcionan los modelos por dentro, replicarlos y usarlos para que el trabajo diario sea más rápido y más ordenado.</p>
     </section>
   </main>
 
@@ -58,11 +228,16 @@
       <!-- Redes: se muestran quitando el atributo hidden cuando existan -->
       <a href="#" hidden><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
       <a href="#" hidden><i class="fa-brands fa-linkedin" aria-hidden="true"></i>linkedin</a>
+      <span class="reloj">Medellín · <time id="reloj">--:--</time></span>
     </div>
   </footer>
 
   <script src="lib/jquery-3.7.1/jquery.min.js"></script>
   <script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
   <script src="js/tema.js"></script>
+  <script src="js/pie.js"></script>
+  <script src="js/ascii/rejilla.js"></script>
+  <script src="js/arbol.js"></script>
+  <script src="js/sobre-mi.js"></script>
 </body>
 </html>

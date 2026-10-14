@@ -36,6 +36,8 @@ desarrollo de TI.
 | D18 | 2026-10-14 | Estructura híbrida: el inicio es una landing de un solo recorrido (océano con bit → quién soy → habilidades → proyectos destacados → contacto); Sobre mí y Proyectos son páginas de detalle |
 | D19 | 2026-10-14 | Bit es el **bot en barquito** `[o_o]` (opciones en `docs/diseno/bit-opciones.html`) |
 | D20 | 2026-10-14 | **Inmersión** en el inicio: el océano queda fijo detrás de la página y el scroll baja la cámara; cada sección va sobre una lámina opaca |
+| D21 | 2026-10-14 | Datos de muestra (fechas y textos «dummy») en Sobre mí: es un proyecto universitario. Se mantienen los 4 CS50 reales y los 3 certificados profesionales de HarvardX que otorgan (Python, Databases using SQL, Artificial Intelligence) |
+| D22 | 2026-10-14 | Al implementar no se recorta la maqueta aprobada: la onda con «@», el panel ψ con contadores, la ficha, el árbol con *scramble* y el reloj del pie se restauraron; proyectos (F5) y formulario estilo terminal (F6) siguen la maqueta |
 
 ## Supuestos (JD puede vetarlos)
 - El repo es esta carpeta: `sitio/` (lo que se publica y se empaqueta), `videos/`, `docs/`, `pruebas/`, `scripts/`.
@@ -287,13 +289,13 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7. Desde la F11: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F3 terminada en `feat/portafolio-f3` (2026-10-14): acuario con una criatura por habilidad
-  (resaltado en los dos sentidos: ítem ↔ criatura), 4 islas = proyectos destacados que flotan con la ola y llevan a
-  `projects.html#<slug>`, bit cuenta el «Sobre mí» corto (frases en `data-frases` del encabezado) y llamado a contacto.
-  En celular las islas van en dos planos. Enfocar una habilidad resalta su criatura (bit se queda en la superficie).
-  34 pruebas en verde. PR abierto, pendiente del visto bueno de JD.
+- **Dónde quedamos:** F4 terminada en `feat/portafolio-f4` (2026-10-14): `sobre-mi.html` con ficha, línea de tiempo de
+  6 hitos animados en ASCII (grado, Bancolombia, CS50x, CS50P/SQL/AI, tres sellos, Conaltura), tres diplomas de
+  HarvardX que se despliegan con su sello, árbol de habilidades y rumbo. Restaurado de la maqueta en el inicio: onda
+  de clic con «@», contadores del panel ψ, ficha, árbol por carpetas con *scramble* y reloj del pie (D22).
+  53 pruebas en verde. PR abierto, pendiente del visto bueno de JD.
 - **Para el refinamiento (F10-F11):** en celular las dos islas lejanas quedan algo en el aire.
-- **Pendiente de JD:** el identificador de Formspree (F6); el nombre exacto del certificado profesional y las URL de
-  verificación de los CS50 (F4); confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la
-  empresa.
-- **Siguiente paso:** F4 · Sobre mí completa.
+- **Pendiente de JD:** el identificador de Formspree (F6); confirmar que mostrar los proyectos de Conaltura no choca
+  con alguna política de la empresa.
+- **Siguiente paso:** F5 · proyectos como en la maqueta (miniaturas ASCII animadas, stack, `[ ▶ ver video ]` y modal
+  jQuery).
