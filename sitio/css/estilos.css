@@ -206,11 +206,42 @@ mark { background: none; color: var(--acento); padding: 0; }
 .num { font-weight: 500; color: var(--texto); font-variant-numeric: tabular-nums; }
 .pie .reloj { margin-left: auto; font-variant-numeric: tabular-nums; }
 
-/* Lista de proyectos (en la F5 se vuelven tarjetas con miniatura y video) */
-.proyectos { display: grid; gap: 0; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); border-top: 1px solid var(--linea); border-left: 1px solid var(--linea); }
-.proyecto { padding: 22px; border-right: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
-.proyecto h2 { font: 700 20px/1.15 var(--fuente-display); letter-spacing: -.02em; margin: 0 0 10px; }
+/* Proyectos (maqueta A): rejilla con borde fino, miniatura ASCII animada arriba y el cuerpo debajo */
+.proyectos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  border-top: 1px solid var(--linea);
+  border-left: 1px solid var(--linea);
+  margin-top: 28px;
+}
+.proyecto { display: flex; flex-direction: column; border-right: 1px solid var(--linea); border-bottom: 1px solid var(--linea); scroll-margin-top: 80px; }
+.miniatura { display: block; width: 100%; aspect-ratio: 16 / 9; border-bottom: 1px solid var(--linea); background: var(--panel); }
+.proyecto-cuerpo { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.proyecto h2 { font: 700 20px/1.15 var(--fuente-display); letter-spacing: -.02em; margin: 0; text-wrap: balance; }
 .proyecto p { margin: 0; font-size: 14px; }
+.proyecto .stack { color: var(--tenue); font-size: 12.5px; margin-top: auto; }
+.proyecto .boton { align-self: flex-start; margin-top: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.proyecto .boton:hover { background: var(--texto); color: var(--fondo); }
+/* al llegar desde una isla, el proyecto parpadea dos veces como un cursor */
+.proyecto.resaltado { animation: resaltar 1.1s steps(1) 2; }
+@keyframes resaltar { 50% { background: var(--panel); outline: 1px solid var(--acento); outline-offset: -1px; } }
+
+/* Modal de video estilo terminal: borde fino, título ┤ … ├ y estática ASCII mientras no hay video */
+.modal-terminal .modal-content { background: var(--fondo); color: var(--texto); border: 1px solid var(--texto); border-radius: 0; font-family: var(--fuente-texto); }
+.modal-terminal .modal-header, .modal-terminal .modal-footer { border-color: var(--linea); padding: 10px 16px; }
+.modal-terminal .modal-title { font-size: 13px; font-weight: 500; margin: 0; }
+.modal-terminal .modal-title::before { content: "┤ "; color: var(--tenue); }
+.modal-terminal .modal-title::after { content: " ├"; color: var(--tenue); }
+.modal-terminal .modal-body { padding: 0; }
+.modal-terminal .boton { background: none; color: inherit; font: inherit; cursor: pointer; margin: 0; }
+.modal-terminal .boton:hover { background: var(--texto); color: var(--fondo); }
+.boton-x { margin-left: auto !important; padding: 2px 8px; }
+.modal-ayuda { margin-right: auto; color: var(--tenue); font-size: 12px; }
+.video { position: relative; aspect-ratio: 16 / 9; background: var(--panel); }
+.video iframe, .video-pendiente, .video-pendiente canvas { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-pendiente p { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; margin: 0; color: var(--texto); font-size: 13px; pointer-events: none; }
+.video-pendiente b { display: block; font: 800 42px/1 var(--fuente-display); margin-bottom: 10px; color: var(--acento); }
+.modal-backdrop { --bs-backdrop-opacity: .6; }
 
 /* ---------- Pie ---------- */
 .pie { margin-top: 84px; border-top: 1px solid var(--linea); }

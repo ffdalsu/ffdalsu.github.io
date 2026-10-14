@@ -289,13 +289,12 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7. Desde la F11: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F4 terminada en `feat/portafolio-f4` (2026-10-14): `sobre-mi.html` con ficha, línea de tiempo de
-  6 hitos animados en ASCII (grado, Bancolombia, CS50x, CS50P/SQL/AI, tres sellos, Conaltura), tres diplomas de
-  HarvardX que se despliegan con su sello, árbol de habilidades y rumbo. Restaurado de la maqueta en el inicio: onda
-  de clic con «@», contadores del panel ψ, ficha, árbol por carpetas con *scramble* y reloj del pie (D22).
-  53 pruebas en verde. PR abierto, pendiente del visto bueno de JD.
+- **Dónde quedamos:** F5 terminada en `feat/portafolio-f5` (2026-10-14): `projects.html` como en la maqueta, con
+  5 proyectos (los 4 reales + «Este portafolio», que venía en la maqueta), miniaturas ASCII animadas, stack y
+  `[ ▶ ver video ]`. El modal se abre con `$('#modal-video').modal('show')`, carga `youtube-nocookie` y corta el video
+  al empezar a cerrar; sin ID muestra estática ASCII («video en camino»). Llegar desde una isla resalta el proyecto.
+  64 pruebas en verde. PR abierto, pendiente del visto bueno de JD.
 - **Para el refinamiento (F10-F11):** en celular las dos islas lejanas quedan algo en el aire.
 - **Pendiente de JD:** el identificador de Formspree (F6); confirmar que mostrar los proyectos de Conaltura no choca
   con alguna política de la empresa.
-- **Siguiente paso:** F5 · proyectos como en la maqueta (miniaturas ASCII animadas, stack, `[ ▶ ver video ]` y modal
-  jQuery).
+- **Siguiente paso:** F6 · contacto en modal con el estilo terminal de la maqueta (Formspree) y `empaquetar.py`.
