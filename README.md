@@ -45,3 +45,21 @@ npm run validar        # validación HTML (html-validate)
 
 GitHub Actions corre las dos en cada PR (`.github/workflows/ci.yml`) y publica `sitio/` en Pages al fusionar a
 `main` (`.github/workflows/pages.yml`).
+
+## Videos de proyecto
+
+Los videos de los modales se generan con código, en el mismo estilo ASCII del sitio:
+
+```powershell
+uv run python scripts/grabar_video.py --todos        # o --proyecto facturacion
+```
+
+La escena está en `videos/escena.html?proyecto=<slug>` (40 s: intro, problema, solución, stack y cierre). El script
+la recorre cuadro a cuadro con Playwright y la codifica con ffmpeg en `videos/salida/<slug>.mp4` (1920×1080, H.264).
+Esos MP4 se suben a YouTube como «no listados» y su ID va en el `data-video-id` de cada botón de `projects.html`.
+
+## Entrega del taller
+
+```powershell
+uv run python scripts/empaquetar.py                  # entrega/portafolio-juan-david-AAAAMMDD.zip
+```
