@@ -1,0 +1,7 @@
+recursos/
+__pycache__/
+.venv/
+node_modules/
+.pytest_cache/
+entrega/
+test-results/
