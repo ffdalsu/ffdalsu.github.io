@@ -174,26 +174,37 @@ mark { background: none; color: var(--acento); padding: 0; }
   line-height: 1.4;
 }
 
-/* Lista de habilidades (en la F3 se sincroniza con las criaturas del océano) */
-.habilidades {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--linea);
-  border-left: 1px solid var(--linea);
-}
+/* Árbol de habilidades (maqueta A): una fila por carpeta, con la rama a la izquierda y las celdas a la derecha.
+   En el inicio cada celda es además una criatura del acuario (data-criatura). */
+.arbol { border: 1px solid var(--linea); }
+.grupo { display: grid; grid-template-columns: minmax(150px, 220px) 1fr; border-top: 1px solid var(--linea); }
+.grupo:first-child { border-top: 0; }
+.rama { padding: 16px 18px; color: var(--tenue); border-right: 1px solid var(--linea); font-size: 13.5px; white-space: pre; }
+.habilidades { display: flex; flex-wrap: wrap; margin: 0; padding: 0; list-style: none; }
 .habilidades li {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 20px;
+  padding: 16px 20px;
   border-right: 1px solid var(--linea);
-  border-bottom: 1px solid var(--linea);
-  flex: 1 1 180px;
+  min-width: 170px;
+  cursor: default;
+  transition: background-color .15s, color .15s;
 }
-.habilidades i { width: 18px; text-align: center; color: var(--acento); }
+.habilidades i { width: 18px; text-align: center; color: var(--acento); transition: color .15s; }
+.habilidades li:hover, .habilidades li.activa, .habilidades li:focus-visible { background: var(--texto); color: var(--fondo); outline: none; }
+.habilidades li:hover i, .habilidades li.activa i, .habilidades li:focus-visible i { color: var(--fondo); }
+
+/* Ficha (maqueta A): pares etiqueta → dato */
+.dos-columnas { display: grid; gap: 32px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 992px) { .dos-columnas { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); } }
+.panel-ficha { margin-top: 12px; }
+.ficha { display: grid; grid-template-columns: max-content 1fr; gap: 6px 24px; font-size: 13.5px; margin: 0; }
+.ficha dt { color: var(--tenue); font-weight: 400; }
+.ficha dd { margin: 0; }
+
+.num { font-weight: 500; color: var(--texto); font-variant-numeric: tabular-nums; }
+.pie .reloj { margin-left: auto; font-variant-numeric: tabular-nums; }
 
 /* Lista de proyectos (en la F5 se vuelven tarjetas con miniatura y video) */
 .proyectos { display: grid; gap: 0; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); border-top: 1px solid var(--linea); border-left: 1px solid var(--linea); }
@@ -296,8 +307,6 @@ mark { background: none; color: var(--acento); padding: 0; }
 
 /* Acuario: franja de mar abierto donde nadan las criaturas de las habilidades */
 .acuario { height: clamp(520px, 105vh, 1100px); }
-.habilidades li { cursor: default; transition: background-color .15s, color .15s; }
-.habilidades li.activa, .habilidades li:focus-visible { background: var(--panel); color: var(--acento); outline: none; }
 
 .boton {
   display: inline-block;
@@ -318,4 +327,86 @@ mark { background: none; color: var(--acento); padding: 0; }
   .horizonte li:nth-child(-n+2) .isla { margin-top: -70px; opacity: .8; }
   .isla-linea { display: none; }
   .isla-dibujo, .isla-nombre { font-size: 11px; }
+  .grupo { grid-template-columns: 1fr; }
+  .rama { border-right: 0; border-bottom: 1px solid var(--linea); }
+  .habilidades li { min-width: 50%; border-bottom: 1px solid var(--linea); }
+  .pie .reloj { margin-left: 0; }
+}
+
+/* ---------- Sobre mí: línea de tiempo de hitos (js/sobre-mi.js anima cada canvas) ---------- */
+.hitos { list-style: none; margin: 0; padding: 0 0 0 28px; border-left: 1px solid var(--linea); display: grid; gap: 28px; }
+.hito {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  border: 1px solid var(--linea);
+  padding: 22px;
+  transition: border-color .2s;
+}
+.hito::before {                    /* el nodo del hito sobre la línea de tiempo */
+  content: "◆";
+  position: absolute;
+  left: -35px;
+  top: 22px;
+  color: var(--acento);
+  background: var(--fondo);
+  line-height: 1;
+}
+.hito:hover { border-color: var(--texto); }
+.hito-fecha { display: inline-block; color: var(--acento); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 6px; }
+.hito-fecha::before { content: "commit "; color: var(--tenue); }
+.hito h3 { font: 700 clamp(18px, 2vw, 22px)/1.2 var(--fuente-display); letter-spacing: -.02em; margin: 0 0 10px; text-wrap: balance; }
+.hito p { margin: 0; font-size: 14px; max-width: 56ch; }
+.hito-anim { display: block; width: 100%; height: 190px; background: var(--panel); }
+@media (min-width: 900px) {
+  .hito { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: center; }
+}
+
+/* ---------- Sobre mí: cursos y diplomas de Harvard ---------- */
+.cursos { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
+.cursos .check { color: var(--acento); }
+.cursos b { font-weight: 600; margin-right: 6px; }
+
+.diplomas { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); margin-top: 36px; }
+.diploma {
+  position: relative;
+  background: var(--panel);
+  border: 3px double var(--texto);
+  outline: 1px solid var(--linea);
+  outline-offset: 6px;
+  padding: 26px 22px 22px;
+  text-align: center;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+}
+.diploma-escudo { margin: 0 0 6px; color: var(--acento); font: 600 15px/1.15 var(--fuente-texto); }
+.diploma-emisor { margin: 0; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--tenue); }
+.diploma-programa { font: 700 18px/1.25 var(--fuente-display); letter-spacing: -.02em; margin: 6px 0; text-wrap: balance; }
+.diploma-otorgado { margin: 6px 0 0; font-size: 12px; color: var(--tenue); }
+.diploma-nombre { margin: 0; font: 800 26px/1.1 var(--fuente-display); font-variation-settings: "wdth" 112.5; letter-spacing: -.03em; color: var(--acento); }
+.diploma-cursos { margin: 4px 0 0; font-size: 13px; }
+.diploma-firma { margin: 16px 0 0; font-size: 11px; color: var(--tenue); display: grid; justify-items: center; }
+.diploma-firma span { font-size: 13px; color: var(--texto); border-top: 1px solid var(--texto); padding: 4px 18px 0; }
+.nota { color: var(--tenue); font-size: 12px; margin: 18px 0 0; }
+
+/* Despliegue: el diploma se desenrolla de arriba abajo por renglones y el escudo cae como un sello */
+.diploma.por-desplegar { clip-path: inset(0 0 100% 0); }
+.diploma.por-desplegar.desplegado { clip-path: inset(0 0 0 0); transition: clip-path 1.4s steps(14); }
+.diploma.desplegado .diploma-escudo { animation: sello .55s cubic-bezier(.3, 1.6, .5, 1) 1.2s both; }
+@keyframes sello {
+  from { transform: scale(2.2) rotate(-12deg); opacity: 0; }
+  to { transform: scale(1) rotate(0); opacity: 1; }
+}
+.diploma:nth-child(2).desplegado { transition-delay: .25s; }
+.diploma:nth-child(3).desplegado { transition-delay: .5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .diploma.desplegado .diploma-escudo { animation: none; }
+}
+@media (max-width: 640px) {
+  .hitos { padding-left: 18px; }
+  .hito::before { left: -25px; }
+  .hito-anim { height: 170px; }
 }

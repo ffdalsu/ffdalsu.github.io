@@ -53,7 +53,8 @@
         <div class="panel panel-campo" aria-hidden="true">
           <span class="etiqueta-panel">┤ campo ├</span>
           <code>ψ(x,y,t) = Σ sin(k·rᵢ − ω·t) / (1 + rᵢ/20)</code>
-          <span>mueve el puntero sobre el agua · clic para salpicar · clic en bit para que hable</span>
+          <span>fuentes: <b class="num" id="campo-fuentes">0</b> · t = <b class="num" id="campo-t">0.0</b> s · k = 0.55 · ω = 2.2</span>
+          <span>mueve el puntero sobre el agua · clic para soltar una onda · clic en bit para que hable</span>
         </div>
         <nav class="horizonte" aria-label="Proyectos destacados">
           <ul>
@@ -89,11 +90,24 @@ _/    \_</span>
     <section class="envoltura seccion" id="sobre-mi" aria-labelledby="titulo-sobre-mi">
       <div class="lamina">
         <p class="comando">cat sobre-mi.txt</p>
-        <h2 class="titulo" id="titulo-sobre-mi">Sobre mí</h2>
-        <div class="texto">
-          <p>Soy matemático puro de la Universidad Nacional y encontré la aplicación de mi carrera en la programación. Estoy certificado por Harvard en CS50P, CS50 SQL, CS50 y CS50AI.</p>
-          <p>Trabajé en Bancolombia entrenando modelos financieros y hoy estoy en Conaltura, en transformación digital: automatizaciones, webs e inteligencia artificial.</p>
-          <p><a href="sobre-mi.html">[ leer más → ]</a></p>
+        <div class="dos-columnas">
+          <div class="texto">
+            <h2 class="titulo" id="titulo-sobre-mi">Sobre mí</h2>
+            <p>Soy <mark>matemático puro</mark> de la Universidad Nacional y encontré la aplicación de mi carrera en la programación. Hice los cuatro CS50 de Harvard: CS50x, CS50P, CS50 SQL y CS50AI.</p>
+            <p>Trabajé en Bancolombia entrenando modelos financieros y hoy estoy en Conaltura, en transformación digital: automatizaciones, webs e inteligencia artificial.</p>
+            <p><a href="sobre-mi.html">[ leer mi historia → ]</a></p>
+          </div>
+          <div class="panel panel-ficha" id="ficha">
+            <span class="etiqueta-panel">┤ ficha ├</span>
+            <dl class="ficha">
+            <dt>formación</dt><dd>Matemático puro · Universidad Nacional</dd>
+            <dt>certificados</dt><dd>CS50x, CS50P, CS50 SQL y CS50AI · HarvardX</dd>
+            <dt>trabajo</dt><dd>Transformación digital · Conaltura</dd>
+            <dt>antes</dt><dd>Modelos financieros · Bancolombia</dd>
+            <dt>ciudad</dt><dd>Medellín, Colombia</dd>
+            <dt>rumbo</dt><dd>Especializarme en IA</dd>
+          </dl>
+          </div>
         </div>
       </div>
     </section>
@@ -106,18 +120,38 @@ _/    \_</span>
       </div>
       <div class="acuario" aria-hidden="true"></div>
       <div class="lamina">
-        <ul class="habilidades">
-          <li data-criatura="python" tabindex="0"><i class="fa-brands fa-python" aria-hidden="true"></i>Python</li>
-          <li data-criatura="sql" tabindex="0"><i class="fa-solid fa-database" aria-hidden="true"></i>SQL Server</li>
-          <li data-criatura="csharp" tabindex="0"><i class="fa-solid fa-hashtag" aria-hidden="true"></i>C# / .NET</li>
-          <li data-criatura="javascript" tabindex="0"><i class="fa-brands fa-js" aria-hidden="true"></i>JavaScript</li>
-          <li data-criatura="html" tabindex="0"><i class="fa-brands fa-html5" aria-hidden="true"></i>HTML y CSS</li>
-          <li data-criatura="bootstrap" tabindex="0"><i class="fa-brands fa-bootstrap" aria-hidden="true"></i>Bootstrap</li>
-          <li data-criatura="jquery" tabindex="0"><i class="fa-solid fa-code" aria-hidden="true"></i>jQuery</li>
-          <li data-criatura="git" tabindex="0"><i class="fa-brands fa-git-alt" aria-hidden="true"></i>Git y GitHub</li>
-          <li data-criatura="ia" tabindex="0"><i class="fa-solid fa-brain" aria-hidden="true"></i>Inteligencia artificial</li>
-          <li data-criatura="matematicas" tabindex="0"><i class="fa-solid fa-square-root-variable" aria-hidden="true"></i>Matemáticas</li>
-        </ul>
+        <div class="arbol">
+          <div class="grupo">
+            <div class="rama">├── lenguajes/</div>
+            <ul class="habilidades">
+              <li data-criatura="python" tabindex="0"><i class="fa-brands fa-python" aria-hidden="true"></i><span class="sc">Python</span></li>
+              <li data-criatura="sql" tabindex="0"><i class="fa-solid fa-database" aria-hidden="true"></i><span class="sc">SQL Server</span></li>
+              <li data-criatura="csharp" tabindex="0"><i class="fa-solid fa-hashtag" aria-hidden="true"></i><span class="sc">C# / .NET</span></li>
+              <li data-criatura="javascript" tabindex="0"><i class="fa-brands fa-js" aria-hidden="true"></i><span class="sc">JavaScript</span></li>
+            </ul>
+          </div>
+          <div class="grupo">
+            <div class="rama">├── web/</div>
+            <ul class="habilidades">
+              <li data-criatura="html" tabindex="0"><i class="fa-brands fa-html5" aria-hidden="true"></i><span class="sc">HTML y CSS</span></li>
+              <li data-criatura="bootstrap" tabindex="0"><i class="fa-brands fa-bootstrap" aria-hidden="true"></i><span class="sc">Bootstrap</span></li>
+              <li data-criatura="jquery" tabindex="0"><i class="fa-solid fa-code" aria-hidden="true"></i><span class="sc">jQuery</span></li>
+            </ul>
+          </div>
+          <div class="grupo">
+            <div class="rama">├── herramientas/</div>
+            <ul class="habilidades">
+              <li data-criatura="git" tabindex="0"><i class="fa-brands fa-git-alt" aria-hidden="true"></i><span class="sc">Git y GitHub</span></li>
+            </ul>
+          </div>
+          <div class="grupo">
+            <div class="rama">└── ia-y-mate/</div>
+            <ul class="habilidades">
+              <li data-criatura="ia" tabindex="0"><i class="fa-solid fa-brain" aria-hidden="true"></i><span class="sc">Inteligencia artificial</span></li>
+              <li data-criatura="matematicas" tabindex="0"><i class="fa-solid fa-square-root-variable" aria-hidden="true"></i><span class="sc">Matemáticas</span></li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -138,12 +172,15 @@ _/    \_</span>
       <!-- Redes: se muestran quitando el atributo hidden cuando existan -->
       <a href="#" hidden><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
       <a href="#" hidden><i class="fa-brands fa-linkedin" aria-hidden="true"></i>linkedin</a>
+      <span class="reloj">Medellín · <time id="reloj">--:--</time></span>
     </div>
   </footer>
 
   <script src="lib/jquery-3.7.1/jquery.min.js"></script>
   <script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
   <script src="js/tema.js"></script>
+  <script src="js/pie.js"></script>
+  <script src="js/arbol.js"></script>
   <script src="js/ascii/rejilla.js"></script>
   <script src="js/ascii/campo.js"></script>
   <script src="js/ascii/sprite.js"></script>

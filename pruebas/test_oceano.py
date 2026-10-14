@@ -105,3 +105,21 @@ def test_sin_scroll_horizontal(page: Page, base_url: str, ancho: int):
     page.goto(f"{base_url}/index.html")
     sobra = page.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth")
     assert sobra <= 0
+
+
+def test_clic_en_el_agua_suelta_onda_con_arrobas(inicio: Page):
+    """Como en la maqueta: un clic en el agua suelta un anillo que pinta «%» y «@» en color de acento."""
+    e = estado(inicio)
+    x = 1100 if centro_bit(e) * e["cw"] < 900 else 200
+    y = inicio.evaluate("document.querySelector('.hero').getBoundingClientRect().bottom - 60")
+    antes = estado(inicio)["calientes"]
+    inicio.mouse.click(x, y)
+    inicio.wait_for_timeout(350)
+    assert estado(inicio)["calientes"] > antes + 5
+
+
+def test_panel_del_campo_cuenta_fuentes_y_tiempo(inicio: Page):
+    inicio.mouse.move(600, 650)
+    inicio.wait_for_timeout(600)
+    assert int(inicio.locator("#campo-fuentes").inner_text()) >= 1
+    assert float(inicio.locator("#campo-t").inner_text()) > 0
