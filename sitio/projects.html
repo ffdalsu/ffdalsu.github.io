@@ -15,6 +15,7 @@
       document.documentElement.setAttribute('data-bs-theme', t);
     })();
   </script>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="lib/bootstrap-5.3.3/css/bootstrap.min.css">
   <link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css">
   <link rel="stylesheet" href="lib/fuentes/fuentes.css">
@@ -121,6 +122,7 @@
   <footer class="pie">
     <div class="envoltura">
       <span>© 2026 Juan David</span>
+      <button type="button" class="enlace abrir-contacto">[ escríbeme ]</button>
       <a href="mailto:ffdalsu.dev@gmail.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i>ffdalsu.dev@gmail.com</a>
       <!-- Redes: se muestran quitando el atributo hidden cuando existan -->
       <a href="#" hidden><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
@@ -129,10 +131,41 @@
     </div>
   </footer>
 
+  <div class="modal fade modal-terminal" id="modal-contacto" tabindex="-1" aria-labelledby="modal-contacto-titulo">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modal-contacto-titulo">mail juan-david</h2>
+          <button type="button" class="boton boton-x" data-bs-dismiss="modal" aria-label="Cerrar">[x]</button>
+        </div>
+        <form class="form-terminal" id="form-contacto" data-formspree="" novalidate>
+          <div class="campo" data-campo="nombre">
+            <label for="contacto-nombre">nombre&gt;</label>
+            <input id="contacto-nombre" name="nombre" type="text" autocomplete="name" placeholder="cómo te llamas">
+          </div>
+          <div class="campo" data-campo="correo">
+            <label for="contacto-correo">correo&gt;</label>
+            <input id="contacto-correo" name="email" type="email" autocomplete="email" placeholder="nombre@dominio.com">
+          </div>
+          <div class="campo" data-campo="mensaje">
+            <label for="contacto-mensaje">mensaje&gt;</label>
+            <textarea id="contacto-mensaje" name="mensaje" rows="5" placeholder="en qué te puedo ayudar"></textarea>
+          </div>
+          <input class="trampa" id="contacto-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="form-pie">
+            <button type="submit" class="boton">[ enviar ↵ ]</button>
+            <pre class="log" id="log-contacto" aria-live="polite">esperando mensaje…</pre>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script src="lib/jquery-3.7.1/jquery.min.js"></script>
   <script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
   <script src="js/tema.js"></script>
   <script src="js/pie.js"></script>
+  <script src="js/contacto.js"></script>
   <script src="js/ascii/rejilla.js"></script>
   <script src="js/miniaturas.js"></script>
   <script src="js/proyectos.js"></script>

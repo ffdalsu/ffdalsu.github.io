@@ -289,12 +289,12 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7. Desde la F11: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F5 terminada en `feat/portafolio-f5` (2026-10-14): `projects.html` como en la maqueta, con
-  5 proyectos (los 4 reales + «Este portafolio», que venía en la maqueta), miniaturas ASCII animadas, stack y
-  `[ ▶ ver video ]`. El modal se abre con `$('#modal-video').modal('show')`, carga `youtube-nocookie` y corta el video
-  al empezar a cerrar; sin ID muestra estática ASCII («video en camino»). Llegar desde una isla resalta el proyecto.
-  64 pruebas en verde. PR abierto, pendiente del visto bueno de JD.
+- **Dónde quedamos:** F6 terminada en `feat/portafolio-f6` (2026-10-14): `[ escríbeme ]` en el pie de las 3 páginas y
+  en el llamado del inicio abre el modal con el formulario estilo terminal de la maqueta (registro ✗/✓). Envía por
+  Formspree si `#form-contacto` tiene `data-formspree="<id>"`; mientras esté vacío abre el correo del visitante con el
+  mensaje listo. `scripts/empaquetar.py` arma `entrega/portafolio-juan-david-AAAAMMDD.zip` (HTML, css/, js/, lib/,
+  img/ con el favicon de bit). 74 pruebas en verde. PR abierto, pendiente del visto bueno de JD.
 - **Para el refinamiento (F10-F11):** en celular las dos islas lejanas quedan algo en el aire.
-- **Pendiente de JD:** el identificador de Formspree (F6); confirmar que mostrar los proyectos de Conaltura no choca
-  con alguna política de la empresa.
-- **Siguiente paso:** F6 · contacto en modal con el estilo terminal de la maqueta (Formspree) y `empaquetar.py`.
+- **Pendiente de JD:** el identificador de Formspree (va en `data-formspree` de las 3 páginas); confirmar que mostrar
+  los proyectos de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** F7 · videos de proyecto (punto de entrega seguro).
