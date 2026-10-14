@@ -3,5 +3,8 @@ __pycache__/
 .venv/
 node_modules/
 .pytest_cache/
+.ruff_cache/
 entrega/
 test-results/
+videos/salida/
+.env

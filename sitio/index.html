@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Portafolio de Juan David, matemático y desarrollador.">
+  <meta name="author" content="Juan David">
+  <title>Juan David · Portafolio</title>
+  <!-- Aplica el tema guardado antes de pintar, para que no se vea un destello del tema equivocado -->
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('tema'); } catch (e) {}
+      if (t !== 'dark' && t !== 'light') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-bs-theme', t);
+    })();
+  </script>
+  <link rel="stylesheet" href="lib/bootstrap-5.3.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="lib/fuentes/fuentes.css">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="barra">
+    <div class="envoltura">
+      <a class="marca" href="index.html">juan-david<b>:</b>~/portafolio</a>
+      <nav aria-label="Principal">
+        <ul class="menu">
+        <li><a href="index.html" aria-current="page">inicio</a></li>
+        <li><a href="sobre-mi.html">sobre mí</a></li>
+        <li><a href="projects.html">proyectos</a></li>
+        </ul>
+      </nav>
+      <div class="control-tema" role="group" aria-label="Tema">
+        <span class="etiqueta" aria-hidden="true">┤ tema ├</span>
+        <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
+        <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="envoltura seccion" aria-labelledby="titulo-inicio">
+      <p class="comando">whoami</p>
+      <h1 class="titulo-grande" id="titulo-inicio">Juan David<span class="cursor" aria-hidden="true"></span></h1>
+      <p class="texto">Matemático puro y desarrollador. Automatizo procesos, construyo webs e innovo con <mark>inteligencia artificial</mark>.</p>
+    </section>
+
+    <section class="envoltura seccion" id="sobre-mi" aria-labelledby="titulo-sobre-mi">
+      <p class="comando">cat sobre-mi.txt</p>
+      <h2 class="titulo" id="titulo-sobre-mi">Sobre mí</h2>
+      <div class="texto">
+        <p>Soy matemático puro de la Universidad Nacional y encontré la aplicación de mi carrera en la programación. Estoy certificado por Harvard en CS50P, CS50 SQL, CS50 y CS50AI.</p>
+        <p><a href="sobre-mi.html">[ leer más → ]</a></p>
+      </div>
+    </section>
+
+    <section class="envoltura seccion" id="habilidades" aria-labelledby="titulo-habilidades">
+      <p class="comando">ls habilidades/</p>
+      <h2 class="titulo" id="titulo-habilidades">Habilidades</h2>
+      <ul class="habilidades">
+        <li><i class="fa-brands fa-python" aria-hidden="true"></i>Python</li>
+        <li><i class="fa-solid fa-database" aria-hidden="true"></i>SQL Server</li>
+        <li><i class="fa-solid fa-hashtag" aria-hidden="true"></i>C# / .NET</li>
+        <li><i class="fa-brands fa-js" aria-hidden="true"></i>JavaScript</li>
+        <li><i class="fa-brands fa-html5" aria-hidden="true"></i>HTML y CSS</li>
+        <li><i class="fa-brands fa-bootstrap" aria-hidden="true"></i>Bootstrap</li>
+        <li><i class="fa-solid fa-code" aria-hidden="true"></i>jQuery</li>
+        <li><i class="fa-brands fa-git-alt" aria-hidden="true"></i>Git y GitHub</li>
+        <li><i class="fa-solid fa-brain" aria-hidden="true"></i>Inteligencia artificial</li>
+        <li><i class="fa-solid fa-square-root-variable" aria-hidden="true"></i>Matemáticas</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="envoltura">
+      <span>© 2026 Juan David</span>
+      <a href="mailto:ffdalsu.dev@gmail.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i>ffdalsu.dev@gmail.com</a>
+      <!-- Redes: se muestran quitando el atributo hidden cuando existan -->
+      <a href="#" hidden><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
+      <a href="#" hidden><i class="fa-brands fa-linkedin" aria-hidden="true"></i>linkedin</a>
+    </div>
+  </footer>
+
+  <script src="lib/jquery-3.7.1/jquery.min.js"></script>
+  <script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="js/tema.js"></script>
+</body>
+</html>
