@@ -99,6 +99,8 @@ def test_no_envia_dos_veces(con_formspree: Page):
 
 def test_sin_formspree_abre_el_correo(page: Page, base_url: str):
     page.goto(f"{base_url}/index.html")
+    # el sitio ya trae el ID real; aquí se quita para probar el respaldo por correo
+    page.locator("#form-contacto").evaluate("f => f.setAttribute('data-formspree', '')")
     page.evaluate("window.urlCorreo = null; Portafolio.Contacto.abrirCorreo = (u) => { window.urlCorreo = u; }")
     abrir_contacto(page)
     llenar(page)
