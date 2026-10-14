@@ -1,0 +1,218 @@
+/*
+ * Estilos del portafolio · Terminal ASCII
+ *
+ * Paleta y tipografías centrales: todo color del sitio sale de estos tokens.
+ * Hay dos temas, que se eligen con el atributo data-bs-theme de <html> (lo pone js/tema.js):
+ *   - "light" = papel de plotter
+ *   - "dark"  = fósforo ámbar
+ * Usar data-bs-theme hace que los componentes de Bootstrap (modales, formularios) sigan el mismo tema.
+ */
+
+/* ---------- Tokens ---------- */
+:root,
+[data-bs-theme="light"] {
+  --fondo: #EDF0EC;        /* papel */
+  --panel: #E2E7E2;        /* papel un tono más oscuro, para campos enfocados */
+  --texto: #1E2B2A;        /* tinta */
+  --tenue: #66746E;        /* textos secundarios y etiquetas */
+  --acento: #B93C0B;       /* naranja quemado: cursor, prompts, resaltados */
+  --linea: #B4BFB9;        /* bordes finos */
+
+  --fuente-display: "Martian Mono", "Cascadia Mono", Consolas, monospace;
+  --fuente-texto: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --ancho-max: 1280px;
+}
+
+[data-bs-theme="dark"] {
+  color-scheme: dark;
+  --fondo: #120D04;
+  --panel: #1B1407;
+  --texto: #FFB547;        /* fósforo ámbar */
+  --tenue: #A57A30;
+  --acento: #FFE2A6;
+  --linea: #4D3812;
+}
+
+/* ---------- Base ---------- */
+html { scroll-padding-top: 72px; }
+
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font: 400 15px/1.65 var(--fuente-texto);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main { flex: 1; }
+
+::selection { background: var(--texto); color: var(--fondo); }
+
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--acento); }
+
+:focus-visible { outline: 1px dashed var(--acento); outline-offset: 3px; }
+
+.envoltura {
+  max-width: var(--ancho-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+mark { background: none; color: var(--acento); padding: 0; }
+
+/* ---------- Barra superior ---------- */
+.barra {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 30;
+  background: var(--fondo);
+  border-bottom: 1px solid var(--linea);
+}
+
+.barra .envoltura {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 28px;
+  padding-block: 12px;
+}
+
+.marca {
+  font: 700 14px/1 var(--fuente-display);
+  font-variation-settings: "wdth" 112.5;
+  letter-spacing: -.01em;
+}
+.marca b { color: var(--acento); }
+
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin: 0 auto 0 0;
+  padding: 0;
+  list-style: none;
+}
+.menu a { color: var(--tenue); white-space: nowrap; }
+.menu a:hover, .menu a[aria-current="page"] { color: var(--texto); }
+/* El indicador [■] / [ ] lo pone el CSS para que el texto del enlace sea solo el nombre */
+.menu a::before { content: "[ ] "; }
+.menu a[aria-current="page"]::before { content: "[■] "; }
+
+.control-tema {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--linea);
+  padding: 5px 10px;
+  font-size: 13px;
+}
+.control-tema .etiqueta { color: var(--tenue); }
+.opcion-tema {
+  all: unset;
+  cursor: pointer;
+  color: var(--tenue);
+}
+.opcion-tema::before { content: "[ ] "; }
+.opcion-tema[aria-pressed="true"] { color: var(--texto); }
+.opcion-tema[aria-pressed="true"]::before { content: "[■] "; }
+.opcion-tema:focus-visible { outline: 1px dashed var(--acento); }
+
+/* ---------- Secciones ---------- */
+.seccion { padding-block: 64px 8px; }
+
+.comando { color: var(--tenue); font-size: 13px; margin: 0 0 18px; }
+.comando::before { content: "$ "; color: var(--acento); }
+
+.titulo {
+  font: 700 clamp(26px, 3.6vw, 44px)/1.05 var(--fuente-display);
+  letter-spacing: -.03em;
+  margin: 0 0 28px;
+  text-wrap: balance;
+}
+
+.titulo-grande {
+  font: 800 clamp(38px, 7.6vw, 104px)/.92 var(--fuente-display);
+  font-variation-settings: "wdth" 112.5;
+  letter-spacing: -.045em;
+  margin: 0 0 16px;
+  text-wrap: balance;
+}
+
+.cursor {
+  display: inline-block;
+  width: .55em;
+  height: .8em;
+  background: var(--acento);
+  vertical-align: -.04em;
+  margin-left: .08em;
+  animation: parpadeo 1.05s steps(1) infinite;
+}
+@keyframes parpadeo { 50% { opacity: 0; } }
+
+.texto { max-width: 66ch; }
+.texto p { margin: 0 0 14px; }
+
+/* Panel con borde fino y etiqueta incrustada en el borde: ┤ etiqueta ├ */
+.panel {
+  position: relative;
+  background: var(--fondo);
+  border: 1px solid var(--linea);
+  padding: 22px 22px 18px;
+}
+.panel > .etiqueta-panel {
+  position: absolute;
+  top: -.75em;
+  left: 14px;
+  background: var(--fondo);
+  padding-inline: 6px;
+  color: var(--tenue);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Lista de habilidades (en la F3 se sincroniza con las criaturas del océano) */
+.habilidades {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--linea);
+  border-left: 1px solid var(--linea);
+}
+.habilidades li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-right: 1px solid var(--linea);
+  border-bottom: 1px solid var(--linea);
+  flex: 1 1 180px;
+}
+.habilidades i { width: 18px; text-align: center; color: var(--acento); }
+
+/* Lista de proyectos (en la F5 se vuelven tarjetas con miniatura y video) */
+.proyectos { display: grid; gap: 0; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); border-top: 1px solid var(--linea); border-left: 1px solid var(--linea); }
+.proyecto { padding: 22px; border-right: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+.proyecto h2 { font: 700 20px/1.15 var(--fuente-display); letter-spacing: -.02em; margin: 0 0 10px; }
+.proyecto p { margin: 0; font-size: 14px; }
+
+/* ---------- Pie ---------- */
+.pie { margin-top: 84px; border-top: 1px solid var(--linea); }
+.pie .envoltura {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  padding-block: 18px;
+  font-size: 13px;
+  color: var(--tenue);
+}
+.pie i { margin-right: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor { animation: none; }
+}

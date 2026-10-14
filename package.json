@@ -1,0 +1,11 @@
+{
+  "name": "portafolio",
+  "private": true,
+  "description": "Herramientas de validación del portafolio (no forman parte del sitio publicado).",
+  "scripts": {
+    "validar": "html-validate \"sitio/*.html\""
+  },
+  "devDependencies": {
+    "html-validate": "11.16.1"
+  }
+}

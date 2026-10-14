@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Formación, certificados y experiencia de Juan David.">
+  <meta name="author" content="Juan David">
+  <title>Sobre mí · Juan David</title>
+  <!-- Aplica el tema guardado antes de pintar, para que no se vea un destello del tema equivocado -->
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('tema'); } catch (e) {}
+      if (t !== 'dark' && t !== 'light') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-bs-theme', t);
+    })();
+  </script>
+  <link rel="stylesheet" href="lib/bootstrap-5.3.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="lib/fuentes/fuentes.css">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="barra">
+    <div class="envoltura">
+      <a class="marca" href="index.html">juan-david<b>:</b>~/portafolio</a>
+      <nav aria-label="Principal">
+        <ul class="menu">
+        <li><a href="index.html">inicio</a></li>
+        <li><a href="sobre-mi.html" aria-current="page">sobre mí</a></li>
+        <li><a href="projects.html">proyectos</a></li>
+        </ul>
+      </nav>
+      <div class="control-tema" role="group" aria-label="Tema">
+        <span class="etiqueta" aria-hidden="true">┤ tema ├</span>
+        <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
+        <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="envoltura seccion" aria-labelledby="titulo-sobre-mi">
+      <p class="comando">cat sobre-mi.txt</p>
+      <h1 class="titulo-grande" id="titulo-sobre-mi">Sobre mí</h1>
+      <div class="texto">
+        <p>Soy matemático puro de la Universidad Nacional y encontré la aplicación de mi carrera en la programación.</p>
+        <p>Estoy certificado por Harvard en <mark>CS50P</mark>, <mark>CS50 SQL</mark>, <mark>CS50</mark> y <mark>CS50AI</mark>, y cuento con el certificado profesional en ciencias de la computación que Harvard emite al completar los CS50 del área.</p>
+        <p>Trabajé en Bancolombia en el entrenamiento de modelos financieros y en automatizaciones. Hoy trabajo en Conaltura desde transformación digital, haciendo automatizaciones, webs e innovación con inteligencia artificial.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="envoltura">
+      <span>© 2026 Juan David</span>
+      <a href="mailto:ffdalsu.dev@gmail.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i>ffdalsu.dev@gmail.com</a>
+      <!-- Redes: se muestran quitando el atributo hidden cuando existan -->
+      <a href="#" hidden><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
+      <a href="#" hidden><i class="fa-brands fa-linkedin" aria-hidden="true"></i>linkedin</a>
+    </div>
+  </footer>
+
+  <script src="lib/jquery-3.7.1/jquery.min.js"></script>
+  <script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="js/tema.js"></script>
+</body>
+</html>

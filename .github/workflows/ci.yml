@@ -1,0 +1,23 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validar HTML
+        run: npm ci && npm run validar
+      - uses: astral-sh/setup-uv@v5
+      - name: Pruebas con Playwright
+        run: |
+          uv sync
+          uv run playwright install --with-deps chromium
+          uv run pytest
