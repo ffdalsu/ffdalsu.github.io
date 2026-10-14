@@ -441,3 +441,42 @@ mark { background: none; color: var(--acento); padding: 0; }
   .hito::before { left: -25px; }
   .hito-anim { height: 170px; }
 }
+
+/* ---------- Contacto: formulario estilo terminal dentro de un modal (maqueta A) ---------- */
+.enlace { all: unset; cursor: pointer; color: inherit; }
+.enlace:hover { color: var(--acento); }
+.enlace:focus-visible { outline: 1px dashed var(--acento); outline-offset: 3px; }
+button.boton { background: none; color: inherit; font: inherit; cursor: pointer; }
+button.boton:hover { background: var(--texto); color: var(--fondo); }
+.correo-directo { margin-top: 12px; font-size: 13px; color: var(--tenue); }
+.correo-directo a { color: var(--texto); }
+
+.form-terminal { display: grid; }
+.campo { display: grid; grid-template-columns: 110px 1fr; align-items: start; border-top: 1px solid var(--linea); }
+.campo:first-child { border-top: 0; }
+.campo label { padding: 14px 16px; color: var(--tenue); font-size: 13.5px; }
+.campo input, .campo textarea {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 14px 16px;
+  font: inherit;
+  color: var(--texto);
+  caret-color: var(--acento);
+}
+.campo textarea { min-height: 120px; white-space: pre-wrap; }
+.campo input::placeholder, .campo textarea::placeholder { color: var(--tenue); opacity: .8; }
+.campo:focus-within { background: var(--panel); }
+.campo:focus-within label, .campo.mal label { color: var(--acento); }
+.trampa { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.form-pie { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 14px 16px; border-top: 1px solid var(--linea); }
+.form-pie .boton { margin: 0; }
+.form-pie .boton:disabled { opacity: .5; cursor: progress; }
+.log { margin: 0; font: inherit; font-size: 13px; white-space: pre-wrap; color: var(--tenue); }
+.log .error { color: var(--acento); }
+.log .ok { color: var(--texto); }
+.log .tenue { color: var(--tenue); }
+@media (max-width: 640px) {
+  .campo { grid-template-columns: 1fr; }
+  .campo label { padding-bottom: 0; }
+}
