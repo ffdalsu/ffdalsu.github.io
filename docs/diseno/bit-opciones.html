@@ -1,0 +1,314 @@
+<title>Bit, la mascota</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Martian+Mono:wdth,wght@75..112.5,300..800&display=swap">
+<style>
+/* Tablero de opciones: tres tarjetas vivas en rejilla + un demo de inmersión a lo ancho. Tokens de la maqueta A. */
+:root{
+  --fondo:#EDF0EC; --panel:#E2E7E2; --texto:#1E2B2A; --tenue:#66746E; --acento:#B93C0B; --linea:#B4BFB9;
+  --display:"Martian Mono", Consolas, monospace; --mono:"IBM Plex Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ color-scheme:dark; --fondo:#120D04; --panel:#1B1407; --texto:#FFB547; --tenue:#A57A30; --acento:#FFE2A6; --linea:#4D3812; }
+}
+:root[data-theme="dark"]{ color-scheme:dark; --fondo:#120D04; --panel:#1B1407; --texto:#FFB547; --tenue:#A57A30; --acento:#FFE2A6; --linea:#4D3812; }
+
+body{background:var(--fondo); color:var(--texto); font:400 15px/1.6 var(--mono)}
+.env{max-width:1280px; margin-inline:auto; padding:40px clamp(16px,4vw,48px) 80px}
+.cmd{color:var(--tenue); font-size:13px; margin:0 0 10px} .cmd::before{content:"$ "; color:var(--acento)}
+h1{font:800 clamp(30px,5.4vw,64px)/.95 var(--display); font-variation-settings:"wdth" 112.5; letter-spacing:-.04em; margin:0 0 14px}
+.intro{max-width:70ch; margin:0 0 36px; color:var(--texto)}
+.intro b{color:var(--acento); font-weight:500}
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); border-top:1px solid var(--linea); border-left:1px solid var(--linea)}
+.op{border-right:1px solid var(--linea); border-bottom:1px solid var(--linea); display:flex; flex-direction:column}
+.op canvas{display:block; width:100%; height:300px; background:var(--fondo); cursor:crosshair; touch-action:none}
+.op .info{padding:18px 20px 20px; border-top:1px solid var(--linea); display:flex; flex-direction:column; gap:10px; flex:1}
+.op h2{font:700 20px/1.1 var(--display); letter-spacing:-.02em; margin:0}
+.op h2 span{color:var(--tenue); font-weight:400; font-size:13px; font-family:var(--mono); margin-left:8px}
+.op p{margin:0; font-size:14px}
+.op .pros{font-size:13px; color:var(--tenue)}
+.op .pros b{color:var(--texto); font-weight:500}
+.estados{display:flex; flex-wrap:wrap; gap:8px; margin-top:auto; padding-top:6px}
+.estados button{all:unset; cursor:pointer; border:1px solid var(--linea); padding:4px 10px; font-size:13px; color:var(--tenue)}
+.estados button[aria-pressed="true"]{border-color:var(--texto); color:var(--texto)}
+.estados button[aria-pressed="true"]::before{content:"■ "; color:var(--acento)}
+.estados button:hover{color:var(--texto)}
+.estados button:focus-visible{outline:1px dashed var(--acento); outline-offset:2px}
+.modo{font-size:12px; color:var(--tenue); font-variant-numeric:tabular-nums}
+.modo b{color:var(--acento); font-weight:500}
+
+.inm{margin-top:56px; display:grid; grid-template-columns:minmax(0,1fr); gap:18px}
+@media (min-width:900px){ .inm{grid-template-columns:minmax(0,2fr) minmax(0,1fr)} }
+.inm .vent{position:relative; height:420px; overflow-y:auto; border:1px solid var(--linea); overscroll-behavior:contain}
+.inm .vent canvas{position:sticky; top:0; display:block; width:100%; height:420px; margin-bottom:-420px}
+.inm .alto{height:1700px}
+.inm .lado h2{font:700 24px/1.1 var(--display); letter-spacing:-.02em; margin:0 0 12px}
+.inm .lado p{margin:0 0 12px; font-size:14px; max-width:52ch}
+.prof{font-variant-numeric:tabular-nums; color:var(--acento)}
+@media (prefers-reduced-motion: reduce){ .op canvas{cursor:default} }
+</style>
+
+<div class="env">
+  <p class="cmd">ls docs/diseno/bit/</p>
+  <h1>Elige a bit</h1>
+  <p class="intro">Tres diseños de la mascota, todos vivos sobre el mismo océano ASCII del sitio. <b>Mueve el puntero</b> sobre cada uno para que te siga, <b>haz clic</b> para que hable y <b>déjalo quieto 5 segundos</b> para que se duerma. Los botones fuerzan cada estado. Debajo está la idea de la inmersión: al bajar por la página se baja al fondo del océano.</p>
+
+  <div class="grid">
+    <section class="op" data-op="bot">
+      <canvas aria-label="Bit como robot en un barquito"></canvas>
+      <div class="info">
+        <h2>1 · Bot en barquito<span>[o_o]</span></h2>
+        <p>Un robot de terminal que navega en un barco de papel. Mira hacia donde vas y rema cuando te sigue.</p>
+        <p class="pros"><b>Pro:</b> se lee al instante como «programador» y el barco justifica que siempre flote. <b>Contra:</b> es el concepto más esperable.</p>
+        <div class="estados" role="group" aria-label="Estado"></div>
+        <div class="modo"></div>
+      </div>
+    </section>
+    <section class="op" data-op="pulpo">
+      <canvas aria-label="Bit como pulpo de caracteres"></canvas>
+      <div class="info">
+        <h2>2 · Pulpo de caracteres<span>( oo )</span></h2>
+        <p>Un pulpo nativo del océano. Sus tentáculos se mueven con la onda y en el ecosistema cada uno puede señalar una habilidad.</p>
+        <p class="pros"><b>Pro:</b> encaja con el océano y los 8 brazos dan juego para las habilidades. <b>Contra:</b> tiene más piezas que animar y en celular se ve pequeño.</p>
+        <div class="estados" role="group" aria-label="Estado"></div>
+        <div class="modo"></div>
+      </div>
+    </section>
+    <section class="op" data-op="gota">
+      <canvas aria-label="Bit como una gota de tinta"></canvas>
+      <div class="info">
+        <h2>3 · Gota de tinta<span>(•‿•)</span></h2>
+        <p>Una gota que es del mismo material que el mar: se estira al nadar, se aplana al dormir y salta cuando habla.</p>
+        <p class="pros"><b>Pro:</b> es la más tierna y la más fácil de leer en pequeño. <b>Contra:</b> es menos «técnica» y la personalidad depende del movimiento.</p>
+        <div class="estados" role="group" aria-label="Estado"></div>
+        <div class="modo"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="inm">
+    <div class="vent" id="vent" tabindex="0" aria-label="Demo de inmersión: desplázate dentro del recuadro">
+      <canvas id="inm" aria-hidden="true"></canvas>
+      <div class="alto"></div>
+    </div>
+    <div class="lado">
+      <h2>Inmersión</h2>
+      <p>Desplázate dentro del recuadro. Arriba está la superficie, con bit y las islas de los proyectos en el horizonte. Al bajar, el mar se oscurece y aparecen las criaturas de las habilidades; cada una es un ítem de la sección «Habilidades».</p>
+      <p>Profundidad: <span class="prof" id="prof">0 m</span></p>
+      <p style="color:var(--tenue); font-size:13px">En el sitio real el desplazamiento es el de la página y el texto de cada sección pasa por encima del mar.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const RAMP = ' .·:-=+*#';
+  const FS = 13, CH = FS * 1.3, K = 2.2;  // K: escala de bit frente a la rejilla del mar
+
+  // Dibuja una rejilla de caracteres celda por celda, para que los glifos de reserva no descuadren las columnas
+  function pintar(ctx, celdas, cw, color) {
+    ctx.fillStyle = color;
+    for (const [c, r, ch] of celdas) ctx.fillText(ch, c * cw, r * CH);
+  }
+
+  // Altura de la superficie del mar en la columna c y el tiempo t (en filas)
+  const ola = (c, t) => Math.sin(c * .23 - t * 1.6) * .9 + Math.sin(c * .09 + t * .7) * .6;
+
+  /* ---------------- Sprites: cada estado es una lista de cuadros; cada cuadro, una lista de filas ---------------- */
+  const SPR = {
+    bot: {
+      flota: [[' .-. ', '[o_o]', ' /|\\ ', '\\___/'], [' .-. ', '[o_o]', ' /|\\ ', '\\___/']],
+      sigueD: [[' .-. ', '[ oo]', ' /|\\_', '\\___/'], [' .-. ', '[ oo]', '_/|\\ ', '\\___/']],
+      sigueI: [[' .-. ', '[oo ]', '_/|\\ ', '\\___/'], [' .-. ', '[oo ]', ' /|\\_', '\\___/']],
+      duerme: [[' .-. ', '[-_-]', ' /|\\ ', '\\___/'], [' .-. ', '[-.-]', ' /|\\ ', '\\___/']],
+      habla: [[' .-. ', '[o_o]', ' \\|/ ', '\\___/'], [' .-. ', '[oOo]', ' \\|/ ', '\\___/']],
+      ancho: 5, alto: 4, linea: 3, zz: [3, -1]
+    },
+    pulpo: {
+      flota: [[' .--. ', '( oo )', '/||||\\'], [' .--. ', '( oo )', '\\||||/'], [' .--. ', '( oo )', '|\\/\\/|']],
+      sigueD: [[' .--. ', '(  oo)', '//////'], [' .--. ', '(  oo)', '\\/\\/\\/']],
+      sigueI: [[' .--. ', '(oo  )', '\\\\\\\\\\\\'], [' .--. ', '(oo  )', '/\\/\\/\\']],
+      duerme: [[' .--. ', '( -- )', '~~~~~~'], [' .--. ', '( __ )', '~~~~~~']],
+      habla: [[' .--. ', '( oo )', '\\/||\\/'], [' .--. ', '( Oo )', '/\\||/\\']],
+      ancho: 6, alto: 3, linea: 1, zz: [5, -1]
+    },
+    gota: {
+      flota: [['  .  ', ' / \\ ', '(•‿•)', ' `-´ '], ['  .  ', ' / \\ ', '(•‿•)', ' `~´ ']],
+      sigueD: [['  .  ', ' / \\ ', '( •‿•', ' `-´ '], ['   . ', ' / \\ ', '( •‿•', ' `~´ ']],
+      sigueI: [['  .  ', ' / \\ ', '•‿• )', ' `-´ '], [' .   ', ' / \\ ', '•‿• )', ' `~´ ']],
+      duerme: [['     ', '  _  ', '(-‿-)', '`---´'], ['     ', '  _  ', '(-.-)', '`---´']],
+      habla: [['  .  ', ' / \\ ', '(•o•)', ' `-´ '], ['  ^  ', ' / \\ ', '(•▿•)', ' `-´ ']],
+      ancho: 5, alto: 4, linea: 2, zz: [4, -1]
+    }
+  };
+  const FRASES = ['¡hola! soy bit', 'te muestro todo', 'mira las islas →', 'Σ sin(k·r − ωt)', 'pregúntame algo'];
+
+  /* ---------------- Tarjeta viva: océano + bit con su máquina de estados ---------------- */
+  function tarjeta(sec) {
+    const tipo = sec.dataset.op, spr = SPR[tipo], cv = sec.querySelector('canvas'), ctx = cv.getContext('2d');
+    const modoEl = sec.querySelector('.modo'), botones = sec.querySelector('.estados');
+    let W, H, cw, cols, rows, base;
+    const bit = { x: 0, vx: 0, objetivo: null, modo: 'flota', forzado: null, ultimo: performance.now(), frase: '', hasta: 0 };
+
+    ['flota', 'sigue', 'duerme', 'habla'].forEach((m) => {
+      const b = document.createElement('button'); b.textContent = m; b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', () => { bit.forzado = bit.forzado === m ? null : m; if (m === 'habla') hablar(); bit.ultimo = performance.now(); });
+      botones.appendChild(b);
+    });
+
+    function medir() {
+      const d = Math.min(devicePixelRatio || 1, 2), r = cv.getBoundingClientRect();
+      W = r.width; H = r.height; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0);
+      ctx.font = FS + 'px "IBM Plex Mono", Consolas, monospace'; ctx.textBaseline = 'top';
+      cw = ctx.measureText('M').width; cols = Math.floor(W / cw); rows = Math.floor(H / CH); base = Math.round(rows * .62);
+      if (!bit.x) bit.x = cols / 2 - spr.ancho * K / 2;
+    }
+    function hablar() { bit.frase = FRASES[Math.floor(Math.random() * FRASES.length)]; bit.hasta = performance.now() + 2600; }
+
+    cv.addEventListener('pointermove', (e) => { const r = cv.getBoundingClientRect(); bit.objetivo = (e.clientX - r.left) / cw - spr.ancho * K / 2; bit.ultimo = performance.now(); });
+    cv.addEventListener('pointerleave', () => { bit.objetivo = null; });
+    cv.addEventListener('click', () => { hablar(); bit.ultimo = performance.now(); });
+
+    function cuadro(now) {
+      const t = now / 1000;
+      if (!W) medir();
+      // máquina de estados: habla > sigue > duerme > flota (o el estado forzado con los botones)
+      let modo;
+      if (bit.forzado) modo = bit.forzado;
+      else if (now < bit.hasta) modo = 'habla';
+      else if (now - bit.ultimo > 5000) modo = 'duerme';
+      else if (bit.objetivo !== null && Math.abs(bit.objetivo - bit.x) > .6) modo = 'sigue';
+      else modo = 'flota';
+      if (modo === 'habla' && now >= bit.hasta) hablar();
+      // movimiento con resorte hacia el puntero
+      if (modo === 'sigue' && bit.objetivo !== null) { bit.vx += (bit.objetivo - bit.x) * .012; }
+      bit.vx *= .86; bit.x = Math.max(0, Math.min(cols - spr.ancho * K, bit.x + bit.vx));
+      bit.modo = modo;
+
+      ctx.clearRect(0, 0, W, H);
+      // cielo: estrellas tenues fijas; mar: superficie y cuerpo de agua
+      const tenue = [], medio = [], fuerte = [];
+      for (let c = 0; c < cols; c++) {
+        const s = base + ola(c, t);
+        for (let r = 0; r < rows; r++) {
+          if (r < s - .5) { if ((c * 7 + r * 13) % 53 === 0) tenue.push([c, r, '·']); continue; }
+          const prof = r - s;
+          if (prof < .5) medio.push([c, r, prof < 0 ? '~' : '-']);
+          else { const v = Math.sin(c * .4 + r * .9 - t * 1.2) + Math.sin(c * .17 - r * .3 + t * .8); const i = Math.max(0, Math.min(RAMP.length - 1, Math.floor((v + 2) / 4 * 5 - prof * .25))); if (i > 0) tenue.push([c, r, RAMP[i]]); }
+        }
+      }
+      pintar(ctx, tenue, cw, css('--tenue')); pintar(ctx, medio, cw, css('--texto'));
+
+      // bit: elige cuadro según estado y dirección; se dibuja a escala K y flota a la altura de la ola bajo su centro
+      let clave = modo === 'sigue' ? (bit.vx >= 0 ? 'sigueD' : 'sigueI') : modo;
+      const cuadros = spr[clave], k = Math.floor(t * (modo === 'duerme' ? 1.2 : modo === 'sigue' ? 6 : 2.5)) % cuadros.length;
+      const anchoC = spr.ancho * K, centro = Math.round(bit.x + anchoC / 2), sup = base + ola(centro, t);
+      const salto = modo === 'habla' ? Math.abs(Math.sin(t * 9)) * -.5 : 0;
+      const y0 = sup - spr.linea * K + salto, x0 = bit.x, px = x0 * cw, py = y0 * CH;
+      // borra el agua detrás de bit para que se lea limpio
+      ctx.fillStyle = css('--fondo'); ctx.fillRect(px - 2, py, anchoC * cw + 4, spr.alto * K * CH);
+      ctx.font = '600 ' + (FS * K) + 'px "IBM Plex Mono", Consolas, monospace'; ctx.fillStyle = css('--acento');
+      cuadros[k].forEach((fila, j) => [...fila].forEach((ch, i) => { if (ch !== ' ') ctx.fillText(ch, px + i * cw * K, py + j * CH * K); }));
+      ctx.font = FS + 'px "IBM Plex Mono", Consolas, monospace';
+      const xs = Math.round(x0), ys = Math.round(y0);
+      // estela detrás de bit cuando nada
+      if (modo === 'sigue' && Math.abs(bit.vx) > .05) {
+        const d = bit.vx > 0 ? -1 : 1, xe = d < 0 ? xs - 1 : xs + Math.ceil(anchoC);
+        pintar(ctx, [0, 1, 2, 3].map((i) => [xe + d * i, Math.round(sup), i === 0 ? '≈' : '~'])
+          .filter((e) => e[0] >= 0 && e[0] < cols && (Math.floor(t * 8) + e[0]) % 3 !== 0), cw, css('--texto'));
+      }
+      if (modo === 'duerme') { const z = Math.floor(t * 1.5) % 3; pintar(ctx, [[xs + Math.ceil(anchoC) + z, ys - z, z === 2 ? 'Z' : 'z']], cw, css('--tenue')); }
+      if (modo === 'habla') {
+        const txt = bit.frase || FRASES[0], bw = txt.length + 4, bx = Math.max(0, Math.min(cols - bw, xs + Math.round(anchoC / 2) - 2)), by = Math.max(0, ys - 4);
+        ctx.fillStyle = css('--fondo'); ctx.fillRect(bx * cw, by * CH, bw * cw, 4 * CH);
+        const caja = [], linea = '─'.repeat(bw - 2);
+        [...('┌' + linea + '┐')].forEach((ch, i) => caja.push([bx + i, by, ch]));
+        [...('│ ' + txt + ' │')].forEach((ch, i) => caja.push([bx + i, by + 1, ch]));
+        [...('└' + linea + '┘')].forEach((ch, i) => caja.push([bx + i, by + 2, ch]));
+        caja.push([Math.min(bx + 3, cols - 1), by + 3, '\\']);
+        pintar(ctx, caja, cw, css('--texto'));
+      }
+      botones.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.textContent === modo)));
+      modoEl.innerHTML = 'estado: <b>' + modo + '</b>' + (bit.forzado ? ' (forzado)' : '') + ' · x = ' + bit.x.toFixed(1);
+    }
+    addEventListener('resize', () => { W = 0; });
+    let visible = true; new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(cv);
+    (function loop(now) { if (visible) cuadro(now); if (!reduce) requestAnimationFrame(loop); })(performance.now());
+  }
+  document.querySelectorAll('.op').forEach(tarjeta);
+
+  /* ---------------- Inmersión: el desplazamiento baja la cámara ---------------- */
+  (function () {
+    const vent = document.getElementById('vent'), cv = document.getElementById('inm'), ctx = cv.getContext('2d'), profEl = document.getElementById('prof');
+    let W, H, cw, cols, rows;
+    const islas = [['Facturación', .18], ['Indicadores', .45], ['Hermes', .72]];
+    const criaturas = [
+      { n: 'Python', s: ['~~~~~=<'], p: .18, x: .1 }, { n: 'SQL Server', s: [' .--. ', '(====)', ' ¦¦¦¦ '], p: .3, x: .62 },
+      { n: 'JavaScript', s: ['><>'], p: .42, x: .3 }, { n: 'C# / .NET', s: ['<#)))><'], p: .5, x: .7 },
+      { n: 'Git', s: ['o-o-<'], p: .6, x: .15 }, { n: 'Bootstrap', s: ['[B]>'], p: .68, x: .55 },
+      { n: 'IA', s: [' .oOo. ', '( ◉ ◉ )', ' `~~~´ '], p: .82, x: .35 }, { n: 'Matemáticas', s: ['∑∫π'], p: .93, x: .72 }
+    ];
+    function medir() {
+      const d = Math.min(devicePixelRatio || 1, 2), r = cv.getBoundingClientRect();
+      W = r.width; H = r.height; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0);
+      ctx.font = FS + 'px "IBM Plex Mono", Consolas, monospace'; ctx.textBaseline = 'top';
+      cw = ctx.measureText('M').width; cols = Math.floor(W / cw); rows = Math.floor(H / CH);
+    }
+    function cuadro(now) {
+      const t = now / 1000; if (!W) medir();
+      const max = vent.scrollHeight - vent.clientHeight, f = max ? vent.scrollTop / max : 0;
+      const mundo = rows * 5, cam = f * (mundo - rows), sup = rows * .4;
+      profEl.textContent = Math.round(Math.max(0, cam + rows - sup) * 2) + ' m';
+      ctx.clearRect(0, 0, W, H);
+      const tenue = [], medio = [], fuerte = [];
+      for (let c = 0; c < cols; c++) {
+        const s = sup + ola(c, t);
+        for (let r = 0; r < rows; r++) {
+          const y = r + cam;
+          if (y < s - .5) { if ((c * 7 + r * 13) % 53 === 0) tenue.push([c, r, '·']); continue; }
+          const prof = y - s;
+          if (prof < .5) { medio.push([c, r, '~']); continue; }
+          const v = Math.sin(c * .4 + y * .9 - t * 1.2) + Math.sin(c * .17 - y * .3 + t * .8);
+          const osc = Math.min(1, prof / (mundo * .7));
+          const i = Math.floor((v + 2) / 4 * 4 * (1 - osc * .8));
+          if (i > 0 && (c + Math.floor(y)) % (1 + Math.floor(osc * 3)) === 0) tenue.push([c, r, RAMP[i]]);
+        }
+      }
+      pintar(ctx, tenue, cw, css('--tenue')); pintar(ctx, medio, cw, css('--texto'));
+      // islas en el horizonte (proyectos) y bit en la superficie
+      islas.forEach(([n, px]) => {
+        const c = Math.round(px * cols), r = Math.round(sup - cam) - 2;
+        if (r < -2 || r > rows) return;
+        const isla = ['  _/\\_  ', '_/    \\_'];
+        const cel = []; isla.forEach((fila, j) => [...fila].forEach((ch, i) => ch !== ' ' && cel.push([c + i, r + j, ch])));
+        pintar(ctx, cel, cw, css('--texto'));
+        pintar(ctx, [...('[' + n + ']')].map((ch, i) => [c - 1 + i, r - 1, ch]), cw, css('--tenue'));
+      });
+      const bc = Math.round(cols * .08), br = Math.round(sup + ola(bc + 2, t) - cam) - 3;
+      ctx.fillStyle = css('--fondo'); ctx.fillRect(bc * cw, (br - 3) * CH, 5 * 1.8 * cw, 4 * 1.8 * CH);
+      ctx.font = '600 ' + (FS * 1.8) + 'px "IBM Plex Mono", Consolas, monospace'; ctx.fillStyle = css('--acento');
+      [' .-. ', '[o_o]', ' /|\\ ', '\\___/'].forEach((fila, j) => [...fila].forEach((ch, i) => ch !== ' ' && ctx.fillText(ch, (bc + i * 1.8) * cw, (br - 3 + j * 1.8) * CH)));
+      ctx.font = FS + 'px "IBM Plex Mono", Consolas, monospace';
+      // criaturas de las habilidades, cada una a su profundidad, nadando de lado a lado
+      criaturas.forEach((k, idx) => {
+        const y = sup + 4 + k.p * (mundo - sup - 8), r = Math.round(y - cam);
+        if (r < -3 || r > rows + 1) return;
+        const ancho = Math.max(...k.s.map((s) => s.length)), x = Math.round((k.x + Math.sin(t * .3 + idx) * .12) * (cols - ancho - 14));
+        const E = 1.6, etiqueta = '← ' + k.n, ex = x + Math.ceil(ancho * E) + 2, ey = r + Math.floor(k.s.length * E / 2);
+        ctx.fillStyle = css('--fondo');
+        ctx.fillRect(x * cw - 2, r * CH, ancho * E * cw + 4, k.s.length * E * CH);
+        ctx.fillRect(ex * cw - 2, ey * CH, etiqueta.length * cw + 4, CH);
+        ctx.font = '600 ' + (FS * E) + 'px "IBM Plex Mono", Consolas, monospace'; ctx.fillStyle = css('--acento');
+        k.s.forEach((fila, j) => [...fila].forEach((ch, i) => ch !== ' ' && ctx.fillText(ch, (x + i * E) * cw, (r + j * E) * CH)));
+        ctx.font = FS + 'px "IBM Plex Mono", Consolas, monospace';
+        pintar(ctx, [...etiqueta].map((ch, i) => [ex + i, ey, ch]), cw, css('--texto'));
+      });
+    }
+    addEventListener('resize', () => { W = 0; });
+    (function loop(now) { cuadro(now); if (!reduce) requestAnimationFrame(loop); })(performance.now());
+    if (reduce) vent.addEventListener('scroll', () => cuadro(performance.now()));
+  })();
+})();
+</script>
