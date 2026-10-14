@@ -42,27 +42,81 @@
   <main>
     <section class="envoltura seccion" aria-labelledby="titulo-proyectos">
       <p class="comando">ls proyectos/</p>
-      <h1 class="titulo-grande" id="titulo-proyectos">Proyectos</h1>
+      <h1 class="titulo-grande" id="titulo-proyectos">Proyectos<span class="cursor" aria-hidden="true"></span></h1>
+      <p class="texto">Lo que he construido entre la universidad y el trabajo. Cada proyecto tiene un video corto; los datos que se ven son de demostración.</p>
       <div class="proyectos">
         <article class="proyecto" id="facturacion">
-          <h2>Sistema de facturación</h2>
-          <p>Aplicación de escritorio para clientes, productos, empleados, facturas e informes, con inicio de sesión y roles.</p>
+          <canvas class="miniatura" data-miniatura="factura" aria-hidden="true"></canvas>
+          <div class="proyecto-cuerpo">
+            <h2>Sistema de facturación</h2>
+            <p>Aplicación de escritorio para registrar clientes, productos, empleados y facturas, con informes, inicio de sesión y roles.</p>
+            <p class="stack">C# · .NET · Windows Forms · SQLite</p>
+            <button type="button" class="boton boton-video" data-video-id="" data-titulo="Sistema de facturación">[ ▶ ver video ]</button>
+          </div>
         </article>
         <article class="proyecto" id="hermes">
-          <h2>Base de conocimiento con IA</h2>
-          <p>Una wiki técnica que agentes de IA consultan y mantienen al día.</p>
+          <canvas class="miniatura" data-miniatura="hermes" aria-hidden="true"></canvas>
+          <div class="proyecto-cuerpo">
+            <h2>Hermes · base de conocimiento con IA</h2>
+            <p>Una wiki técnica que agentes de IA consultan y mantienen al día: responden preguntas sobre proyectos, procedimientos y decisiones citando la fuente.</p>
+            <p class="stack">Python · Markdown · modelos de lenguaje</p>
+            <button type="button" class="boton boton-video" data-video-id="" data-titulo="Hermes · base de conocimiento con IA">[ ▶ ver video ]</button>
+          </div>
         </article>
         <article class="proyecto" id="indicadores">
-          <h2>Herramienta de indicadores</h2>
-          <p>Una web de tableros para seguir indicadores de gestión.</p>
+          <canvas class="miniatura" data-miniatura="indicadores" aria-hidden="true"></canvas>
+          <div class="proyecto-cuerpo">
+            <h2>Herramienta de indicadores</h2>
+            <p>Una web de tableros para seguir indicadores de gestión: filtros, cifras que se explican solas y gráficos claros.</p>
+            <p class="stack">FastAPI · React · SQL Server</p>
+            <button type="button" class="boton boton-video" data-video-id="" data-titulo="Herramienta de indicadores">[ ▶ ver video ]</button>
+          </div>
         </article>
         <article class="proyecto" id="automatizaciones">
-          <h2>Automatizaciones</h2>
-          <p>Tareas programadas que envían alertas, cruzan datos e integran sistemas.</p>
+          <canvas class="miniatura" data-miniatura="automatizaciones" aria-hidden="true"></canvas>
+          <div class="proyecto-cuerpo">
+            <h2>Automatizaciones</h2>
+            <p>Tareas programadas que cruzan datos entre sistemas, envían alertas por correo y ahorran horas de trabajo manual cada semana.</p>
+            <p class="stack">Python · SQL Server · tareas programadas</p>
+            <button type="button" class="boton boton-video" data-video-id="" data-titulo="Automatizaciones">[ ▶ ver video ]</button>
+          </div>
+        </article>
+        <article class="proyecto" id="portafolio">
+          <canvas class="miniatura" data-miniatura="onda" aria-hidden="true"></canvas>
+          <div class="proyecto-cuerpo">
+            <h2>Este portafolio</h2>
+            <p>Tres páginas con un océano ASCII generativo, una mascota que reacciona a lo que haces, modo claro y oscuro, y modales de video.</p>
+            <p class="stack">HTML · CSS · Bootstrap · jQuery · Canvas</p>
+            <button type="button" class="boton boton-video" data-video-id="" data-titulo="Este portafolio">[ ▶ ver video ]</button>
+          </div>
         </article>
       </div>
     </section>
   </main>
+
+  <div class="modal fade modal-terminal" id="modal-video" tabindex="-1" aria-labelledby="modal-video-titulo">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modal-video-titulo">video</h2>
+          <button type="button" class="boton boton-x" data-bs-dismiss="modal" aria-label="Cerrar">[x]</button>
+        </div>
+        <div class="modal-body">
+          <div class="video">
+            <iframe hidden title="Video del proyecto" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            <div class="video-pendiente" hidden>
+              <canvas aria-hidden="true"></canvas>
+              <p><b>▶</b>video en camino</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span class="modal-ayuda">esc para cerrar</span>
+          <button type="button" class="boton" data-bs-dismiss="modal">[ cerrar ]</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer class="pie">
     <div class="envoltura">
@@ -79,5 +133,8 @@
   <script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
   <script src="js/tema.js"></script>
   <script src="js/pie.js"></script>
+  <script src="js/ascii/rejilla.js"></script>
+  <script src="js/miniaturas.js"></script>
+  <script src="js/proyectos.js"></script>
 </body>
 </html>
