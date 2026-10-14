@@ -113,5 +113,6 @@ Portafolio.Miniaturas = (function () {
     document.querySelectorAll('canvas[data-miniatura]').forEach(animar);
   });
 
-  return {};
+  // las escenas también las usan los videos de proyecto (videos/escena.html)
+  return { escenas: ESCENAS, usarColores: function (c) { colores = c; } };
 })();

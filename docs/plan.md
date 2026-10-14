@@ -38,6 +38,7 @@ desarrollo de TI.
 | D20 | 2026-10-14 | **Inmersión** en el inicio: el océano queda fijo detrás de la página y el scroll baja la cámara; cada sección va sobre una lámina opaca |
 | D21 | 2026-10-14 | Datos de muestra (fechas y textos «dummy») en Sobre mí: es un proyecto universitario. Se mantienen los 4 CS50 reales y los 3 certificados profesionales de HarvardX que otorgan (Python, Databases using SQL, Artificial Intelligence) |
 | D22 | 2026-10-14 | Al implementar no se recorta la maqueta aprobada: la onda con «@», el panel ψ con contadores, la ficha, el árbol con *scramble* y el reloj del pie se restauraron; proyectos (F5) y formulario estilo terminal (F6) siguen la maqueta |
+| D23 | 2026-10-14 | Los títulos (`.titulo-grande`, `.titulo`) se arman desde estática ASCII al entrar en pantalla, como las habilidades; en los videos el título del proyecto hace lo mismo |
 
 ## Supuestos (JD puede vetarlos)
 - El repo es esta carpeta: `sitio/` (lo que se publica y se empaqueta), `videos/`, `docs/`, `pruebas/`, `scripts/`.
@@ -184,7 +185,7 @@ método `estado()` que las pruebas leen.
 - **Objetivo:** 4 videos MP4 de 16:9, 1920×1080 y 30-45 s, uno por proyecto, en el estilo ASCII del sitio. JD los
   sube como no listados y sus ID quedan en `projects.html`. Con esto la guía queda cumplida.
 - **Archivos:** crea `videos/escenas/_plantilla.js` (bit presenta → problema → solución → stack → cierre),
-  `videos/escenas/<slug>.html` (reutiliza `sitio/js/ascii/*`), `scripts/grabar_video.py` (avanza el tiempo cuadro a
+  `videos/escena.html?proyecto=<slug>` (una sola escena parametrizada que reutiliza `sitio/js/ascii/*` y las escenas de las miniaturas), `scripts/grabar_video.py` (avanza el tiempo cuadro a
   cuadro, captura el canvas y codifica con ffmpeg en H.264 yuv420p a 30 cps) y `pruebas/test_videos.py`; modifica
   `projects.html` (ID reales).
 - **Contratos:** cada escena expone `render(t)` y `duracion`; la salida va a `videos/salida/<slug>.mp4`.
@@ -289,12 +290,11 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7. Desde la F11: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F6 terminada en `feat/portafolio-f6` (2026-10-14): `[ escríbeme ]` en el pie de las 3 páginas y
-  en el llamado del inicio abre el modal con el formulario estilo terminal de la maqueta (registro ✗/✓). Envía por
-  Formspree si `#form-contacto` tiene `data-formspree="<id>"`; mientras esté vacío abre el correo del visitante con el
-  mensaje listo. `scripts/empaquetar.py` arma `entrega/portafolio-juan-david-AAAAMMDD.zip` (HTML, css/, js/, lib/,
-  img/ con el favicon de bit). 74 pruebas en verde. PR abierto, pendiente del visto bueno de JD.
+- **Dónde quedamos:** F7 en `feat/portafolio-f7` (2026-10-14): `videos/escena.html` + `scripts/grabar_video.py`
+  graban los 5 videos (40 s, 1920×1080, H.264) en `videos/salida/` (fuera de git). Títulos que se descifran desde
+  estática ASCII en el sitio y en los videos (D23). 89 pruebas en verde. PR abierto.
+- **Pendiente de JD:** subir los 5 MP4 a YouTube como «no listados» y pasar sus ID (van en `data-video-id` de
+  `projects.html`); el identificador de Formspree (`data-formspree` de las 3 páginas); confirmar que mostrar los
+  proyectos de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** con los ID puestos, la guía queda cumplida (punto de entrega seguro). Luego F8 · terminal.
 - **Para el refinamiento (F10-F11):** en celular las dos islas lejanas quedan algo en el aire.
-- **Pendiente de JD:** el identificador de Formspree (va en `data-formspree` de las 3 páginas); confirmar que mostrar
-  los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F7 · videos de proyecto (punto de entrega seguro).
