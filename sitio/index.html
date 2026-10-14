@@ -20,7 +20,9 @@
   <link rel="stylesheet" href="lib/fuentes/fuentes.css">
   <link rel="stylesheet" href="css/estilos.css">
 </head>
-<body>
+<body class="con-oceano">
+  <canvas id="oceano" class="oceano" aria-hidden="true"></canvas>
+  <p id="sonda" class="sonda" aria-hidden="true">prof 0 m · bit: flota</p>
   <header class="barra">
     <div class="envoltura">
       <a class="marca" href="index.html">juan-david<b>:</b>~/portafolio</a>
@@ -40,22 +42,35 @@
   </header>
 
   <main>
-    <section class="envoltura seccion" aria-labelledby="titulo-inicio">
-      <p class="comando">whoami</p>
-      <h1 class="titulo-grande" id="titulo-inicio">Juan David<span class="cursor" aria-hidden="true"></span></h1>
-      <p class="texto">Matemático puro y desarrollador. Automatizo procesos, construyo webs e innovo con <mark>inteligencia artificial</mark>.</p>
+    <section class="hero" aria-labelledby="titulo-inicio">
+      <div class="envoltura hero-contenido">
+        <div class="panel panel-campo" aria-hidden="true">
+          <span class="etiqueta-panel">┤ campo ├</span>
+          <code>ψ(x,y,t) = Σ sin(k·rᵢ − ω·t) / (1 + rᵢ/20)</code>
+          <span>mueve el puntero sobre el agua · clic para salpicar · clic en bit para que hable</span>
+        </div>
+        <div class="panel panel-hola">
+          <span class="etiqueta-panel">┤ hola ├</span>
+          <p class="comando">whoami</p>
+          <h1 class="titulo-grande" id="titulo-inicio">Juan David<span class="cursor" aria-hidden="true"></span></h1>
+          <p class="texto">Matemático puro y desarrollador. Automatizo procesos, construyo webs e innovo con <mark>inteligencia artificial</mark>.</p>
+        </div>
+      </div>
     </section>
 
     <section class="envoltura seccion" id="sobre-mi" aria-labelledby="titulo-sobre-mi">
+      <div class="lamina">
       <p class="comando">cat sobre-mi.txt</p>
       <h2 class="titulo" id="titulo-sobre-mi">Sobre mí</h2>
       <div class="texto">
         <p>Soy matemático puro de la Universidad Nacional y encontré la aplicación de mi carrera en la programación. Estoy certificado por Harvard en CS50P, CS50 SQL, CS50 y CS50AI.</p>
         <p><a href="sobre-mi.html">[ leer más → ]</a></p>
       </div>
+      </div>
     </section>
 
     <section class="envoltura seccion" id="habilidades" aria-labelledby="titulo-habilidades">
+      <div class="lamina">
       <p class="comando">ls habilidades/</p>
       <h2 class="titulo" id="titulo-habilidades">Habilidades</h2>
       <ul class="habilidades">
@@ -70,6 +85,7 @@
         <li><i class="fa-solid fa-brain" aria-hidden="true"></i>Inteligencia artificial</li>
         <li><i class="fa-solid fa-square-root-variable" aria-hidden="true"></i>Matemáticas</li>
       </ul>
+      </div>
     </section>
   </main>
 
@@ -86,5 +102,10 @@
   <script src="lib/jquery-3.7.1/jquery.min.js"></script>
   <script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
   <script src="js/tema.js"></script>
+  <script src="js/ascii/rejilla.js"></script>
+  <script src="js/ascii/campo.js"></script>
+  <script src="js/ascii/sprite.js"></script>
+  <script src="js/oceano/bit.js"></script>
+  <script src="js/oceano/escena.js"></script>
 </body>
 </html>
