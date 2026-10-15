@@ -586,6 +586,9 @@ button.boton:hover { background: var(--texto); color: var(--fondo); }
   .barra .controles { display: none; }
   .boton-menu { display: inline-block; margin-left: 0; }
 }
+/* y en cualquier ancho en que no quepan (zoom, otra fuente u otro navegador): js/menu.js pone .barra.compacta */
+.barra.compacta .controles { display: none; }
+.barra.compacta .boton-menu { display: inline-block; margin-left: 0; }
 @media (max-width: 1100px) {
   .boton-terminal kbd { display: none; }   /* en tabletas casi nunca hay teclado; la pista sigue en el title */
   .marca { font-size: 13px; }
