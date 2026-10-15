@@ -2,6 +2,7 @@
 
 import pytest
 from playwright.sync_api import Page
+from portada_ayuda import ir_al_horizonte, y_del_agua
 
 
 def estado(page: Page) -> dict:
@@ -34,8 +35,9 @@ def test_bit_aparece(inicio: Page):
 
 
 def test_bit_sigue_el_puntero(inicio: Page):
+    ir_al_horizonte(inicio)  # bit vive en el horizonte (acto 2 de la portada)
     antes = centro_bit(estado(inicio))
-    inicio.mouse.move(1100, 300)
+    inicio.mouse.move(1100, y_del_agua(inicio))
     inicio.wait_for_timeout(1500)
     despues = centro_bit(estado(inicio))
     destino = 1100 / estado(inicio)["cw"]
@@ -66,7 +68,8 @@ def test_clic_en_bit_lo_hace_hablar(page: Page, base_url: str):
     page.set_viewport_size({"width": 1280, "height": 800})
     page.goto(f"{base_url}/index.html")
     page.wait_for_function("window.Portafolio && Portafolio.Oceano && Portafolio.Oceano.estado()")
-    page.clock.run_for(4_000)  # termina el saludo inicial
+    ir_al_horizonte(page, con_reloj=True)
+    page.clock.run_for(4_000)  # termina el saludo al llegar al horizonte
     assert estado(page)["bit"]["modo"] != "habla"
     e = estado(page)
     x = centro_bit(e) * e["cw"]
@@ -109,9 +112,9 @@ def test_sin_scroll_horizontal(page: Page, base_url: str, ancho: int):
 
 def test_clic_en_el_agua_suelta_onda_con_arrobas(inicio: Page):
     """Como en la maqueta: un clic en el agua suelta un anillo que pinta «%» y «@» en color de acento."""
-    e = estado(inicio)
+    e = ir_al_horizonte(inicio)
     x = 1100 if centro_bit(e) * e["cw"] < 900 else 200
-    y = inicio.evaluate("document.querySelector('.hero').getBoundingClientRect().bottom - 60")
+    y = y_del_agua(inicio, 8)
     antes = estado(inicio)["calientes"]
     inicio.mouse.click(x, y)
     inicio.wait_for_timeout(350)
@@ -119,7 +122,8 @@ def test_clic_en_el_agua_suelta_onda_con_arrobas(inicio: Page):
 
 
 def test_panel_del_campo_cuenta_fuentes_y_tiempo(inicio: Page):
-    inicio.mouse.move(600, 650)
+    ir_al_horizonte(inicio)
+    inicio.mouse.move(600, y_del_agua(inicio))
     inicio.wait_for_timeout(600)
     assert int(inicio.locator("#campo-fuentes").inner_text()) >= 1
     assert float(inicio.locator("#campo-t").inner_text()) > 0

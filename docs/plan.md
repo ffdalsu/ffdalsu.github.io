@@ -391,12 +391,11 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F15: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F1-F7 publicadas en https://ffdalsu.github.io/; Formspree configurado y probado en vivo
-  (2026-10-15). Maqueta de la portada aprobada (D29). Plan aprobado: F8 portada, F9-F11 sonido (la F11 es el punto
-  de entrega seguro), F12 terminal, F13 IA, F14-F15 refinamiento, F16 pulido y entrega. Rama `feat/portafolio-f8`
-  con el plan.
+- **Dónde quedamos:** F8 · Portada terminada en `feat/portafolio-f8` (2026-10-15): tres actos (cielo con el nombre,
+  horizonte con bit e islas, el mar con el contenido), luna o sol, estrellas, gaviotas y estrella fugaz; panel ψ en el
+  acto 2 abajo a la izquierda; bugs corregidos (bit tapado, panel ψ desbordado, texto seleccionado). Celular aprobado
+  por JD con capturas. 104 pruebas en verde. El PR lleva también el plan de sonido.
 - **Pendiente de JD:** no subir aún los videos (se regraban con sonido en la F11); confirmar que mostrar los proyectos
   de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F8 · Portada.
-- **Para el refinamiento (F14-F15):** en celular las dos islas lejanas quedan algo en el aire (la portada puede
-  resolverlo).
+- **Siguiente paso:** F9 · Sonido a: tablero de sonidos para aprobar los efectos, luego el motor y el control.
+- **Para el refinamiento (F14-F15):** revisar en celular las dos islas lejanas.

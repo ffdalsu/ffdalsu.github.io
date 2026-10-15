@@ -23,7 +23,7 @@
 </head>
 <body class="con-oceano">
   <canvas id="oceano" class="oceano" aria-hidden="true"></canvas>
-  <p id="sonda" class="sonda" aria-hidden="true">prof 0 m · bit: flota</p>
+  <p id="sonda" class="sonda" aria-hidden="true">acto 1 · prof 0 m · bit: flota</p>
   <header class="barra">
     <div class="envoltura">
       <a class="marca" href="index.html">juan-david<b>:</b>~/portafolio</a>
@@ -44,13 +44,15 @@
 
   <main>
     <section class="hero" aria-labelledby="titulo-inicio" data-frases="¡hola! soy bit|matemático puro · U. Nacional|4 cursos CS50 de Harvard|Bancolombia → Conaltura|automatizo · webs · IA|las islas son proyectos →|baja: abajo hay más ↓">
-      <div class="envoltura hero-contenido">
-        <div class="panel panel-hola">
-          <span class="etiqueta-panel">┤ hola ├</span>
+      <!-- Portada (D29): el nombre a pantalla completa en el acto 1; js/oceano/escena.js lo encoge a la esquina en el acto 2 -->
+      <div class="portada">
+        <div class="portada-nombre">
           <p class="comando">whoami</p>
-          <h1 class="titulo-grande" id="titulo-inicio">Juan David<span class="cursor" aria-hidden="true"></span></h1>
-          <p class="texto">Matemático puro y desarrollador. Automatizo procesos, construyo webs e innovo con <mark>inteligencia artificial</mark>.</p>
+          <h1 class="titulo-grande portada-titulo" id="titulo-inicio">Juan David<span class="cursor" aria-hidden="true"></span></h1>
+          <p class="texto portada-lema">Matemático puro y desarrollador. Automatizo procesos, construyo webs e innovo con <mark>inteligencia artificial</mark>.</p>
         </div>
+      </div>
+      <p class="portada-baja" aria-hidden="true">↓ baja para llegar al mar</p>
         <div class="panel panel-campo" aria-hidden="true">
           <span class="etiqueta-panel">┤ campo ├</span>
           <code>ψ(x,y,t) = Σ sin(k·rᵢ − ω·t) / (1 + rᵢ/20)</code>
@@ -85,7 +87,6 @@ _/    \_</span>
           </a></li>
           </ul>
         </nav>
-      </div>
     </section>
 
     <section class="envoltura seccion" id="sobre-mi" aria-labelledby="titulo-sobre-mi">
@@ -219,6 +220,8 @@ _/    \_</span>
   <script src="js/ascii/rejilla.js"></script>
   <script src="js/ascii/campo.js"></script>
   <script src="js/ascii/sprite.js"></script>
+  <script src="js/oceano/coreografia.js"></script>
+  <script src="js/oceano/cielo.js"></script>
   <script src="js/oceano/bit.js"></script>
   <script src="js/oceano/ecosistema.js"></script>
   <script src="js/oceano/escena.js"></script>
