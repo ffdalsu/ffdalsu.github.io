@@ -16,6 +16,7 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["pruebas"]
 addopts = "-q"
+markers = ["e2e: recorridos de QA como los haría cada visitante (ti-probar)"]
 
 [tool.ruff]
 line-length = 120
