@@ -49,6 +49,7 @@ desarrollo de TI.
 | D31 | 2026-10-15 | Música elegida por JD tras oír las 3 variantes y 3 prototipos de banda sonora: **el sitio usa la generativa desde ψ** y **los videos el chiptune enérgico**. Se cambia con una sola constante, `MUSICA_DEL_SITIO` en `js/sonido/sonido.js` (opciones: 'generativa', 'oceano', 'chiptune'), sin control visible |
 | D32 | 2026-10-15 | El sonido no debe cortarse al cambiar de página. Ahora (A): al cargar se intenta sonar de inmediato (Chrome y Edge lo permiten al llegar por un enlace del sitio); si el navegador lo bloquea, aviso y el primer gesto lo arranca. Después (B): fase «Navegación sin recargar» antes de la terminal, para que la música nunca se corte en ningún navegador y llegue la transición entre páginas |
 | D33 | 2026-10-15 | Celular: menú lateral (offcanvas de Bootstrap por la derecha, abierto con jQuery) con páginas, contacto, tema y sonido; corte en 768 px; escritorio sin cambios. Se declara `color-scheme: light dark` para que Chrome Android no oscurezca el tema papel |
+| D34 | 2026-10-15 | **F15 descartada (no-go).** En el PC de JD ningún modelo en el navegador cumple: Qwen2.5-1.5B 5,9 tok/s y 7/10 a mano; Llama-3.2-1B 3/10; Gemma 4 E2B demasiado pesado (~3,4 GB). La entrega va sin IA. A futuro, si se retoma: un modelo en servidor (Worker de Cloudflare con Workers AI y límite de peticiones), nunca Hermes ni las suscripciones personales de JD (D7) |
 
 ## Supuestos (JD puede vetarlos)
 - El repo es esta carpeta: `sitio/` (lo que se publica y se empaqueta), `videos/`, `docs/`, `pruebas/`, `scripts/`.
@@ -356,7 +357,7 @@ método `estado()` que las pruebas leen.
 - **Riesgos:** choque de atajos con los campos de texto (cubierto por una prueba).
 - **Rama y PR:** `feat/portafolio-f14`. **Depende de** F13 (la terminal navega sin recargar). **Quién:** Claude. **Revisión:** normal.
 
-### F15 · IA en el navegador (bit es la voz)
+### F15 · IA en el navegador (bit es la voz) — DESCARTADA (D34)
 - **Objetivo:** `pregunta <texto>` en la terminal, o hablarle a bit en el inicio, responde sobre el perfil público de
   JD con un LLM que corre en el navegador. «Modo por dentro» muestra las 5 alternativas más probables de cada token
   como barras ASCII. Sin WebGPU, o bajo `file://`, aparece una alternativa honesta.
@@ -409,9 +410,9 @@ método `estado()` que las pruebas leen.
 - F7 necesita F2 y F5.
 - F8 (portada) → F9 → F10 → F11 (sonido; la F11 necesita también la F7).
 - F12 (celular) → F13 (navegación sin recargar) → F14 (terminal).
-- F5 → F14 → F15.
+- F5 → F14. (F15 descartada, D34.)
 - F16 puede ir en paralelo desde la F3.
-- F17 necesita F15 y F16.
+- F17 necesita F16.
 - F18 va al final.
 
 ## Matriz requisito → fase
@@ -428,7 +429,7 @@ método `estado()` que las pruebas leen.
 | Tema claro/oscuro (D4) | F1 |
 | Formulario de contacto (D8, D16) | F6 |
 | Mascota y ecosistema (D10) | F2, F3, F8 (portada) |
-| IA (D7) | F14, F15 |
+| IA (D7, D34) | F14 (terminal); la IA queda fuera de la entrega |
 | Refinamiento visual | F16, F17, F18 |
 | Sonido y música (D24-D28) | F9, F10, F11 |
 
@@ -442,10 +443,8 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F14 · Terminal terminada en `feat/portafolio-f14` (2026-10-15): «/» o `[>_] terminal` (pie y menú
-  lateral) abre una consola con help, whoami, ls, cat, cd (navega sin recargar y la terminal sigue abierta), open
-  (video de un proyecto), tema, sonido, contacto, date, echo, clear, exit y sudo; Tab completa, ↑↓ historial, Esc
-  cierra y devuelve el foco. `Portafolio.Terminal.registrar()` queda listo para «pregunta» (F15). 177 pruebas. PR abierto.
+- **Dónde quedamos:** F14 · Terminal fusionada (PR #17). F15 · IA en el navegador **descartada** tras el spike
+  (2026-10-15, D34): resultados en `docs/ia-evals.md`; la página `docs/spike-ia.html` queda como evidencia.
 - **Pendiente de JD:** confirmar en su celular (modo oscuro del teléfono + tema papel) que ya no se oscurece; confirmar
   que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F15 · IA en el navegador (spike go/no-go primero).
+- **Siguiente paso:** F16 · Refinamiento a (referentes y maqueta v2) con `ti-web-ui`.

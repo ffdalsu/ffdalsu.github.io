@@ -24,3 +24,17 @@ Diez preguntas para el spike de go/no-go. Una respuesta es correcta si contiene 
 
 ## Resultados
 (Se completa con lo que mida JD en su PC.)
+
+### 2026-10-15 · Qwen2.5-1.5B-Instruct-q4f16_1-MLC (Chrome, PC de JD) → NO-GO
+- Automático: 9/10 · peor primer token 23,68 s · 5,9 tokens/s en promedio.
+- Revisión a mano: 7/10. La 1 inventa «Ingeniería en Matemáticas»; la 3 responde en primera persona sobre otro
+  proyecto en vez de decir Conaltura.
+- Falla por velocidad (la mitad de lo exigido) y por inventar datos. Siguiente: medir Llama-3.2-1B .
+
+### 2026-10-15 · Llama-3.2-1B-Instruct-q4f16_1-MLC → NO-GO
+- 3/10 · peor primer token 19,49 s · 9,0 tokens/s. Ignora el perfil (dice no saber dónde trabaja ni qué es bit) e
+  inventa que Hermes es un sistema de facturación. Descartado por calidad.
+- Siguiente: gemma-4-E2B-it (WebLLM 0.2.86, ~3,4 GB de VRAM).
+
+### 2026-10-15 · gemma-4-E2B-it-q4f16_1-MLC → no se midió
+- Demasiado pesado para el PC de JD (~3,4 GB de VRAM y descarga). **Veredicto final: NO-GO, F15 descartada (D34).**
