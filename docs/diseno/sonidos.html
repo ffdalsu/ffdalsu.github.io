@@ -29,6 +29,7 @@ input[type=range]{accent-color:var(--acento); width:160px; vertical-align:middle
 .efecto p{margin:0; font-size:13px; color:var(--tenue)}
 .efecto .boton{align-self:flex-start; margin-top:auto; font-size:13px; padding:4px 10px}
 .nota{color:var(--tenue); font-size:12px; margin-top:20px}
+.seccion{font:700 clamp(20px,2.4vw,28px)/1.1 var(--display); margin:36px 0 10px}
 </style>
 
 <div class="env">
@@ -42,11 +43,26 @@ input[type=range]{accent-color:var(--acento); width:160px; vertical-align:middle
     <span class="voz"><label for="texto-voz">bit dice&gt;</label><input id="texto-voz" value="¡hola! soy bit" maxlength="16"><button class="boton" id="decir" type="button">[ ▶ ]</button></span>
   </div>
 
+  <h2 class="seccion">Banda sonora del sitio · 3 ideas</h2>
+  <p class="intro">Prototipos para decidir cómo conviven el lo-fi y la generativa. Pon una idea a sonar y mueve la profundidad (como si bajaras por el inicio) y el día/noche (el tema papel o ámbar). Solo suena una idea a la vez.</p>
+  <div class="mandos">
+    <span><label for="prof-idea">profundidad</label> <input id="prof-idea" type="range" min="0" max="50" step="1" value="0"> <b id="metros-idea">0 m · superficie</b></span>
+    <span role="group" aria-label="Día o noche"><button class="boton" type="button" id="noche" aria-pressed="true">[■] noche</button> <button class="boton" type="button" id="dia" aria-pressed="false">[ ] día</button></span>
+  </div>
+  <div class="rejilla" id="ideas"></div>
+
+  <h2 class="seccion">Música · elige una</h2>
+  <p class="intro">Tres variantes, todas sintetizadas. Escúchalas un rato (son bucles de 8 compases, salvo la generativa, que no se repite) y mueve la profundidad para oír cómo suena «bajo el agua» al bajar por el inicio.</p>
+  <div class="mandos"><span><label for="profundidad">profundidad</label> <input id="profundidad" type="range" min="0" max="50" step="1" value="0"> <b id="metros">0 m</b></span></div>
+  <div class="rejilla" id="musicas"></div>
+
+  <h2 class="seccion">Efectos (aprobados)</h2>
   <div class="rejilla" id="rejilla"></div>
   <p class="nota">Todo es determinista: el mismo efecto suena igual cada vez, así los videos se pueden grabar con el mismo sonido.</p>
 </div>
 
 <script src="../../sitio/js/sonido/sintetizador.js"></script>
+<script src="../../sitio/js/sonido/musica.js"></script>
 <script>
 (function () {
   const INFO = {
@@ -96,6 +112,151 @@ input[type=range]{accent-color:var(--acento); width:160px; vertical-align:middle
   });
   document.getElementById('volumen').addEventListener('input', (e) => { if (maestro) maestro.gain.value = +e.target.value; });
   document.getElementById('decir').addEventListener('click', () => sonar('voz', { texto: document.getElementById('texto-voz').value }));
+
+  // ---------- música: una variante a la vez, programada en vivo con 250 ms de adelanto ----------
+  let actual = null, reloj = null;
+  const musicas = document.getElementById('musicas');
+  const DESC = { oceano: ['~≈~', 'Tranquila, 84 bpm: bajo triangular, arpegio suave, melodía pentatónica y percusión blanda con crujido de vinilo.'],
+    chiptune: ['♪♫♪', 'Estilo NES, 132 bpm: bajo en octavas, arpegio rápido, melodía pegajosa, bombo y caja.'],
+    generativa: ['ψ', 'Las notas salen de una interferencia de ondas: nunca se repite. Con eco, más ambiental.'] };
+  function parar() { if (actual) { actual.detener(); actual = null; } clearInterval(reloj); document.querySelectorAll('[data-musica]').forEach((b) => { b.textContent = '[ ▶ escuchar ]'; b.setAttribute('aria-pressed', 'false'); }); }
+  Object.keys(Portafolio.Musica.VARIANTES).forEach((v) => {
+    const celda = document.createElement('article');
+    celda.className = 'efecto';
+    celda.innerHTML = '<pre aria-hidden="true"></pre><h2></h2><p></p><button class="boton" type="button" aria-pressed="false">[ ▶ escuchar ]</button>';
+    celda.querySelector('pre').textContent = DESC[v][0];
+    celda.querySelector('h2').textContent = Portafolio.Musica.VARIANTES[v].nombre;
+    celda.querySelector('p').textContent = DESC[v][1];
+    const b = celda.querySelector('button'); b.dataset.musica = v;
+    b.addEventListener('click', () => {
+      const sonaba = actual && actual.variante === v;
+      parar(); if (typeof pararIdea === 'function') pararIdea();
+      if (sonaba) return;
+      const s = audio();
+      actual = Portafolio.Musica.crear(s, maestro, v);
+      actual.profundidad(+document.getElementById('profundidad').value);
+      actual.alDia(0.3);
+      reloj = setInterval(() => actual && actual.alDia(0.3), 60);
+      b.textContent = '[ ■ parar ]'; b.setAttribute('aria-pressed', 'true');
+    });
+    musicas.appendChild(celda);
+  });
+  document.getElementById('profundidad').addEventListener('input', (e) => {
+    document.getElementById('metros').textContent = e.target.value + ' m';
+    if (actual) actual.profundidad(+e.target.value);
+  });
+
+  // ---------- 3 ideas de banda sonora (prototipos) ----------
+  const hz = (m) => 440 * Math.pow(2, (m - 69) / 12);
+  const ACORDES = [[57, 60, 64], [53, 57, 60], [60, 64, 67], [55, 59, 62]], BAJOS = [45, 41, 48, 43];
+  const PENTA_ALTA = [69, 72, 74, 76, 79, 81, 84];
+  const suave = (a, b, x) => { const k = Math.min(1, Math.max(0, (x - a) / (b - a))); return k * k * (3 - 2 * k); };
+  let idea = null, relojIdea = null, noche = true;
+  const profIdea = () => +document.getElementById('prof-idea').value;
+
+  function bus(destino, valor) { const g = ctx.createGain(); g.gain.value = valor; g.connect(destino); return g; }
+  function rampa(g, valor) { g.gain.setTargetAtTime(valor, ctx.currentTime, 0.25); }
+
+  // Idea 1: dos reproductores a la vez; la profundidad cruza lo-fi (arriba) con ψ (abajo)
+  function ideaProfundidad(s) {
+    const gA = bus(maestro, 1), gB = bus(maestro, 0);
+    const a = Portafolio.Musica.crear(s, gA, 'oceano'), b = Portafolio.Musica.crear(s, gB, 'generativa');
+    return {
+      actualizar() { const m = profIdea(), k = suave(10, 30, m); rampa(gA, 1 - k); rampa(gB, k); a.profundidad(m * 0.6); b.profundidad(m * 0.3); },
+      tic() { a.alDia(0.3); b.alDia(0.3); },
+      detener() { a.detener(); b.detener(); }
+    };
+  }
+
+  // Idea 2: noche = ψ, día = lo-fi; al cambiar el tema se cruzan en 1,5 s
+  function ideaTema(s) {
+    const gN = bus(maestro, noche ? 1 : 0), gD = bus(maestro, noche ? 0 : 1);
+    const n = Portafolio.Musica.crear(s, gN, 'generativa'), d = Portafolio.Musica.crear(s, gD, 'oceano');
+    return {
+      actualizar() { gN.gain.setTargetAtTime(noche ? 1 : 0, ctx.currentTime, 0.5); gD.gain.setTargetAtTime(noche ? 0 : 1, ctx.currentTime, 0.5); n.profundidad(profIdea() * 0.5); d.profundidad(profIdea() * 0.5); },
+      tic() { n.alDia(0.3); d.alDia(0.3); },
+      detener() { n.detener(); d.detener(); }
+    };
+  }
+
+  // Idea 3: una sola banda por capas. Ritmo, bajo y arpegio del lo-fi; la melodía la compone ψ y nunca se repite.
+  // Al hundirse se van la batería y el arpegio y la melodía gana eco y un colchón grave; de día brilla más.
+  function ideaAdaptativa(s) {
+    const filtro = ctx.createBiquadFilter(); filtro.type = 'lowpass'; filtro.frequency.value = 18000; filtro.connect(maestro);
+    const capas = { bateria: bus(filtro, 1), arpegio: bus(filtro, 1), bajo: bus(filtro, 1), melodia: bus(filtro, 1), colchon: bus(filtro, 0) };
+    const eco = ctx.createDelay(1), retorno = ctx.createGain(), envio = ctx.createGain();
+    const pasoS = 60 / 84 / 4;
+    eco.delayTime.value = pasoS * 6; retorno.gain.value = 0.38; envio.gain.value = 0.15;
+    capas.melodia.connect(envio).connect(eco).connect(retorno).connect(eco); retorno.connect(filtro);
+    const origen = ctx.currentTime + 0.1; let siguiente = 0;
+    function paso(i) {
+      const t = origen + i * pasoS, compas = Math.floor(i / 16) % 8, p = i % 16, c = compas % 4;
+      const swing = (p % 4 === 2) ? pasoS * 0.33 : 0;
+      if (p === 0 || p === 10) s.tono({ t, duracion: pasoS * (p ? 5 : 9), frecuencia: hz(BAJOS[c]), tipo: 'triangle', volumen: 0.17, ataque: 0.01, salida: capas.bajo });
+      if (p % 2 === 0) s.tono({ t: t + swing, duracion: pasoS * 1.6, frecuencia: hz(ACORDES[c][[0, 1, 2, 1][(p / 2) % 4]] + 12), tipo: 'square', volumen: 0.026, salida: capas.arpegio });
+      if (p === 0 || p === 8) s.tono({ t, duracion: 0.16, frecuencia: 110, hasta: 45, tipo: 'triangle', volumen: 0.2, ataque: 0.002, salida: capas.bateria });
+      if (p % 4 === 2) s.ruido({ t: t + swing, duracion: 0.035, filtro: 'highpass', corte: 7000, volumen: 0.022, salida: capas.bateria });
+      if (p % 2 === 0) {
+        const k = i / 2, v = Math.sin(k * 0.55 * 1.7) * 0.6 + Math.sin(k * 0.55 * Math.SQRT2 + 1.3) * 0.4, f = Math.abs(v);
+        if (f > 0.45) {
+          // la nota de ψ se ajusta al acorde del compás para que el ritmo y la melodía nunca choquen
+          let nota = PENTA_ALTA[Math.floor((v + 1) / 2 * (PENTA_ALTA.length - 1))];
+          if (p === 0) nota = ACORDES[c][Math.floor(f * 3) % 3] + 12;
+          s.tono({ t, duracion: pasoS * (2 + Math.round(f * 5)), frecuencia: hz(nota), tipo: noche ? 'triangle' : 'square', volumen: noche ? 0.08 : 0.05, ataque: noche ? 0.03 : 0.006, salida: capas.melodia });
+        }
+      }
+      if (i % 32 === 0) s.tono({ t, duracion: pasoS * 30, frecuencia: hz(BAJOS[c] - 12 + 12), tipo: 'triangle', volumen: 0.1, ataque: 0.6, salida: capas.colchon });
+    }
+    return {
+      actualizar() {
+        const m = profIdea();
+        rampa(capas.bateria, 1 - suave(5, 20, m));
+        rampa(capas.arpegio, 1 - suave(8, 26, m));
+        rampa(capas.bajo, 1 - 0.6 * suave(10, 35, m));
+        rampa(capas.colchon, suave(8, 30, m));
+        envio.gain.setTargetAtTime(0.15 + 0.5 * suave(5, 30, m) + (noche ? 0.15 : 0), ctx.currentTime, 0.3);
+        filtro.frequency.setTargetAtTime(18000 * Math.pow(1200 / 18000, Math.min(1, m / 50)), ctx.currentTime, 0.2);
+      },
+      tic() { const hasta = ctx.currentTime - origen + 0.3; for (; siguiente * pasoS < hasta; siguiente++) paso(siguiente); },
+      detener() { Object.values(capas).forEach((g) => g.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.08)); retorno.gain.setTargetAtTime(0, ctx.currentTime, 0.1); }
+    };
+  }
+
+  const IDEAS = [
+    ['profundidad', '1 · Por profundidad', '≈ → ψ', 'Lo-fi en la superficie y generativa ψ al hundirse; entre 10 y 30 m se cruzan.', ideaProfundidad],
+    ['tema', '2 · Por tema', '☾ / ☀', 'Noche (ámbar) = generativa ψ; día (papel) = lo-fi. Cambia día/noche para oír el cruce.', ideaTema],
+    ['adaptativa', '3 · Banda adaptativa', '≈ψ≈', 'Una sola canción: ritmo lo-fi con melodía compuesta por ψ (nunca igual). Al bajar quedan la melodía con eco y un colchón grave; de día brilla más.', ideaAdaptativa]
+  ];
+  function pararIdea() { if (idea) { idea.detener(); idea = null; } clearInterval(relojIdea); document.querySelectorAll('[data-idea]').forEach((b) => { b.textContent = '[ ▶ escuchar ]'; b.setAttribute('aria-pressed', 'false'); }); }
+  IDEAS.forEach(([clave, titulo, icono, desc, fabrica]) => {
+    const celda = document.createElement('article');
+    celda.className = 'efecto';
+    celda.innerHTML = '<pre aria-hidden="true"></pre><h2></h2><p></p><button class="boton" type="button" aria-pressed="false">[ ▶ escuchar ]</button>';
+    celda.querySelector('pre').textContent = icono;
+    celda.querySelector('h2').textContent = titulo;
+    celda.querySelector('p').textContent = desc;
+    const b = celda.querySelector('button'); b.dataset.idea = clave;
+    b.addEventListener('click', () => {
+      const sonaba = idea && idea.clave === clave;
+      pararIdea(); parar();
+      if (sonaba) return;
+      idea = fabrica(audio()); idea.clave = clave; idea.actualizar(); idea.tic();
+      relojIdea = setInterval(() => idea && idea.tic(), 60);
+      b.textContent = '[ ■ parar ]'; b.setAttribute('aria-pressed', 'true');
+    });
+    document.getElementById('ideas').appendChild(celda);
+  });
+  document.getElementById('prof-idea').addEventListener('input', (e) => {
+    const m = +e.target.value;
+    document.getElementById('metros-idea').textContent = m + ' m · ' + (m < 8 ? 'superficie' : m < 25 ? 'bajando' : 'fondo');
+    if (idea) idea.actualizar();
+  });
+  [['noche', true], ['dia', false]].forEach(([id, valor]) => document.getElementById(id).addEventListener('click', () => {
+    noche = valor;
+    document.getElementById('noche').setAttribute('aria-pressed', String(noche)); document.getElementById('noche').textContent = (noche ? '[■]' : '[ ]') + ' noche';
+    document.getElementById('dia').setAttribute('aria-pressed', String(!noche)); document.getElementById('dia').textContent = (noche ? '[ ]' : '[■]') + ' día';
+    if (idea) idea.actualizar();
+  }));
   // visita de ejemplo: lo que oiría alguien en un recorrido típico por el sitio
   document.getElementById('visita').addEventListener('click', () => {
     const guion = [['tecleo', 0], ['voz', 1.0, { texto: '¡hola! soy bit' }], ['bloop', 2.2], ['bloop', 2.7], ['campana', 3.5],
