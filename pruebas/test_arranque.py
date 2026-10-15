@@ -114,3 +114,28 @@ def test_cifras_del_registro_son_las_del_sitio():
     proyectos = (SITIO / "projects.html").read_text(encoding="utf-8").count('class="proyecto"')
     assert f"{habilidades} habilidades" in log
     assert f"{proyectos} proyectos" in log
+
+
+def test_pista_tactil_en_celular(browser, base_url: str):
+    """En una pantalla táctil no hay tecla Esc: la pista dice «toca para saltar»."""
+    contexto = browser.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
+    page = contexto.new_page()
+    page.clock.install()  # el arranque no avanza solo: el toque llega siempre a tiempo
+    page.goto(f"{base_url}/index.html")
+    page.wait_for_function(ACTIVO)
+    expect(page.locator(".arranque-saltar")).to_have_text("toca para saltar")
+    page.touchscreen.tap(195, 420)
+    page.clock.run_for(400)
+    assert page.evaluate("Portafolio.Arranque.estado().saltado") is True
+    page.wait_for_function(TERMINO, timeout=2000)
+    contexto.close()
+
+
+def test_registro_cabe_en_360(page: Page, base_url: str):
+    page.set_viewport_size({"width": 360, "height": 740})
+    page.goto(f"{base_url}/index.html")
+    page.wait_for_function("Portafolio.Arranque.estado().fase === 'saluda'")
+    medidas = page.evaluate(
+        "(() => { const l = document.querySelector('.arranque-log'); return [l.scrollWidth, l.clientWidth]; })()"
+    )
+    assert medidas[0] <= medidas[1], medidas

@@ -194,7 +194,37 @@ Portafolio.Terminal = (function () {
   const PROYECTOS = ['facturacion', 'hermes', 'indicadores', 'automatizaciones', 'portafolio'];
   const irA = (archivo) => (Portafolio.Navegacion && Portafolio.Navegacion.ir) ? Portafolio.Navegacion.ir(archivo) : (location.href = archivo, Promise.resolve());
 
-  registrar('help', 'lista los comandos', () => Object.keys(comandos).sort().map((c) => c.padEnd(10) + comandos[c].ayuda));
+  // la ayuda agrupa los comandos (≤ 7 por grupo); los que registre otro módulo van a «otros»
+  const GRUPOS = [
+    ['navegar', ['cd', 'ls', 'cat', 'open']],
+    ['sitio', ['cv', 'github', 'contacto', 'tema', 'sonido']],
+    ['consola', ['help', 'whoami', 'date', 'echo', 'clear', 'exit', 'sudo']]
+  ];
+  registrar('help', 'lista los comandos', () => {
+    const lineas = [], vistos = new Set();
+    const grupo = (titulo, nombres) => {
+      if (!nombres.length) return;
+      lineas.push('┤ ' + titulo + ' ├');
+      nombres.forEach((c) => { vistos.add(c); lineas.push('  ' + c.padEnd(10) + comandos[c].ayuda); });
+    };
+    GRUPOS.forEach(([titulo, nombres]) => grupo(titulo, nombres.filter((c) => comandos[c])));
+    grupo('otros', Object.keys(comandos).filter((c) => !vistos.has(c)).sort());
+    return lineas;
+  });
+  const HOJA_DE_VIDA = 'archivos/hoja-de-vida-juan-david.pdf';
+  registrar('cv', 'descarga mi hoja de vida (pdf)', () => {
+    const a = document.createElement('a');
+    a.href = new URL(HOJA_DE_VIDA, document.baseURI).href;
+    a.download = 'hoja-de-vida-juan-david.pdf';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    return 'descargando hoja-de-vida-juan-david.pdf…';
+  });
+  registrar('github', 'abre mi GitHub (github.com/ffdalsu)', () => {
+    window.open('https://github.com/ffdalsu', '_blank', 'noopener');
+    return 'abriendo github.com/ffdalsu…';
+  });
   registrar('whoami', 'quién soy', () => 'juan-david · matemático puro y desarrollador · Python, SQL Server e IA');
   registrar('ls', 'lista páginas y archivos (ls proyectos: los proyectos)', (args) => {
     if (args[0] === 'proyectos' || args[0] === 'proyectos/') return PROYECTOS.map((p) => p + '/').join('   ');

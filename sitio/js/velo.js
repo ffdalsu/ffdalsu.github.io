@@ -78,7 +78,9 @@ Portafolio.Velo = (function () {
             const nivel = llenar ? crudo : 1 - crudo;
             if (nivel <= 0) continue;
             if (nivel >= 1) {
-              c.fillRect(x * anchoCelda, y * ALTO_CELDA, anchoCelda + 0.5, ALTO_CELDA + 0.5);   // celda llena: sin rendijas
+              // celda llena: bordes en píxeles enteros y contiguos, así no quedan rayas finas entre celdas
+              const x0 = Math.floor(x * anchoCelda), x1 = Math.floor((x + 1) * anchoCelda);
+              c.fillRect(x0, y * ALTO_CELDA, x1 - x0, ALTO_CELDA);
               llenas++;
             } else {
               c.fillText(RAMPA[Math.floor(nivel * (RAMPA.length - 1)) + 1], x * anchoCelda, y * ALTO_CELDA);

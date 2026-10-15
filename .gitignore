@@ -8,3 +8,6 @@ entrega/
 test-results/
 videos/salida/
 .env
+
+# estado local de la skill impeccable (críticas archivadas)
+.impeccable/

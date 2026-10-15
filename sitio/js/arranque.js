@@ -6,8 +6,9 @@
  * sessionStorage["arranque"] no dice «visto»; el CSS oculta entonces todo lo demás, así no hay destello. Ese mismo
  * script la quita a los 4 s si este archivo no llega a cargar.
  *
- *   Fases: log → revela → saluda → sale → fin (~2 s). Esc, un clic o cualquier tecla la saltan; mientras dura, las
- *   teclas no llegan a la terminal. Con «reducir movimiento» se ve el cuadro final quieto ~1 s.
+ *   Fases: log → revela → saluda → sale → fin (~2 s). Esc, un clic, un toque o cualquier tecla la saltan; mientras
+ *   dura, las teclas no llegan a la terminal. Con «reducir movimiento» se ve el cuadro final quieto ~1 s.
+ *   Se pinta a 30 cuadros por segundo: alcanza para el revelado por pasos y cuesta la mitad.
  *   Al terminar: guarda «visto», quita la clase y emite «portafolio:arranque-fin» en document (el sonido espera a
  *   ese evento para arrancar; se emite dentro del gesto que la salta, así el navegador deja sonar).
  *   Portafolio.Arranque.estado() → { activo, fase, saltado }
@@ -17,14 +18,18 @@ window.Portafolio = window.Portafolio || {};
 Portafolio.Arranque = (function () {
   const html = document.documentElement;
   const B = Portafolio.BitGrande;
+  // cada renglón mide ANCHO caracteres (los puntos guía se ajustan): así cabe en un celular de 360 px con cualquier fuente de respaldo
+  const ANCHO = 42;
+  const linea = (que, cuanto) => '[ ok ] ' + que + ' ' + '.'.repeat(Math.max(2, ANCHO - 9 - que.length - cuanto.length)) + ' ' + cuanto;
   const LOG = [
     'bit-os 2.0 · ffdalsu.github.io',
-    '[ ok ] montando océano ............ 3 páginas',
-    '[ ok ] soltando criaturas ......... 10 habilidades',
-    '[ ok ] trazando islas ............. 5 proyectos',
+    linea('montando océano', '3 páginas'),
+    linea('soltando criaturas', '10 habilidades'),
+    linea('trazando islas', '5 proyectos'),
     '[ ok ] despertando a bit'
   ];
-  const LINEA_MS = 100, REVELA_MS = 800, SALUDA_MS = 500, SALE_MS = 250, QUIETO_MS = 1000;
+  const LINEA_MS = 100, REVELA_MS = 800, SALUDA_MS = 500, SALE_MS = 250, QUIETO_MS = 1000, CUADRO_MS = 33;
+  const tactil = window.matchMedia('(pointer: coarse)').matches;
   const est = { activo: false, fase: 'fin', saltado: false };
 
   if (!html.classList.contains('arrancando')) return { estado: () => Object.assign({}, est) };
@@ -39,7 +44,8 @@ Portafolio.Arranque = (function () {
   capa.setAttribute('aria-hidden', 'true');
   capa.dataset.permanente = '';
   capa.innerHTML = '<div class="arranque-ventana"><div class="arranque-barra">bit — ~/portafolio</div>' +
-    '<pre class="arranque-log"></pre><pre class="arranque-bit"></pre><span class="arranque-saltar">[esc] saltar</span></div>';
+    '<pre class="arranque-log"></pre><pre class="arranque-bit"></pre><span class="arranque-saltar">' +
+    (tactil ? 'toca para saltar' : '[esc] saltar') + '</span></div>';
   document.body.appendChild(capa);
   const log = capa.querySelector('.arranque-log');
   const bit = capa.querySelector('.arranque-bit');
@@ -53,7 +59,7 @@ Portafolio.Arranque = (function () {
   encajar();
   window.addEventListener('resize', encajar);
 
-  let rafId = 0, terminado = false;
+  let rafId = 0, terminado = false, ultimoCuadro = -Infinity;
   const azar = Array.from({ length: B.COLS * B.FILAS }, () => Math.random());
   const t0 = performance.now();
   const inicioBit = LOG.length * LINEA_MS;
@@ -72,6 +78,12 @@ Portafolio.Arranque = (function () {
   function cuadro(ahora) {
     if (terminado) return;
     const ms = ahora - t0;
+    if (ms >= finSaludo) { salir(false); return; }
+    if (ahora - ultimoCuadro >= CUADRO_MS) { ultimoCuadro = ahora; pintar(ms); }
+    rafId = requestAnimationFrame(cuadro);
+  }
+
+  function pintar(ms) {
     log.textContent = LOG.slice(0, Math.min(LOG.length, Math.floor(ms / LINEA_MS) + 1)).join('\n');
     if (ms >= inicioBit) {
       const t = (ms - inicioBit) / 1000, p = (ms - inicioBit) / REVELA_MS;
@@ -79,8 +91,6 @@ Portafolio.Arranque = (function () {
       const parpadeo = t > 1.05 && t < 1.2 ? Math.abs(t - 1.125) * 13 : 1;
       bit.innerHTML = B.html(B.escena(t, { parpadeo: parpadeo, saludo: Math.sin(t * 7) }), p < 1 ? revelar(p) : null);
     }
-    if (ms >= finSaludo) { salir(false); return; }
-    rafId = requestAnimationFrame(cuadro);
   }
 
   function salir(saltado) {

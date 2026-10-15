@@ -27,6 +27,8 @@ Portafolio.Arbol = (function () {
   }
 
   Portafolio.Paginas.montar(function () {
+    // el nombre real queda como nombre accesible: mientras se revuelve, el lector de pantalla no lee ruido
+    $('.habilidades li').each(function () { this.setAttribute('aria-label', this.textContent.trim()); });
     $('.habilidades li').on('mouseenter focus', function () {
       const sc = this.querySelector('.sc');
       if (sc) revolver(sc);

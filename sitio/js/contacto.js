@@ -43,6 +43,8 @@ Portafolio.Contacto = (function () {
     if (!$form.length) return;
     const $log = $('#log-contacto');
     const $boton = $form.find('button[type=submit]');
+    // los mensajes del registro describen los campos (aria-describedby) y un campo con error se marca aria-invalid
+    $form.find('input:not(.trampa), textarea').attr('aria-describedby', 'log-contacto');
 
     // cualquier [ escríbeme ] abre el modal (pie de las tres páginas y llamado a contacto del inicio)
     $('.abrir-contacto').on('click', function () { $('#modal-contacto').modal('show'); });
@@ -59,10 +61,16 @@ Portafolio.Contacto = (function () {
       const ok = validar(datos);
       const errores = [];
       Object.keys(ok).forEach(function (campo) {
-        $form.find('[data-campo=' + campo + ']').toggleClass('mal', !ok[campo]);
+        const $campo = $form.find('[data-campo=' + campo + ']').toggleClass('mal', !ok[campo]);
+        $campo.find('input, textarea').attr('aria-invalid', ok[campo] ? null : 'true');
         if (!ok[campo]) errores.push({ tipo: 'error', texto: '✗ ' + MENSAJES[campo] });
       });
-      if (errores.length) { registrar($log, errores); sonar('error'); return; }
+      if (errores.length) {
+        registrar($log, errores);
+        sonar('error');
+        $form.find('[aria-invalid=true]').first().trigger('focus');
+        return;
+      }
 
       const id = $.trim($form.attr('data-formspree') || '');
       if (!id) {

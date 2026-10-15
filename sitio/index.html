@@ -49,6 +49,7 @@
   <link rel="stylesheet" href="css/estilos.css?v=dev">
 </head>
 <body class="con-oceano">
+  <a class="saltar" href="#contenido">saltar al contenido</a>
   <canvas id="oceano" class="oceano" aria-hidden="true"></canvas>
   <p id="sonda" class="sonda" aria-hidden="true">acto 1 · prof 0 m · bit: flota</p>
   <header class="barra">
@@ -63,22 +64,23 @@
       </nav>
       <div class="controles">
       <div class="control-tema" role="group" aria-label="Tema">
-        <span class="etiqueta" aria-hidden="true">┤ ◐ ├</span>
+        <span class="etiqueta" aria-hidden="true">┤◐├</span>
         <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
         <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
       </div>
       <div class="control-tema control-sonido" role="group" aria-label="Sonido">
-        <span class="etiqueta" aria-hidden="true">┤ ♪ ├</span>
-        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">no</button>
+        <span class="etiqueta" aria-hidden="true">┤♪├</span>
+        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">silencio</button>
         <button type="button" class="opcion-sonido" data-sonido="efectos" aria-pressed="false">efectos</button>
         <button type="button" class="opcion-sonido" data-sonido="todo" aria-pressed="false">+ música</button>
       </div>
       </div>
+      <button type="button" class="enlace abrir-terminal boton-terminal" aria-label="Abrir la terminal" aria-keyshortcuts="/" title="Abrir la terminal (tecla /)">[&gt;_]<kbd>/</kbd></button>
       <button type="button" class="boton-menu" aria-controls="menu-movil" aria-label="Abrir el menú">[≡]</button>
     </div>
   </header>
 
-  <main data-pagina="inicio">
+  <main id="contenido" tabindex="-1" data-pagina="inicio">
     <section class="hero" aria-labelledby="titulo-inicio" data-frases="¡hola! soy bit|matemático puro · U. Nacional|4 cursos CS50 de Harvard|Bancolombia → Conaltura|automatizo · webs · IA|las islas son proyectos →|baja: abajo hay más ↓">
       <!-- Portada (D29): el nombre a pantalla completa en el acto 1; js/oceano/escena.js lo encoge a la esquina en el acto 2 -->
       <div class="portada">
@@ -133,7 +135,7 @@ _/    \_</span>
             <h2 class="titulo" id="titulo-sobre-mi">Sobre mí</h2>
             <p>Soy <mark>matemático puro</mark> de la Universidad Nacional y encontré la aplicación de mi carrera en la programación. Hice los cuatro CS50 de Harvard: CS50x, CS50P, CS50 SQL y CS50AI.</p>
             <p>Trabajé en Bancolombia entrenando modelos financieros y hoy estoy en Conaltura, en transformación digital: automatizaciones, webs e inteligencia artificial.</p>
-            <p><a href="sobre-mi.html">[ leer mi historia → ]</a></p>
+            <p class="acciones-sobre"><a href="sobre-mi.html">[ leer mi historia → ]</a> <a class="descargar-cv" href="archivos/hoja-de-vida-juan-david.pdf" download>[ ↓ hoja de vida · pdf ]</a></p>
           </div>
           <div class="panel panel-ficha" id="ficha">
             <span class="etiqueta-panel">┤ ficha ├</span>
@@ -144,6 +146,7 @@ _/    \_</span>
             <dt>antes</dt><dd>Modelos financieros · Bancolombia</dd>
             <dt>ciudad</dt><dd>Medellín, Colombia</dd>
             <dt>rumbo</dt><dd>Especializarme en IA</dd>
+            <dt>código</dt><dd><a href="https://github.com/ffdalsu" target="_blank" rel="noopener">github.com/ffdalsu</a></dd>
           </dl>
           </div>
         </div>
@@ -211,7 +214,7 @@ _/    \_</span>
       <button type="button" class="enlace abrir-terminal">[&gt;_] terminal</button>
       <a href="mailto:ffdalsu.dev@gmail.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i>ffdalsu.dev@gmail.com</a>
       <!-- Redes: se muestran quitando el atributo hidden cuando existan -->
-      <a href="#" hidden><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
+      <a href="https://github.com/ffdalsu" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
       <a href="#" hidden><i class="fa-brands fa-linkedin" aria-hidden="true"></i>linkedin</a>
       <span class="reloj">Medellín · <time id="reloj">--:--</time></span>
     </div>
@@ -266,13 +269,13 @@ _/    \_</span>
       <button type="button" class="boton abrir-terminal">[&gt;_] terminal</button>
       <div class="controles controles-lateral">
       <div class="control-tema" role="group" aria-label="Tema">
-        <span class="etiqueta" aria-hidden="true">┤ ◐ ├</span>
+        <span class="etiqueta" aria-hidden="true">┤◐├</span>
         <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
         <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
       </div>
       <div class="control-tema control-sonido" role="group" aria-label="Sonido">
-        <span class="etiqueta" aria-hidden="true">┤ ♪ ├</span>
-        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">no</button>
+        <span class="etiqueta" aria-hidden="true">┤♪├</span>
+        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">silencio</button>
         <button type="button" class="opcion-sonido" data-sonido="efectos" aria-pressed="false">efectos</button>
         <button type="button" class="opcion-sonido" data-sonido="todo" aria-pressed="false">+ música</button>
       </div>

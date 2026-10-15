@@ -49,6 +49,7 @@
   <link rel="stylesheet" href="css/estilos.css?v=dev">
 </head>
 <body>
+  <a class="saltar" href="#contenido">saltar al contenido</a>
   <header class="barra">
     <div class="envoltura">
       <a class="marca" href="index.html">juan-david<b>:</b>~/portafolio</a>
@@ -61,22 +62,23 @@
       </nav>
       <div class="controles">
       <div class="control-tema" role="group" aria-label="Tema">
-        <span class="etiqueta" aria-hidden="true">┤ ◐ ├</span>
+        <span class="etiqueta" aria-hidden="true">┤◐├</span>
         <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
         <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
       </div>
       <div class="control-tema control-sonido" role="group" aria-label="Sonido">
-        <span class="etiqueta" aria-hidden="true">┤ ♪ ├</span>
-        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">no</button>
+        <span class="etiqueta" aria-hidden="true">┤♪├</span>
+        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">silencio</button>
         <button type="button" class="opcion-sonido" data-sonido="efectos" aria-pressed="false">efectos</button>
         <button type="button" class="opcion-sonido" data-sonido="todo" aria-pressed="false">+ música</button>
       </div>
       </div>
+      <button type="button" class="enlace abrir-terminal boton-terminal" aria-label="Abrir la terminal" aria-keyshortcuts="/" title="Abrir la terminal (tecla /)">[&gt;_]<kbd>/</kbd></button>
       <button type="button" class="boton-menu" aria-controls="menu-movil" aria-label="Abrir el menú">[≡]</button>
     </div>
   </header>
 
-  <main data-pagina="sobre-mi">
+  <main id="contenido" tabindex="-1" data-pagina="sobre-mi">
     <section class="envoltura seccion" aria-labelledby="titulo-sobre-mi">
       <p class="comando">cat sobre-mi.txt</p>
       <h1 class="titulo-grande" id="titulo-sobre-mi">Sobre mí<span class="cursor" aria-hidden="true"></span></h1>
@@ -95,7 +97,9 @@
             <dt>antes</dt><dd>Modelos financieros · Bancolombia</dd>
             <dt>ciudad</dt><dd>Medellín, Colombia</dd>
             <dt>rumbo</dt><dd>Especializarme en IA</dd>
+            <dt>código</dt><dd><a href="https://github.com/ffdalsu" target="_blank" rel="noopener">github.com/ffdalsu</a></dd>
           </dl>
+            <a class="boton descargar-cv" href="archivos/hoja-de-vida-juan-david.pdf" download>[ ↓ hoja de vida · pdf ]</a>
           </div>
       </div>
     </section>
@@ -114,7 +118,7 @@
         </li>
         <li class="hito" id="hito-banco">
           <div class="hito-texto">
-            <time class="hito-fecha">2022</time>
+            <time class="hito-fecha">2024</time>
             <h3>Entré a Bancolombia</h3>
             <p>Entrené modelos financieros y automaticé procesos. Ahí vi por primera vez cómo un modelo bien medido cambia decisiones reales.</p>
           </div>
@@ -122,7 +126,7 @@
         </li>
         <li class="hito" id="hito-cs50x">
           <div class="hito-texto">
-            <time class="hito-fecha">2023</time>
+            <time class="hito-fecha">2024</time>
             <h3>Hice CS50x en Harvard</h3>
             <p>La introducción a las ciencias de la computación de David J. Malan: C, memoria, algoritmos y mi primer «hello, world» con todo el rigor.</p>
           </div>
@@ -130,7 +134,7 @@
         </li>
         <li class="hito" id="hito-red">
           <div class="hito-texto">
-            <time class="hito-fecha">2023 – 2024</time>
+            <time class="hito-fecha">2024 – 2025</time>
             <h3>Completé CS50P, CS50 SQL y CS50AI</h3>
             <p>Python a fondo, bases de datos relacionales y los fundamentos de la inteligencia artificial: búsqueda, probabilidad, aprendizaje y redes neuronales.</p>
           </div>
@@ -138,7 +142,7 @@
         </li>
         <li class="hito" id="hito-sellos">
           <div class="hito-texto">
-            <time class="hito-fecha">2024</time>
+            <time class="hito-fecha">2025</time>
             <h3>Recibí tres certificados profesionales de HarvardX</h3>
             <p>Cada CS50 especializado, sumado a CS50x, otorga un certificado profesional: Python, bases de datos con SQL e inteligencia artificial.</p>
           </div>
@@ -146,7 +150,7 @@
         </li>
         <li class="hito" id="hito-obra">
           <div class="hito-texto">
-            <time class="hito-fecha">2024 – hoy</time>
+            <time class="hito-fecha">2026 – hoy</time>
             <h3>Llegué a Conaltura</h3>
             <p>Estoy en transformación digital de una constructora: automatizo procesos, construyo webs internas e innovo con inteligencia artificial.</p>
           </div>
@@ -179,7 +183,7 @@
           <h3 class="diploma-programa">Computer Science for Python Programming</h3>
           <p class="diploma-otorgado">otorgado a</p>
           <p class="diploma-nombre">Juan David</p>
-          <p class="diploma-cursos">CS50x + CS50P · 2023</p>
+          <p class="diploma-cursos">CS50x + CS50P · 2025</p>
           <p class="diploma-firma"><span>David J. Malan</span>CS50, Harvard University</p>
         </article>
         <article class="diploma">
@@ -193,7 +197,7 @@
           <h3 class="diploma-programa">Computer Science for Databases using SQL</h3>
           <p class="diploma-otorgado">otorgado a</p>
           <p class="diploma-nombre">Juan David</p>
-          <p class="diploma-cursos">CS50x + CS50 SQL · 2024</p>
+          <p class="diploma-cursos">CS50x + CS50 SQL · 2025</p>
           <p class="diploma-firma"><span>David J. Malan</span>CS50, Harvard University</p>
         </article>
         <article class="diploma">
@@ -207,7 +211,7 @@
           <h3 class="diploma-programa">Computer Science for Artificial Intelligence</h3>
           <p class="diploma-otorgado">otorgado a</p>
           <p class="diploma-nombre">Juan David</p>
-          <p class="diploma-cursos">CS50x + CS50AI · 2024</p>
+          <p class="diploma-cursos">CS50x + CS50AI · 2025</p>
           <p class="diploma-firma"><span>David J. Malan</span>CS50, Harvard University</p>
         </article>
       </div>
@@ -257,25 +261,87 @@
       <p class="texto">Quiero especializarme en inteligencia artificial: entender cómo funcionan los modelos por dentro, replicarlos y usarlos para que el trabajo diario sea más rápido y más ordenado.</p>
     </section>
 
-    <!-- CV para imprimir (F17b): solo aparece en papel (Ctrl+P), una hoja A4. Si cambia esta página, revisar que siga cabiendo -->
-    <section class="cv-impresion" aria-label="Currículum para imprimir">
-      <pre class="cv-bit" aria-hidden="true"> .-.
+    <!-- Hoja de vida (F17b, D40): solo existe en papel (Ctrl+P o el PDF de archivos/, que genera scripts/hoja_de_vida.py).
+         Una hoja A4 a dos columnas. Si cambia esta página o la hoja: volver a generar el PDF (una prueba avisa) -->
+    <section class="cv-impresion" aria-label="Hoja de vida para imprimir">
+      <div class="cv-cabecera">
+        <div>
+          <p class="cv-nombre">Juan David</p>
+          <p class="cv-rol">Matemático puro · desarrollador · transformación digital e IA</p>
+        </div>
+        <pre class="cv-bit" aria-hidden="true"> .-.
 [o_o]
 \___/</pre>
-      <p class="cv-nombre">Juan David</p>
-      <p class="cv-sub">Matemático puro · desarrollador · transformación digital e IA<br>Medellín, Colombia · ffdalsu.dev@gmail.com · ffdalsu.github.io</p>
-      <p class="cv-seccion">Perfil</p>
-      <p>Matemático puro de la Universidad Nacional que encontró en la programación dónde usar su carrera. Hoy automatiza procesos, construye webs internas e innova con inteligencia artificial, hacia donde quiere especializarse.</p>
-      <p class="cv-seccion">Experiencia</p>
-      <div class="cv-fila"><span>2024 – hoy</span><span><b>Conaltura</b> · transformación digital: automatizaciones, webs internas e inteligencia artificial.</span></div>
-      <div class="cv-fila"><span>2022 – 2024</span><span><b>Bancolombia</b> · modelos financieros y automatización de procesos.</span></div>
-      <p class="cv-seccion">Formación</p>
-      <div class="cv-fila"><span>2021</span><span>Matemático puro · Universidad Nacional de Colombia.</span></div>
-      <div class="cv-fila"><span>2023 – 2024</span><span>Harvard: CS50x, CS50P, CS50 SQL y CS50AI · tres certificados profesionales de HarvardX (Python, bases de datos con SQL e inteligencia artificial).</span></div>
-      <p class="cv-seccion">Habilidades</p>
-      <p>Python · SQL Server · C# / .NET · JavaScript · HTML y CSS · Bootstrap · jQuery · Git y GitHub · inteligencia artificial · matemáticas.</p>
-      <p class="cv-seccion">Proyectos</p>
-      <p>Sistema de facturación (C#, SQLite) · Hermes, base de conocimiento con IA · Herramienta de indicadores (FastAPI, React, SQL Server) · Automatizaciones (Python, SQL) · este portafolio (HTML, CSS, Bootstrap, jQuery).</p>
+      </div>
+      <div class="cv-cuerpo">
+        <div class="cv-lateral">
+          <h2 class="cv-seccion">contacto</h2>
+          <ul class="cv-lista">
+            <li>Medellín, Colombia</li>
+            <li><a href="mailto:ffdalsu.dev@gmail.com">ffdalsu.dev@gmail.com</a></li>
+            <li><a href="https://ffdalsu.github.io">ffdalsu.github.io</a></li>
+            <li><a href="https://github.com/ffdalsu">github.com/ffdalsu</a></li>
+          </ul>
+          <h2 class="cv-seccion">habilidades</h2>
+          <p class="cv-grupo">lenguajes/</p>
+          <p>Python · SQL Server · C#&nbsp;/&nbsp;.NET · JavaScript</p>
+          <p class="cv-grupo">web/</p>
+          <p>HTML y CSS · Bootstrap · jQuery</p>
+          <p class="cv-grupo">herramientas/</p>
+          <p>Git y GitHub</p>
+          <p class="cv-grupo">ia-y-mate/</p>
+          <p>Inteligencia artificial · Matemáticas</p>
+          <h2 class="cv-seccion">certificados</h2>
+          <p class="cv-grupo">Harvard · CS50 · 2024 – 2025</p>
+          <ul class="cv-lista">
+            <li>CS50x · Computer Science</li>
+            <li>CS50P · Python</li>
+            <li>CS50 SQL · Databases</li>
+            <li>CS50AI · AI with Python</li>
+          </ul>
+          <p class="cv-grupo">HarvardX · 2025</p>
+          <p>Certificados profesionales en Python, bases de datos con SQL e inteligencia artificial.</p>
+          <h2 class="cv-seccion">rumbo</h2>
+          <p>Especializarme en inteligencia artificial: entender los modelos por dentro y usarlos en el trabajo diario.</p>
+        </div>
+        <div class="cv-principal">
+          <h2 class="cv-seccion">perfil</h2>
+          <p>Soy matemático puro de la Universidad Nacional de Colombia y encontré en la programación dónde usar mi carrera: los problemas que antes resolvía en un tablero ahora los resuelvo con código. Completé los cuatro CS50 de Harvard que tocan mi área y trabajo en transformación digital, con la inteligencia artificial como rumbo.</p>
+          <h2 class="cv-seccion">experiencia</h2>
+          <div class="cv-puesto">
+            <p class="cv-fila"><span><b>Conaltura</b> · transformación digital</span><span class="cv-fecha">2026 – hoy</span></p>
+            <ul class="cv-logros">
+              <li>Automatizo procesos.</li>
+              <li>Construyo webs internas.</li>
+              <li>Innovo con inteligencia artificial.</li>
+            </ul>
+          </div>
+          <div class="cv-puesto">
+            <p class="cv-fila"><span><b>Bancolombia</b></span><span class="cv-fecha">2024 – 2026</span></p>
+            <ul class="cv-logros">
+              <li>Entrené modelos financieros.</li>
+              <li>Automaticé procesos.</li>
+            </ul>
+          </div>
+          <h2 class="cv-seccion">formación</h2>
+          <p class="cv-fila"><span><b>Matemático puro</b> · Universidad Nacional de Colombia</span><span class="cv-fecha">2021</span></p>
+          <p class="cv-fila"><span><b>Ruta CS50</b> · Harvard · 4 cursos y 3 certificados</span><span class="cv-fecha">2024 – 2025</span></p>
+          <h2 class="cv-seccion">proyectos</h2>
+          <dl class="cv-proyectos">
+            <dt><b>Sistema de facturación</b> · C# · .NET · Windows Forms · SQLite</dt>
+            <dd>Aplicación de escritorio para clientes, productos, empleados y facturas, con informes y roles.</dd>
+            <dt><b>Hermes · base de conocimiento con IA</b> · Python · Markdown · modelos de lenguaje</dt>
+            <dd>Wiki técnica que agentes de IA consultan y mantienen al día; responden citando la fuente.</dd>
+            <dt><b>Herramienta de indicadores</b> · FastAPI · React · SQL Server</dt>
+            <dd>Web de tableros para seguir indicadores de gestión, con filtros y gráficos claros.</dd>
+            <dt><b>Automatizaciones</b> · Python · SQL Server · tareas programadas</dt>
+            <dd>Tareas programadas que cruzan datos entre sistemas y envían alertas por correo.</dd>
+            <dt><b>Este portafolio</b> · HTML · CSS · Bootstrap · jQuery · Canvas</dt>
+            <dd>Un océano ASCII generativo con una mascota que reacciona a lo que haces y videos de cada proyecto.</dd>
+          </dl>
+        </div>
+      </div>
+      <p class="cv-pie">hoja de vida · ffdalsu.github.io · el portafolio tiene los videos de cada proyecto</p>
     </section>
   </main>
 
@@ -286,7 +352,7 @@
       <button type="button" class="enlace abrir-terminal">[&gt;_] terminal</button>
       <a href="mailto:ffdalsu.dev@gmail.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i>ffdalsu.dev@gmail.com</a>
       <!-- Redes: se muestran quitando el atributo hidden cuando existan -->
-      <a href="#" hidden><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
+      <a href="https://github.com/ffdalsu" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
       <a href="#" hidden><i class="fa-brands fa-linkedin" aria-hidden="true"></i>linkedin</a>
       <span class="reloj">Medellín · <time id="reloj">--:--</time></span>
     </div>
@@ -341,13 +407,13 @@
       <button type="button" class="boton abrir-terminal">[&gt;_] terminal</button>
       <div class="controles controles-lateral">
       <div class="control-tema" role="group" aria-label="Tema">
-        <span class="etiqueta" aria-hidden="true">┤ ◐ ├</span>
+        <span class="etiqueta" aria-hidden="true">┤◐├</span>
         <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
         <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
       </div>
       <div class="control-tema control-sonido" role="group" aria-label="Sonido">
-        <span class="etiqueta" aria-hidden="true">┤ ♪ ├</span>
-        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">no</button>
+        <span class="etiqueta" aria-hidden="true">┤♪├</span>
+        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">silencio</button>
         <button type="button" class="opcion-sonido" data-sonido="efectos" aria-pressed="false">efectos</button>
         <button type="button" class="opcion-sonido" data-sonido="todo" aria-pressed="false">+ música</button>
       </div>

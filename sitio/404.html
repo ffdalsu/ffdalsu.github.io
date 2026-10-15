@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="css/estilos.css?v=dev">
 </head>
 <body>
+  <a class="saltar" href="#contenido">saltar al contenido</a>
   <header class="barra">
     <div class="envoltura">
       <a class="marca" href="index.html">juan-david<b>:</b>~/portafolio</a>
@@ -53,22 +54,23 @@
       </nav>
       <div class="controles">
       <div class="control-tema" role="group" aria-label="Tema">
-        <span class="etiqueta" aria-hidden="true">┤ ◐ ├</span>
+        <span class="etiqueta" aria-hidden="true">┤◐├</span>
         <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
         <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
       </div>
       <div class="control-tema control-sonido" role="group" aria-label="Sonido">
-        <span class="etiqueta" aria-hidden="true">┤ ♪ ├</span>
-        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">no</button>
+        <span class="etiqueta" aria-hidden="true">┤♪├</span>
+        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">silencio</button>
         <button type="button" class="opcion-sonido" data-sonido="efectos" aria-pressed="false">efectos</button>
         <button type="button" class="opcion-sonido" data-sonido="todo" aria-pressed="false">+ música</button>
       </div>
       </div>
+      <button type="button" class="enlace abrir-terminal boton-terminal" aria-label="Abrir la terminal" aria-keyshortcuts="/" title="Abrir la terminal (tecla /)">[&gt;_]<kbd>/</kbd></button>
       <button type="button" class="boton-menu" aria-controls="menu-movil" aria-label="Abrir el menú">[≡]</button>
     </div>
   </header>
 
-  <main data-pagina="404">
+  <main id="contenido" tabindex="-1" data-pagina="404">
     <section class="envoltura seccion error404" aria-labelledby="titulo-404">
       <p class="comando">cd <span class="ruta-perdida">/</span></p>
       <div class="ventana-404">
@@ -119,7 +121,7 @@
       <button type="button" class="enlace abrir-terminal">[&gt;_] terminal</button>
       <a href="mailto:ffdalsu.dev@gmail.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i>ffdalsu.dev@gmail.com</a>
       <!-- Redes: se muestran quitando el atributo hidden cuando existan -->
-      <a href="#" hidden><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
+      <a href="https://github.com/ffdalsu" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
       <a href="#" hidden><i class="fa-brands fa-linkedin" aria-hidden="true"></i>linkedin</a>
       <span class="reloj">Medellín · <time id="reloj">--:--</time></span>
     </div>
@@ -174,13 +176,13 @@
       <button type="button" class="boton abrir-terminal">[&gt;_] terminal</button>
       <div class="controles controles-lateral">
       <div class="control-tema" role="group" aria-label="Tema">
-        <span class="etiqueta" aria-hidden="true">┤ ◐ ├</span>
+        <span class="etiqueta" aria-hidden="true">┤◐├</span>
         <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
         <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
       </div>
       <div class="control-tema control-sonido" role="group" aria-label="Sonido">
-        <span class="etiqueta" aria-hidden="true">┤ ♪ ├</span>
-        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">no</button>
+        <span class="etiqueta" aria-hidden="true">┤♪├</span>
+        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">silencio</button>
         <button type="button" class="opcion-sonido" data-sonido="efectos" aria-pressed="false">efectos</button>
         <button type="button" class="opcion-sonido" data-sonido="todo" aria-pressed="false">+ música</button>
       </div>
