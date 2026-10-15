@@ -589,3 +589,36 @@ button.boton:hover { background: var(--texto); color: var(--fondo); }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
+
+/* ---------- Terminal (F14): consola fija abajo, sobre la página ---------- */
+.terminal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1045;                       /* por encima del contenido; los modales de Bootstrap (1055) la cubren */
+  height: min(46vh, 420px);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--fondo);
+  color: var(--texto);
+  border-top: 1px solid var(--texto);
+  font: 400 14px/1.5 var(--fuente-texto);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.terminal.abierta { animation: terminal-entra 220ms steps(6) both; }
+@keyframes terminal-entra { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+.terminal-barra { display: flex; align-items: center; gap: 16px; padding: 6px var(--gutter); border-bottom: 1px solid var(--linea); font-size: 12.5px; }
+.terminal-titulo::before { content: "┤ "; color: var(--tenue); }
+.terminal-titulo::after { content: " ├"; color: var(--tenue); }
+.terminal-ayuda { color: var(--tenue); }
+.terminal-cerrar { margin-left: auto; padding: 0 8px; background: none; color: inherit; font: inherit; cursor: pointer; }
+.terminal-salida { overflow-y: auto; padding: 10px var(--gutter); white-space: pre-wrap; overflow-wrap: anywhere; }
+.terminal-salida .eco { color: var(--tenue); }
+.terminal-salida .error { color: var(--acento); }
+.terminal-salida .tenue { color: var(--tenue); }
+.terminal-linea { display: flex; gap: 8px; align-items: center; padding: 8px var(--gutter) 12px; border-top: 1px solid var(--linea); }
+.terminal-prompt { color: var(--acento); white-space: nowrap; }
+.terminal-linea input { all: unset; flex: 1; min-width: 0; color: var(--texto); caret-color: var(--acento); font: inherit; }
+@media (max-width: 640px) { .terminal-ayuda { display: none; } .terminal { height: 60vh; } }
+@media (prefers-reduced-motion: reduce) { .terminal.abierta { animation: none; } }
