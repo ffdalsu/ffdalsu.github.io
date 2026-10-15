@@ -2,6 +2,7 @@
 
 import pytest
 from playwright.sync_api import Page, expect
+from portada_ayuda import ir_al_horizonte, y_del_agua
 
 LISTO = "window.Portafolio && Portafolio.Oceano && Portafolio.Oceano.estado()"
 
@@ -40,6 +41,7 @@ def test_enfocar_habilidad_resalta_criatura(inicio: Page):
 
 
 def test_islas_muestran_nombre_y_linea(inicio: Page):
+    ir_al_horizonte(inicio)
     islas = inicio.locator(".isla")
     assert islas.count() >= 3
     for i in range(islas.count()):
@@ -48,6 +50,7 @@ def test_islas_muestran_nombre_y_linea(inicio: Page):
 
 
 def test_isla_lleva_a_su_proyecto(inicio: Page, base_url: str):
+    ir_al_horizonte(inicio)
     inicio.locator(".isla", has_text="Hermes").click()
     expect(inicio).to_have_url(f"{base_url}/projects.html#hermes")
     expect(inicio.locator("#hermes")).to_have_count(1)
@@ -83,8 +86,8 @@ def test_toque_movil_mueve_a_bit(browser, base_url: str):
     page = contexto.new_page()
     page.goto(f"{base_url}/index.html")
     page.wait_for_function(LISTO)
-    alto = page.evaluate("document.querySelector('.hero').getBoundingClientRect().bottom")
-    page.touchscreen.tap(360, alto - 8)  # agua libre, debajo de las etiquetas de las islas
+    ir_al_horizonte(page)
+    page.touchscreen.tap(360, y_del_agua(page, 10))  # agua libre, debajo de las etiquetas de las islas
     page.wait_for_timeout(200)
     objetivo = estado(page)["bit"]["objetivo"]
     contexto.close()

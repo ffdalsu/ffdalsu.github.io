@@ -28,7 +28,7 @@ Portafolio.Ecosistema = (function () {
   const espejo = (filas) => filas.map((f) => Array.from(f).reverse().map((c) => PARES[c] || c).join(''));
 
   const ESCALA = 1.6;
-  let criaturas = [], islas = [], acuario = null;
+  let criaturas = [], islas = [], acuario = null, contenedor = null;
 
   function iniciar() {
     acuario = document.querySelector('.acuario');
@@ -51,13 +51,14 @@ Portafolio.Ecosistema = (function () {
       k.li.addEventListener('blur', activar(false));
     });
     islas = Array.from(document.querySelectorAll('.isla'));
+    contenedor = document.querySelector('.horizonte');
   }
 
   /** Dibuja las criaturas que caen en pantalla. puntero = {c, f} en celdas de pantalla, o null. */
-  function dibujar(r, t, camara, colores, puntero) {
+  function dibujar(r, t, colores, puntero) {
     if (!acuario) return;
     const caja = acuario.getBoundingClientRect();
-    const arriba = (window.scrollY + caja.top) / r.ch;   // fila del mundo donde empieza el acuario
+    const arriba = caja.top / r.ch;   // fila de pantalla donde empieza el acuario (en el acto 3 se mueve 1:1 con el scroll)
     const alto = caja.height / r.ch;
     criaturas.forEach((k) => {
       const ancho = Math.max.apply(null, k.filas.map((f) => Array.from(f).length)) * ESCALA;
@@ -67,7 +68,7 @@ Portafolio.Ecosistema = (function () {
       const vaiven = Math.sin(t * 0.25 + k.fase);
       const x = k.lado * mitad + 3 + (vaiven + 1) / 2 * recorrido;
       const derecha = Math.cos(t * 0.25 + k.fase) >= 0;   // la derivada del vaiven dice hacia dónde nada
-      const y = arriba + 2 + k.prof * (alto - 6) + Math.sin(t * 0.9 + k.fase) * 0.6 - camara;
+      const y = arriba + 2 + k.prof * (alto - 6) + Math.sin(t * 0.9 + k.fase) * 0.6;
       k.x = x; k.y = y; k.ancho = ancho;
       if (y < -4 || y > r.filas + 1) { k.activa = !!k.porItem; return; }
 
@@ -85,6 +86,11 @@ Portafolio.Ecosistema = (function () {
 
   /** Coloca cada isla sobre la ola: filaAgua es la fila de pantalla del nivel del mar en esa columna. */
   function moverIslas(r, t, filaAguaEn) {
+    // las islas solo existen mientras el horizonte está en pantalla; fuera de ella tampoco reciben el foco
+    const horizonte = filaAguaEn(r.cols / 2, t);
+    const visibles = horizonte > -2 && horizonte < r.filas + 2;
+    if (contenedor) contenedor.style.visibility = visibles ? 'visible' : 'hidden';
+    if (!visibles) return;
     islas.forEach((isla) => {
       const caja = isla.getBoundingClientRect();
       const c = (caja.left + caja.width / 2) / r.cw;

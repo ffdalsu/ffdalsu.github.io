@@ -271,23 +271,63 @@ mark { background: none; color: var(--acento); padding: 0; }
 .con-oceano .barra, .con-oceano main, .con-oceano .pie { position: relative; z-index: 1; }
 .con-oceano .pie { background: var(--fondo); }
 
-.hero { position: relative; height: clamp(540px, 86vh, 900px); cursor: crosshair; }
-.hero-contenido {
-  height: 100%;
+/* ---------- Portada en tres actos (D29): js/oceano/coreografia.js mueve el nombre y la cámara ---------- */
+.con-oceano .barra { position: sticky; z-index: 30; }
+/* el encabezado del inicio es el recorrido de la portada; su alto lo fija escena.js (LARGO pantallas).
+   Sin selección de texto: hacer clic o doble clic en el agua no debe resaltar nada. */
+.hero { position: relative; height: 230vh; cursor: crosshair; user-select: none; -webkit-user-select: none; }
+.portada {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  gap: 20px;
-  padding-block: 28px 40px;
+  place-items: center;
+  padding-inline: var(--gutter);
+  pointer-events: none;
 }
-.panel-hola { justify-self: start; max-width: min(760px, 100%); cursor: auto; }
-.panel-hola .titulo-grande { margin-bottom: 14px; }
-.panel-hola .texto { margin: 0; }
-.panel-campo { max-width: 420px; font-size: 12.5px; color: var(--tenue); display: grid; gap: 6px; }
+.portada-nombre { transform-origin: 0 0; will-change: transform; max-width: min(1100px, 100%); }
+.portada-nombre .titulo-grande { font-size: clamp(64px, 12.5vw, 220px); line-height: .86; letter-spacing: -.05em; margin: 0; }
+.portada-lema { display: inline-block; margin: 22px 0 0; max-width: 52ch; padding: 2px 6px; background: var(--fondo); font-size: clamp(15px, 1.35vw, 19px); }
+.portada-baja {
+  position: fixed;
+  left: 50%;
+  bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  z-index: 2;
+  margin: 0;
+  color: var(--tenue);
+  font-size: 13px;
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: invitar 2.2s ease-in-out infinite;
+}
+@keyframes invitar { 50% { transform: translate(-50%, 6px); } }
+
+/* panel ψ: aparece en el acto 2 abajo a la izquierda, sobre el agua que explica (arriba está la luna);
+   nunca más ancho que la pantalla */
+.panel-campo {
+  position: fixed;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  left: var(--gutter);
+  z-index: 2;
+  width: min(420px, calc(100vw - 2 * var(--gutter)));
+  font-size: 12.5px;
+  color: var(--tenue);
+  display: grid;
+  gap: 6px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
 .panel-campo code { color: var(--texto); font: inherit; font-size: 13.5px; }
+@media (prefers-reduced-motion: reduce) {
+  /* sin cinemática: la portada se queda en su lugar y se desplaza con la página */
+  .portada { position: absolute; height: 100vh; }
+  .portada-baja { position: absolute; top: calc(100vh - 60px); bottom: auto; animation: none; }
+  .panel-campo { position: absolute; top: 110vh; bottom: auto; opacity: 1; visibility: visible; }
+}
 
 /* Horizonte: las islas son los proyectos destacados. js/oceano/ecosistema.js las hace flotar sobre la ola. */
-.horizonte { position: absolute; inset: 0; pointer-events: none; overflow: clip; }
+.horizonte { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: clip; visibility: hidden; }
 .horizonte ul {
   position: relative;
   display: flex;
@@ -350,8 +390,7 @@ mark { background: none; color: var(--acento); padding: 0; }
 
 @media (max-width: 640px) {
   .panel-campo { display: none; }
-  .hero-contenido { grid-template-columns: minmax(0, 1fr); }
-  .hero { height: clamp(560px, 86vh, 780px); }
+  .portada-baja { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }   /* encima de la sonda */
   /* en celular las islas van en dos planos: las dos primeras más lejos, en el horizonte */
   .horizonte li { position: absolute; top: 0; bottom: 0; left: var(--gutter); width: calc(50% - var(--gutter)); }
   .horizonte li:nth-child(even) { left: 50%; }
