@@ -94,5 +94,12 @@ Portafolio.Navegacion = (function () {
   // la entrada inicial también queda marcada, para que «Atrás» vuelva a ella sin recargar
   if (location.protocol !== 'file:') history.replaceState({ portafolio: true }, '', location.href);
 
-  return { estado: function () { return { cambios: cambios }; } };
+  /** Navega a una de las páginas (para la terminal): sin recargar si se puede; si no, de la forma tradicional. */
+  function ir(destino) {
+    const url = new URL(destino, location.href);
+    if (!esPaginaPropia(url)) { location.href = url.href; return Promise.resolve(); }
+    return navegar(url, true);
+  }
+
+  return { ir: ir, estado: function () { return { cambios: cambios }; } };
 })();

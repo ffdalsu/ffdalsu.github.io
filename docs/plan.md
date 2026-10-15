@@ -442,10 +442,10 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F13 · Navegación sin recargar terminada en `feat/portafolio-f13` (2026-10-15): `js/navegacion.js`
-  cambia de página sin recargar (la música y los efectos no se cortan), con transición por renglones (View
-  Transitions), Atrás/Adelante, foco al título y navegación normal desde `file://`. Cada módulo se monta y desmonta con
-  `js/paginas.js`; las 3 páginas cargan los mismos scripts. 163 pruebas en verde. PR abierto.
+- **Dónde quedamos:** F14 · Terminal terminada en `feat/portafolio-f14` (2026-10-15): «/» o `[>_] terminal` (pie y menú
+  lateral) abre una consola con help, whoami, ls, cat, cd (navega sin recargar y la terminal sigue abierta), open
+  (video de un proyecto), tema, sonido, contacto, date, echo, clear, exit y sudo; Tab completa, ↑↓ historial, Esc
+  cierra y devuelve el foco. `Portafolio.Terminal.registrar()` queda listo para «pregunta» (F15). 177 pruebas. PR abierto.
 - **Pendiente de JD:** confirmar en su celular (modo oscuro del teléfono + tema papel) que ya no se oscurece; confirmar
   que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F14 · terminal interactiva.
+- **Siguiente paso:** F15 · IA en el navegador (spike go/no-go primero).
