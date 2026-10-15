@@ -78,7 +78,7 @@ mark { background: none; color: var(--acento); padding: 0; }
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px 22px;
+  gap: 10px 16px;
   padding-block: 12px;
 }
 
@@ -92,7 +92,7 @@ mark { background: none; color: var(--acento); padding: 0; }
 .menu {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 18px;
+  gap: 4px 14px;
   margin: 0 auto 0 0;
   padding: 0;
   list-style: none;
@@ -106,14 +106,14 @@ mark { background: none; color: var(--acento); padding: 0; }
 .control-tema {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   border: 1px solid var(--linea);
   padding: 5px 10px;
-  font-size: 13px;
+  font-size: 12px;
 }
 .control-tema .etiqueta { color: var(--tenue); }
 /* tema y sonido comparten una sola caja para que el encabezado quepa en una fila */
-.controles { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; border: 1px solid var(--linea); padding: 5px 10px; }
+.controles { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; border: 1px solid var(--linea); padding: 5px 10px; }
 .controles .control-tema { border: 0; padding: 0; }
 .controles .control-sonido::before { content: "│"; color: var(--linea); margin-right: 6px; }
 .opcion-tema, .opcion-sonido {
