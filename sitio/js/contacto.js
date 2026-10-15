@@ -18,6 +18,8 @@ Portafolio.Contacto = (function () {
     mensaje: 'mensaje: cuéntame un poco más (mínimo 10 caracteres)'
   };
 
+  const sonar = (n, d, r) => { if (Portafolio.Sonido) Portafolio.Sonido.efecto(n, d, r); };   // js/sonido/sonido.js
+
   const api = {
     /** Abre el programa de correo; está aparte para que las pruebas lo puedan reemplazar. */
     abrirCorreo: function (url) { window.location.href = url; }
@@ -60,7 +62,7 @@ Portafolio.Contacto = (function () {
         $form.find('[data-campo=' + campo + ']').toggleClass('mal', !ok[campo]);
         if (!ok[campo]) errores.push({ tipo: 'error', texto: '✗ ' + MENSAJES[campo] });
       });
-      if (errores.length) { registrar($log, errores); return; }
+      if (errores.length) { registrar($log, errores); sonar('error'); return; }
 
       const id = $.trim($form.attr('data-formspree') || '');
       if (!id) {
@@ -81,6 +83,7 @@ Portafolio.Contacto = (function () {
         data: { nombre: datos.nombre, email: datos.correo, mensaje: datos.mensaje, _gotcha: $('#contacto-gotcha').val() }
       }).done(function () {
         registrar($log, [{ tipo: 'ok', texto: '✓ mensaje enviado. Te respondo pronto a ' + datos.correo }]);
+        sonar('exito');
         $form[0].reset();
       }).fail(function (xhr) {
         registrar($log, [{ tipo: 'error', texto: '✗ no se pudo enviar (' + (xhr.status || 'sin conexión') + '). Escríbeme directo a ' + CORREO }]);
