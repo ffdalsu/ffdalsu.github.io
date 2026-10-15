@@ -49,6 +49,7 @@ desarrollo de TI.
 | D31 | 2026-10-15 | Música elegida por JD tras oír las 3 variantes y 3 prototipos de banda sonora: **el sitio usa la generativa desde ψ** y **los videos el chiptune enérgico**. Se cambia con una sola constante, `MUSICA_DEL_SITIO` en `js/sonido/sonido.js` (opciones: 'generativa', 'oceano', 'chiptune'), sin control visible |
 | D32 | 2026-10-15 | El sonido no debe cortarse al cambiar de página. Ahora (A): al cargar se intenta sonar de inmediato (Chrome y Edge lo permiten al llegar por un enlace del sitio); si el navegador lo bloquea, aviso y el primer gesto lo arranca. Después (B): fase «Navegación sin recargar» antes de la terminal, para que la música nunca se corte en ningún navegador y llegue la transición entre páginas |
 | D33 | 2026-10-15 | Celular: menú lateral (offcanvas de Bootstrap por la derecha, abierto con jQuery) con páginas, contacto, tema y sonido; corte en 768 px; escritorio sin cambios. Se declara `color-scheme: light dark` para que Chrome Android no oscurezca el tema papel |
+| D35 | 2026-10-15 | **F16 · v2 guiada por ghostty.org** (`docs/diseno/referentes-v2.md`, `adn-ghostty.md`, `maqueta-v2.html`). Alcance de la F17: secuencia de arranque, transición ASCII entre páginas (en celular, fundido simple si no rinde), favicon vivo, 404 ASCII, hoja de impresión como CV e imagen para compartir; más `--tenue` del tema papel a `#5A6762` (contraste AA). Fuera: atajos de teclado e índice con puntos guía |
 
 ## Supuestos (JD puede vetarlos)
 - El repo es esta carpeta: `sitio/` (lo que se publica y se empaqueta), `videos/`, `docs/`, `pruebas/`, `scripts/`.
@@ -385,9 +386,9 @@ método `estado()` que las pruebas leen.
 - **Rama y PR:** `docs/diseno-v2`. Puede ir en paralelo desde la F3. **Quién:** Claude con `ti-web-ui`.
 
 ### F17 · Refinamiento b: implementación
-- **Objetivo:** el sitio tiene los detalles aprobados en la F16. Candidatos: secuencia de arranque, transición ASCII
-  entre páginas (View Transitions entre documentos), atajos de teclado, 404 ASCII, favicon vivo, imagen para compartir,
-  hoja de impresión como CV.
+- **Objetivo:** el sitio tiene los detalles aprobados en la F16 (D35): secuencia de arranque, transición ASCII entre
+  páginas, favicon vivo, 404 ASCII, hoja de impresión como CV, imagen para compartir y el contraste de `--tenue`.
+  Referencia: `docs/diseno/maqueta-v2.html`.
 - **Archivos:** según la F16.
 - **Pruebas:** las de cada detalle, la suite completa en verde, y Lighthouse ≥ 90 en accesibilidad, buenas prácticas y
   SEO y ≥ 85 en rendimiento (escritorio).
@@ -442,10 +443,9 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F14 · Terminal terminada en `feat/portafolio-f14` (2026-10-15): «/» o `[>_] terminal` (pie y menú
-  lateral) abre una consola con help, whoami, ls, cat, cd (navega sin recargar y la terminal sigue abierta), open
-  (video de un proyecto), tema, sonido, contacto, date, echo, clear, exit y sudo; Tab completa, ↑↓ historial, Esc
-  cierra y devuelve el foco. `Portafolio.Terminal.registrar()` queda listo para «pregunta» (F15). 177 pruebas. PR abierto.
-- **Pendiente de JD:** confirmar en su celular (modo oscuro del teléfono + tema papel) que ya no se oscurece; confirmar
-  que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F15 · IA en el navegador (spike go/no-go primero).
+- **Dónde quedamos:** F16 terminada en `docs/diseno-v2` (2026-10-15, D35): 5 referentes con captura, ADN de Ghostty,
+  maqueta v2 con los 6 detalles funcionando y cierre liviano. F15 descartada (D34, PR #18).
+- **Pendiente de JD:** revisar la maqueta (`docs/diseno/maqueta-v2.html`); confirmar en su celular que el tema papel ya
+  no se oscurece; confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** F17 · implementación de los detalles (`ti-plan` si hay que partirla; probablemente 17a arranque +
+  transición + favicon, 17b 404 + CV + imagen para compartir).
