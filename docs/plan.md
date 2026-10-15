@@ -46,6 +46,7 @@ desarrollo de TI.
 | D28 | 2026-10-15 | Todo el sonido se sintetiza con Web Audio (sin archivos ni licencias); el mismo sintetizador sirve en vivo y offline para los videos |
 | D29 | 2026-10-15 | **Portada en tres actos** (cielo con el nombre a pantalla completa → horizonte con bit e islas → el mar con el contenido), como en `docs/diseno/portada.html`; va antes del sonido |
 | D30 | 2026-10-15 | Efectos aprobados por JD en el tablero (`docs/diseno/sonidos.html`). El control queda `┤ ♪ ├ no · efectos · + música` junto a `┤ ◐ ├ ámbar · papel` en una sola caja. Los CSS y JS propios llevan `?v=<commit>` (versionado en el flujo de Pages) para que la caché no mezcle versiones |
+| D31 | 2026-10-15 | Música elegida por JD tras oír las 3 variantes y 3 prototipos de banda sonora: **el sitio usa la generativa desde ψ** y **los videos el chiptune enérgico**. Se cambia con una sola constante, `MUSICA_DEL_SITIO` en `js/sonido/sonido.js` (opciones: 'generativa', 'oceano', 'chiptune'), sin control visible |
 
 ## Supuestos (JD puede vetarlos)
 - El repo es esta carpeta: `sitio/` (lo que se publica y se empaqueta), `videos/`, `docs/`, `pruebas/`, `scripts/`.
@@ -392,12 +393,11 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F15: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F9 · Sonido a terminada en `feat/portafolio-f9` (2026-10-15): sintetizador 8 bit con 13 efectos
-  (aprobados por JD en el tablero), control `┤ ♪ ├ no · efectos · + música` (apagado por defecto, se recuerda, audio
-  solo con gesto, se suspende con la pestaña oculta), efectos cableados en todo el sitio y versionado `?v=<commit>`.
-  116 pruebas en verde. PR abierto.
+- **Dónde quedamos:** F10 · música terminada en `feat/portafolio-f10` (2026-10-15): `js/sonido/musica.js` con 3
+  variantes (océano lo-fi, chiptune, generativa ψ); en «+ música» suena la generativa (D31), se pausa con la pestaña
+  oculta y se apaga como sumergida al bajar por el inicio. El tablero `docs/diseno/sonidos.html` guarda las variantes y
+  los 3 prototipos de banda sonora. 122 pruebas en verde. PR abierto.
 - **Pendiente de JD:** no subir aún los videos (se regraban con sonido en la F11); confirmar que mostrar los proyectos
   de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F10 · música: tablero con las 3 variantes (océano lo-fi, chiptune enérgico, generativa desde ψ)
-  para que JD elija.
+- **Siguiente paso:** F11 · videos con sonido (chiptune + efectos sincronizados), regrabar los 5 y subirlos.
 - **Para el refinamiento (F14-F15):** revisar en celular las dos islas lejanas.

@@ -248,6 +248,7 @@ Portafolio.Oceano = (function () {
     const nFuentes = document.getElementById('campo-fuentes'), nTiempo = document.getElementById('campo-t');
     setInterval(() => {
       if (sonda && escena) sonda.textContent = 'acto ' + escena.acto + ' · prof ' + Math.round(profundidad) + ' m · bit: ' + bit.modo;
+      if (Portafolio.Sonido) Portafolio.Sonido.profundidad(profundidad);   // la música se apaga bajo el agua
       if (nFuentes) nFuentes.textContent = Portafolio.Campo.fuentes(tiempo);
       if (nTiempo) nTiempo.textContent = tiempo.toFixed(1);
     }, 250);

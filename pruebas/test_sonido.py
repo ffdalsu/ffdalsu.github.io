@@ -130,3 +130,56 @@ def test_sintetizador_offline_determinista_y_audible(inicio: Page):
     for nombre, r in resultado.items():
         assert r["iguales"], f"{nombre} no es determinista"
         assert r["rms"] > 0.001, f"{nombre} quedó mudo"
+
+
+# ---------- F10 · música ----------
+
+
+def test_musica_solo_en_mas_musica(inicio: Page):
+    activar(inicio, "efectos")
+    assert sonido(inicio)["musica"] is False
+    activar(inicio, "todo")
+    inicio.wait_for_timeout(800)
+    estado = sonido(inicio)
+    assert estado["musica"] is True and estado["variante"] == "generativa" and estado["notas"] > 0
+    inicio.locator(".opcion-sonido[data-sonido=efectos]").click()
+    assert sonido(inicio)["musica"] is False
+
+
+def test_musica_se_pausa_con_pestana_oculta(inicio: Page):
+    activar(inicio, "todo")
+    inicio.evaluate(
+        "Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });"
+        " document.dispatchEvent(new Event('visibilitychange'))"
+    )
+    inicio.wait_for_function("Portafolio.Sonido.estado().contexto === 'suspended'")
+    notas = sonido(inicio)["notas"]
+    inicio.wait_for_timeout(500)
+    assert sonido(inicio)["notas"] == notas  # con el audio suspendido no se programan más notas
+
+
+def test_profundidad_cierra_el_filtro(inicio: Page):
+    activar(inicio, "todo")
+    inicio.wait_for_timeout(400)
+    arriba = sonido(inicio)["corte"]
+    inicio.evaluate("window.scrollTo(0, window.innerHeight * 3)")
+    inicio.wait_for_function("Portafolio.Oceano.estado().profundidad > 20")
+    inicio.wait_for_timeout(500)
+    abajo = sonido(inicio)["corte"]
+    assert arriba > 10000 and abajo < arriba / 4
+
+
+@pytest.mark.parametrize("variante", ["generativa", "oceano", "chiptune"])
+def test_musica_offline_audible(inicio: Page, variante: str):
+    r = inicio.evaluate(
+        f"""async () => {{
+          const ctx = new OfflineAudioContext(2, 44100 * 8, 44100), s = Portafolio.Sintetizador(ctx);
+          const m = Portafolio.Musica.crear(s, ctx.destination, '{variante}');
+          m.reiniciarOrigen(0); m.programar(0, 8);
+          const d = (await ctx.startRendering()).getChannelData(0);
+          let e = 0, pico = 0; for (const x of d) {{ e += x * x; pico = Math.max(pico, Math.abs(x)); }}
+          return {{ rms: Math.sqrt(e / d.length), pico }};
+        }}"""
+    )
+    assert r["rms"] > 0.005, "quedó muda"
+    assert r["pico"] < 1, "satura"

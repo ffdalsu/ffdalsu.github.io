@@ -9,7 +9,8 @@
  *   - Aquí mismo suenan los efectos «de interfaz»: clic en enlaces y botones, abrir y cerrar modales y cambiar el
  *     tema. Los demás (agua, bit, títulos, diplomas, formulario) los piden sus propios módulos.
  *   - Con la pestaña oculta el audio se suspende.
- * La música («+ música») llega en la F10; por ahora «+ música» suena igual que «efectos».
+ *   - En «+ música» suena además la música del sitio (js/sonido/musica.js), programada en vivo con 300 ms de
+ *     adelanto; Portafolio.Sonido.profundidad(metros) la apaga «bajo el agua» al bajar por el inicio.
  */
 window.Portafolio = window.Portafolio || {};
 
@@ -18,9 +19,12 @@ Portafolio.Sonido = (function () {
   const MODOS = ['silencio', 'efectos', 'todo'];
   const VOLUMEN = 0.6;
   const ESPERA_MS = { tecleo: 25 };   // mínimo entre repeticiones del mismo efecto (por defecto 60 ms)
+  // Música del sitio en «+ música». Para cambiarla basta esta palabra (D26):
+  //   'generativa' (elegida: sinfonía desde ψ, nunca se repite) · 'oceano' (lo-fi) · 'chiptune' (NES, la de los videos)
+  const MUSICA_DEL_SITIO = 'generativa';
 
   let modo = 'silencio';
-  let ctx = null, sint = null, maestro = null;
+  let ctx = null, sint = null, maestro = null, musica = null, relojMusica = null, metros = 0;
   const ultimos = [];          // registro de los últimos efectos programados (pruebas y depuración)
   const ultimaVez = {};
 
@@ -40,6 +44,7 @@ Portafolio.Sonido = (function () {
       sint = Portafolio.Sintetizador(ctx, maestro);
     }
     if (ctx.state === 'suspended' && !document.hidden) ctx.resume();
+    sincronizarMusica();
   }
 
   /** Programa un efecto ahora (o dentro de «retraso» segundos). */
@@ -53,6 +58,27 @@ Portafolio.Sonido = (function () {
     if (ultimos.length > 40) ultimos.shift();
   }
 
+  /** Enciende o apaga la música según el modo. Necesita el audio ya creado (gesto del visitante). */
+  function sincronizarMusica() {
+    const debe = modo === 'todo' && sint && Portafolio.Musica;
+    if (debe && !musica) {
+      musica = Portafolio.Musica.crear(sint, maestro, MUSICA_DEL_SITIO);
+      musica.profundidad(metros);
+      musica.alDia(0.3);
+      relojMusica = setInterval(() => { if (musica && ctx.state === 'running') musica.alDia(0.3); }, 60);
+    } else if (!debe && musica) {
+      musica.detener();
+      musica = null;
+      clearInterval(relojMusica);
+    }
+  }
+
+  /** Profundidad actual (m) del inicio: bajo el agua la música se apaga como sumergida. */
+  function profundidad(m) {
+    metros = m;
+    if (musica) musica.profundidad(m);
+  }
+
   function pintarControl() {
     $('.opcion-sonido').each(function () { $(this).attr('aria-pressed', String($(this).data('sonido') === modo)); });
   }
@@ -62,6 +88,7 @@ Portafolio.Sonido = (function () {
     modo = nuevo;
     try { localStorage.setItem(CLAVE, modo); } catch (e) { /* la elección dura solo esta visita */ }
     pintarControl();
+    sincronizarMusica();
     if (modo === 'silencio') { if (ctx) ctx.suspend(); return; }
     despertar();
     efecto('blip');
@@ -93,9 +120,14 @@ Portafolio.Sonido = (function () {
 
   return {
     efecto: efecto,
+    profundidad: profundidad,
     cambiar: cambiar,
     /** Para que otros módulos (videos, música) usen el mismo sintetizador. */
     sintetizador: function () { return sint; },
-    estado: function () { return { modo: modo, contexto: ctx ? ctx.state : null, ultimos: ultimos.slice() }; }
+    estado: function () {
+      const m = musica ? musica.estado() : null;
+      return { modo: modo, contexto: ctx ? ctx.state : null, ultimos: ultimos.slice(), musica: !!musica,
+        variante: m ? m.variante : MUSICA_DEL_SITIO, corte: m ? m.corte : null, notas: m ? m.notas : 0 };
+    }
   };
 })();
