@@ -15,6 +15,14 @@
       try { t = localStorage.getItem('tema'); } catch (e) {}
       if (t !== 'dark' && t !== 'light') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       document.documentElement.setAttribute('data-bs-theme', t);
+      // secuencia de arranque (js/arranque.js): una vez por sesión; oculta la página antes de pintar
+      var a = null;
+      try { a = sessionStorage.getItem('arranque'); } catch (e) {}
+      if (a !== 'visto') {
+        document.documentElement.classList.add('arrancando');
+        // seguro: si js/arranque.js no llega a cargar, la página no se queda oculta
+        setTimeout(function () { if (!window.Portafolio || !Portafolio.Arranque) document.documentElement.classList.remove('arrancando'); }, 4000);
+      }
     })();
   </script>
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
@@ -255,6 +263,8 @@ _/    \_</span>
     </div>
   </div>
 
+  <script src="js/ascii/bit-grande.js?v=dev"></script>
+  <script src="js/arranque.js?v=dev"></script>
   <script src="lib/jquery-3.7.1/jquery.min.js"></script>
   <script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
   <script src="js/paginas.js?v=dev"></script>
@@ -279,6 +289,8 @@ _/    \_</span>
   <script src="js/miniaturas.js?v=dev"></script>
   <script src="js/proyectos.js?v=dev"></script>
   <script src="js/terminal.js?v=dev"></script>
+  <script src="js/velo.js?v=dev"></script>
+  <script src="js/favicon.js?v=dev"></script>
   <script src="js/navegacion.js?v=dev"></script>
 </body>
 </html>

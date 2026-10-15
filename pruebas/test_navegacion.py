@@ -43,7 +43,8 @@ def test_musica_sigue_al_cambiar_de_pagina(inicio: Page):
     inicio.wait_for_function("Portafolio.Sonido.estado().musica === true")
     ir(inicio, "proyectos")
     notas = inicio.evaluate("Portafolio.Sonido.estado().notas")
-    inicio.wait_for_timeout(800)
+    # la música generativa tiene silencios: se espera a la siguiente nota (con el velo, el cambio dura ~450 ms)
+    inicio.wait_for_function(f"Portafolio.Sonido.estado().notas > {notas}", timeout=5000)
     estado = inicio.evaluate("Portafolio.Sonido.estado()")
     assert estado["musica"] and estado["contexto"] == "running" and estado["notas"] > notas
     expect(inicio.locator(".aviso-sonido")).to_have_count(0)
