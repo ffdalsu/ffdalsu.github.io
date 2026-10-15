@@ -1,6 +1,8 @@
 """F18 · Pulido: lo que pidió JD (terminal a la vista, hoja de vida visible) y lo que halló la crítica (teclado,
 lectores de pantalla, sonda, criaturas, formulario, celular y fechas reales)."""
 
+import re
+
 import pytest
 from conftest import ARRANQUE_VISTO
 from playwright.sync_api import Page, expect
@@ -222,3 +224,15 @@ def test_areas_tactiles_en_celular(browser, base_url: str):
     page.goto(f"{base_url}/projects.html")  # «esc para cerrar» vive en el modal de video
     expect(page.locator(".modal-ayuda").first).to_have_css("visibility", "hidden")
     contexto.close()
+
+
+def test_barra_compacta_si_no_cabe(page: Page, base_url: str):
+    """Con una fuente más ancha (zoom, otro navegador) la barra no se parte: tema y sonido pasan al menú [≡]."""
+    page.set_viewport_size({"width": 1440, "height": 800})
+    page.goto(f"{base_url}/sobre-mi.html")
+    page.add_style_tag(content=".barra .menu a, .barra .marca { letter-spacing: .35em; }")
+    page.evaluate("window.dispatchEvent(new Event('resize'))")
+    expect(page.locator(".barra")).to_have_class(re.compile(r"\bcompacta\b"))
+    assert page.evaluate("document.querySelector('.barra').offsetHeight") <= 64
+    expect(page.locator(".barra .boton-menu")).to_be_visible()
+    expect(page.locator(".barra .controles")).to_be_hidden()
