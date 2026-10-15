@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#EDF0EC">
+  <meta name="description" content="Página no encontrada en el portafolio de Juan David.">
+  <meta name="robots" content="noindex">
+  <meta name="author" content="Juan David">
+  <title>404 · Juan David</title>
+  <!-- GitHub Pages sirve esta página en cualquier ruta que no exista (también anidada): con <base> los enlaces,
+       estilos, scripts y la terminal se resuelven desde la raíz del sitio -->
+  <base href="/">
+  <!-- Aplica el tema guardado antes de pintar, para que no se vea un destello del tema equivocado -->
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('tema'); } catch (e) {}
+      if (t !== 'dark' && t !== 'light') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-bs-theme', t);
+      // secuencia de arranque (js/arranque.js): una vez por sesión; oculta la página antes de pintar
+      var a = null;
+      try { a = sessionStorage.getItem('arranque'); } catch (e) {}
+      if (a !== 'visto') {
+        document.documentElement.classList.add('arrancando');
+        // seguro: si js/arranque.js no llega a cargar, la página no se queda oculta
+        setTimeout(function () { if (!window.Portafolio || !Portafolio.Arranque) document.documentElement.classList.remove('arrancando'); }, 4000);
+      }
+    })();
+  </script>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="lib/bootstrap-5.3.3/css/bootstrap.min.css">
+  <!-- Font Awesome no bloquea el primer pintado (F17b, Lighthouse): carga en paralelo y se aplica al llegar -->
+  <link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css"></noscript>
+  <!-- las dos fuentes principales llegan antes del primer pintado: sin salto del título al cambiar de fuente (CLS) -->
+  <link rel="preload" href="lib/fuentes/martian-mono-300-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="lib/fuentes/ibm-plex-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="lib/fuentes/fuentes.css">
+  <link rel="stylesheet" href="css/estilos.css?v=dev">
+</head>
+<body>
+  <header class="barra">
+    <div class="envoltura">
+      <a class="marca" href="index.html">juan-david<b>:</b>~/portafolio</a>
+      <nav aria-label="Principal">
+        <ul class="menu">
+        <li><a href="index.html">inicio</a></li>
+        <li><a href="sobre-mi.html">sobre mí</a></li>
+        <li><a href="projects.html">proyectos</a></li>
+        </ul>
+      </nav>
+      <div class="controles">
+      <div class="control-tema" role="group" aria-label="Tema">
+        <span class="etiqueta" aria-hidden="true">┤ ◐ ├</span>
+        <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
+        <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
+      </div>
+      <div class="control-tema control-sonido" role="group" aria-label="Sonido">
+        <span class="etiqueta" aria-hidden="true">┤ ♪ ├</span>
+        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">no</button>
+        <button type="button" class="opcion-sonido" data-sonido="efectos" aria-pressed="false">efectos</button>
+        <button type="button" class="opcion-sonido" data-sonido="todo" aria-pressed="false">+ música</button>
+      </div>
+      </div>
+      <button type="button" class="boton-menu" aria-controls="menu-movil" aria-label="Abrir el menú">[≡]</button>
+    </div>
+  </header>
+
+  <main data-pagina="404">
+    <section class="envoltura seccion error404" aria-labelledby="titulo-404">
+      <p class="comando">cd <span class="ruta-perdida">/</span></p>
+      <div class="ventana-404">
+        <div class="ventana-404-barra">ffdalsu.github.io<span class="ruta-perdida">/</span></div>
+        <div class="ventana-404-cuerpo">
+          <pre class="mar404" aria-hidden="true"></pre>
+          <div class="aviso404">
+            <h1 class="codigo404" id="titulo-404">404</h1>
+            <pre class="bit404" aria-hidden="true"> .-.
+[o_o] ?
+\___/</pre>
+            <p class="linea404">esta isla no está en el mapa.</p>
+            <p class="linea404 tenue">$ cd ~ → <a href="index.html">volver al inicio</a> · <a href="projects.html">proyectos</a> · <a href="sobre-mi.html">sobre mí</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal fade modal-terminal" id="modal-video" tabindex="-1" aria-labelledby="modal-video-titulo">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modal-video-titulo">video</h2>
+          <button type="button" class="boton boton-x" data-bs-dismiss="modal" aria-label="Cerrar">[x]</button>
+        </div>
+        <div class="modal-body">
+          <div class="video">
+            <iframe hidden title="Video del proyecto" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            <div class="video-pendiente" hidden>
+              <canvas aria-hidden="true"></canvas>
+              <p><b>▶</b>video en camino</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span class="modal-ayuda">esc para cerrar</span>
+          <button type="button" class="boton" data-bs-dismiss="modal">[ cerrar ]</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="pie">
+    <div class="envoltura">
+      <span>© 2026 Juan David</span>
+      <button type="button" class="enlace abrir-contacto">[ escríbeme ]</button>
+      <button type="button" class="enlace abrir-terminal">[&gt;_] terminal</button>
+      <a href="mailto:ffdalsu.dev@gmail.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i>ffdalsu.dev@gmail.com</a>
+      <!-- Redes: se muestran quitando el atributo hidden cuando existan -->
+      <a href="#" hidden><i class="fa-brands fa-github" aria-hidden="true"></i>github</a>
+      <a href="#" hidden><i class="fa-brands fa-linkedin" aria-hidden="true"></i>linkedin</a>
+      <span class="reloj">Medellín · <time id="reloj">--:--</time></span>
+    </div>
+  </footer>
+
+  <div class="modal fade modal-terminal" id="modal-contacto" tabindex="-1" aria-labelledby="modal-contacto-titulo">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modal-contacto-titulo">mail juan-david</h2>
+          <button type="button" class="boton boton-x" data-bs-dismiss="modal" aria-label="Cerrar">[x]</button>
+        </div>
+        <form class="form-terminal" id="form-contacto" data-formspree="xdeapadq" novalidate>
+          <div class="campo" data-campo="nombre">
+            <label for="contacto-nombre">nombre&gt;</label>
+            <input id="contacto-nombre" name="nombre" type="text" autocomplete="name" placeholder="cómo te llamas">
+          </div>
+          <div class="campo" data-campo="correo">
+            <label for="contacto-correo">correo&gt;</label>
+            <input id="contacto-correo" name="email" type="email" autocomplete="email" placeholder="nombre@dominio.com">
+          </div>
+          <div class="campo" data-campo="mensaje">
+            <label for="contacto-mensaje">mensaje&gt;</label>
+            <textarea id="contacto-mensaje" name="mensaje" rows="5" placeholder="en qué te puedo ayudar"></textarea>
+          </div>
+          <input class="trampa" id="contacto-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="form-pie">
+            <button type="submit" class="boton">[ enviar ↵ ]</button>
+            <pre class="log" id="log-contacto" aria-live="polite">esperando mensaje…</pre>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menú lateral del celular (F12): offcanvas de Bootstrap que abre js/menu.js con jQuery -->
+  <div class="offcanvas offcanvas-end menu-movil" tabindex="-1" id="menu-movil" aria-labelledby="menu-movil-titulo">
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title" id="menu-movil-titulo">menú</h2>
+      <button type="button" class="boton boton-x" data-bs-dismiss="offcanvas" aria-label="Cerrar el menú">[x]</button>
+    </div>
+    <div class="offcanvas-body">
+      <p class="comando">cd</p>
+      <nav aria-label="Menú del celular">
+        <ul class="menu menu-lateral">
+        <li><a href="index.html">inicio</a></li>
+        <li><a href="sobre-mi.html">sobre mí</a></li>
+        <li><a href="projects.html">proyectos</a></li>
+        </ul>
+      </nav>
+      <button type="button" class="boton abrir-contacto">[ escríbeme ]</button>
+      <button type="button" class="boton abrir-terminal">[&gt;_] terminal</button>
+      <div class="controles controles-lateral">
+      <div class="control-tema" role="group" aria-label="Tema">
+        <span class="etiqueta" aria-hidden="true">┤ ◐ ├</span>
+        <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
+        <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
+      </div>
+      <div class="control-tema control-sonido" role="group" aria-label="Sonido">
+        <span class="etiqueta" aria-hidden="true">┤ ♪ ├</span>
+        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">no</button>
+        <button type="button" class="opcion-sonido" data-sonido="efectos" aria-pressed="false">efectos</button>
+        <button type="button" class="opcion-sonido" data-sonido="todo" aria-pressed="false">+ música</button>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/ascii/bit-grande.js?v=dev"></script>
+  <script src="js/arranque.js?v=dev"></script>
+  <script src="lib/jquery-3.7.1/jquery.min.js"></script>
+  <script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="js/paginas.js?v=dev"></script>
+  <script src="js/tema.js?v=dev"></script>
+  <script src="js/menu.js?v=dev"></script>
+  <script src="js/sonido/sintetizador.js?v=dev"></script>
+  <script src="js/sonido/musica.js?v=dev"></script>
+  <script src="js/sonido/sonido.js?v=dev"></script>
+  <script src="js/pie.js?v=dev"></script>
+  <script src="js/titulos.js?v=dev"></script>
+  <script src="js/contacto.js?v=dev"></script>
+  <script src="js/arbol.js?v=dev"></script>
+  <script src="js/ascii/rejilla.js?v=dev"></script>
+  <script src="js/ascii/campo.js?v=dev"></script>
+  <script src="js/ascii/sprite.js?v=dev"></script>
+  <script src="js/oceano/coreografia.js?v=dev"></script>
+  <script src="js/oceano/cielo.js?v=dev"></script>
+  <script src="js/oceano/bit.js?v=dev"></script>
+  <script src="js/oceano/ecosistema.js?v=dev"></script>
+  <script src="js/oceano/escena.js?v=dev"></script>
+  <script src="js/sobre-mi.js?v=dev"></script>
+  <script src="js/miniaturas.js?v=dev"></script>
+  <script src="js/proyectos.js?v=dev"></script>
+  <script src="js/terminal.js?v=dev"></script>
+  <script src="js/velo.js?v=dev"></script>
+  <script src="js/favicon.js?v=dev"></script>
+  <script src="js/error404.js?v=dev"></script>
+  <script src="js/navegacion.js?v=dev"></script>
+</body>
+</html>

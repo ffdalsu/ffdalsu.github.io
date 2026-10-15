@@ -1,0 +1,47 @@
+<!doctype html>
+<!--
+  Plantilla de la imagen para compartir (F17b, D35): 1200 × 630, siempre en ámbar.
+  La fotografía scripts/imagen_compartir.py y la guarda en sitio/img/compartir.png. Bit sale de la misma escena del
+  arranque (sitio/js/ascii/bit-grande.js). Si cambian el nombre o el rol, se edita aquí y se vuelve a generar.
+-->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Imagen para compartir</title>
+<link rel="stylesheet" href="../../sitio/lib/fuentes/fuentes.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: #120D04; }
+  .tarjeta { width: 1200px; height: 630px; display: grid; grid-template-rows: 64px 1fr; color: #FFB547; border: 1px solid #4D3812; }
+  .barra { display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid #4D3812; color: #A57A30; font: 20px "IBM Plex Mono", monospace; }
+  .barra::before { content: "● ● ●"; position: absolute; left: 24px; letter-spacing: 4px; color: #4D3812; }
+  .cuerpo { display: grid; grid-template-columns: 600px 1fr; align-items: center; gap: 24px; padding: 0 48px 0 32px; }
+  pre { margin: 0; font-family: "IBM Plex Mono", monospace; white-space: pre; }
+  .acento { color: #FFE2A6; }
+  .tenue { color: #A57A30; }
+  .nombre { font: 700 76px/1.02 "Martian Mono", monospace; }
+  .rol { font: 500 26px/1.35 "IBM Plex Mono", monospace; color: #FFE2A6; margin-top: 20px; }
+  .url { font: 24px "IBM Plex Mono", monospace; color: #A57A30; margin-top: 36px; }
+</style>
+</head>
+<body>
+  <div class="tarjeta">
+    <div class="barra">bit — ffdalsu.github.io</div>
+    <div class="cuerpo">
+      <pre id="bit"></pre>
+      <div>
+        <div class="nombre">Juan<br>David</div>
+        <div class="rol">matemático ·<br>desarrollador · IA</div>
+        <div class="url">$ open ffdalsu.github.io_</div>
+      </div>
+    </div>
+  </div>
+  <script src="../../sitio/js/ascii/bit-grande.js"></script>
+  <script>
+    const pre = document.getElementById('bit');
+    pre.innerHTML = Portafolio.BitGrande.html(Portafolio.BitGrande.escena(0.6, { saludo: 1 }));
+    Portafolio.BitGrande.ajustar(pre, 600, 540);
+    document.fonts.ready.then(() => { document.body.dataset.listo = '1'; });
+  </script>
+</body>
+</html>

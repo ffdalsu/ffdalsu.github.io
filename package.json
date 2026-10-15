@@ -3,9 +3,11 @@
   "private": true,
   "description": "Herramientas de validación del portafolio (no forman parte del sitio publicado).",
   "scripts": {
-    "validar": "html-validate \"sitio/*.html\""
+    "validar": "html-validate \"sitio/*.html\"",
+    "lighthouse": "uv run python scripts/lighthouse.py"
   },
   "devDependencies": {
-    "html-validate": "11.16.1"
+    "html-validate": "11.16.1",
+    "lighthouse": "13.5.0"
   }
 }

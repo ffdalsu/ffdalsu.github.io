@@ -52,6 +52,7 @@ desarrollo de TI.
 | D34 | 2026-10-15 | **F15 descartada (no-go).** En el PC de JD ningún modelo en el navegador cumple: Qwen2.5-1.5B 5,9 tok/s y 7/10 a mano; Llama-3.2-1B 3/10; Gemma 4 E2B demasiado pesado (~3,4 GB). La entrega va sin IA. A futuro, si se retoma: un modelo en servidor (Worker de Cloudflare con Workers AI y límite de peticiones), nunca Hermes ni las suscripciones personales de JD (D7) |
 | D35 | 2026-10-15 | **F16 · v2 guiada por ghostty.org** (`docs/diseno/referentes-v2.md`, `adn-ghostty.md`, `maqueta-v2.html`). Alcance de la F17: secuencia de arranque, transición ASCII entre páginas (en celular, fundido simple si no rinde), favicon vivo, 404 ASCII, hoja de impresión como CV e imagen para compartir; más `--tenue` del tema papel a `#5A6762` (contraste AA). Fuera: atajos de teclado e índice con puntos guía |
 | D36 | 2026-10-15 | **Velo en lienzo, también en celular.** Como texto del DOM, el velo obligaba a maquetar ~10 000 caracteres por cuadro. En `<canvas>`, con la CPU frenada 4×, la mediana del cuadro es 17 ms en celular (igual que el fundido de la F13) y 17 ms en escritorio (contra 33 ms del fundido). Los saltos de ~300-400 ms son del montaje de la página nueva y pasan en los dos modos. `VELO_EN_CELULAR = true` |
+| D37 | 2026-10-15 | **F17b: cómo se cumple Lighthouse.** Se mide la visita normal (arranque ya visto, con umbral) y la primera visita (con arranque, que oculta la página ~2 s a propósito; sin umbral de rendimiento), mediana de 3 corridas (`npm run lighthouse`). Para pasar: Font Awesome carga sin bloquear el primer pintado y se precargan Martian Mono e IBM Plex Mono (el nombre del inicio saltaba al cambiar de fuente: CLS 0,116 → 0,007). La 404 usa `<base href="/">` en vez de rutas absolutas, y la navegación resuelve los enlaces con `document.baseURI` |
 
 ## Supuestos (JD puede vetarlos)
 - El repo es esta carpeta: `sitio/` (lo que se publica y se empaqueta), `videos/`, `docs/`, `pruebas/`, `scripts/`.
@@ -523,10 +524,11 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17b: `npm run lighthouse` (local, escritorio) antes de cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F17a construida en `feat/portafolio-f17a` (2026-10-15): arranque con bit grande
-  (`js/arranque.js`, `js/ascii/bit-grande.js`), velo ASCII en lienzo (`js/velo.js`, D36) y favicon vivo
-  (`js/favicon.js`). Además, la navegación ya no pierde un «Atrás» pulsado durante la transición (queda en cola).
-  El registro del arranque usa las cifras reales: 10 habilidades y 5 proyectos.
-- **Pendiente de JD:** revisar el PR de la F17a; confirmar en su celular que el tema papel ya no se oscurece y que el
-  velo se ve fluido; confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F17b (404, CV para imprimir, imagen para compartir, contraste, Lighthouse).
+- **Dónde quedamos:** F17b construida en `feat/portafolio-f17b` (2026-10-15): 404 ASCII (`404.html`,
+  `js/error404.js`), CV para imprimir en Sobre mí, imagen para compartir (`img/compartir.png`, generada con
+  `scripts/imagen_compartir.py`) y etiquetas `og:`, `--tenue` AA y Lighthouse en verde (`docs/qa/lighthouse-f17b.md`,
+  D37). 217 pruebas. La F17 queda completa.
+- **Pendiente de JD:** revisar y fusionar el PR de la F17b; probar Ctrl+P en Sobre mí y pegar el enlace en WhatsApp
+  (la vista previa puede tardar en aparecer la primera vez); confirmar que mostrar los proyectos de Conaltura no choca
+  con alguna política de la empresa.
+- **Siguiente paso:** F18 · pulido (`ti-pulir`), QA (`ti-probar` → SHIP), zip con la estructura de la guía y entrega.

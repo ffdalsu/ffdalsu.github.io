@@ -7,6 +7,18 @@
   <meta name="theme-color" content="#EDF0EC">
   <meta name="description" content="Formación, certificados y experiencia de Juan David.">
   <meta name="author" content="Juan David">
+  <!-- vista previa al compartir el enlace (WhatsApp, LinkedIn…): imagen generada con scripts/imagen_compartir.py -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Juan David · Portafolio">
+  <meta property="og:locale" content="es_CO">
+  <meta property="og:title" content="Sobre mí · Juan David">
+  <meta property="og:description" content="Formación, certificados y experiencia de Juan David.">
+  <meta property="og:url" content="https://ffdalsu.github.io/sobre-mi.html">
+  <meta property="og:image" content="https://ffdalsu.github.io/img/compartir.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="bit, el robot de terminal en su barco de papel, junto al nombre Juan David">
+  <meta name="twitter:card" content="summary_large_image">
   <title>Sobre mí · Juan David</title>
   <!-- Aplica el tema guardado antes de pintar, para que no se vea un destello del tema equivocado -->
   <script>
@@ -27,7 +39,12 @@
   </script>
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="lib/bootstrap-5.3.3/css/bootstrap.min.css">
-  <link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css">
+  <!-- Font Awesome no bloquea el primer pintado (F17b, Lighthouse): carga en paralelo y se aplica al llegar -->
+  <link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css"></noscript>
+  <!-- las dos fuentes principales llegan antes del primer pintado: sin salto del título al cambiar de fuente (CLS) -->
+  <link rel="preload" href="lib/fuentes/martian-mono-300-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="lib/fuentes/ibm-plex-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="lib/fuentes/fuentes.css">
   <link rel="stylesheet" href="css/estilos.css?v=dev">
 </head>
@@ -238,6 +255,27 @@
       <p class="comando">echo $RUMBO</p>
       <h2 class="titulo" id="titulo-rumbo">Hacia dónde voy</h2>
       <p class="texto">Quiero especializarme en inteligencia artificial: entender cómo funcionan los modelos por dentro, replicarlos y usarlos para que el trabajo diario sea más rápido y más ordenado.</p>
+    </section>
+
+    <!-- CV para imprimir (F17b): solo aparece en papel (Ctrl+P), una hoja A4. Si cambia esta página, revisar que siga cabiendo -->
+    <section class="cv-impresion" aria-label="Currículum para imprimir">
+      <pre class="cv-bit" aria-hidden="true"> .-.
+[o_o]
+\___/</pre>
+      <p class="cv-nombre">Juan David</p>
+      <p class="cv-sub">Matemático puro · desarrollador · transformación digital e IA<br>Medellín, Colombia · ffdalsu.dev@gmail.com · ffdalsu.github.io</p>
+      <p class="cv-seccion">Perfil</p>
+      <p>Matemático puro de la Universidad Nacional que encontró en la programación dónde usar su carrera. Hoy automatiza procesos, construye webs internas e innova con inteligencia artificial, hacia donde quiere especializarse.</p>
+      <p class="cv-seccion">Experiencia</p>
+      <div class="cv-fila"><span>2024 – hoy</span><span><b>Conaltura</b> · transformación digital: automatizaciones, webs internas e inteligencia artificial.</span></div>
+      <div class="cv-fila"><span>2022 – 2024</span><span><b>Bancolombia</b> · modelos financieros y automatización de procesos.</span></div>
+      <p class="cv-seccion">Formación</p>
+      <div class="cv-fila"><span>2021</span><span>Matemático puro · Universidad Nacional de Colombia.</span></div>
+      <div class="cv-fila"><span>2023 – 2024</span><span>Harvard: CS50x, CS50P, CS50 SQL y CS50AI · tres certificados profesionales de HarvardX (Python, bases de datos con SQL e inteligencia artificial).</span></div>
+      <p class="cv-seccion">Habilidades</p>
+      <p>Python · SQL Server · C# / .NET · JavaScript · HTML y CSS · Bootstrap · jQuery · Git y GitHub · inteligencia artificial · matemáticas.</p>
+      <p class="cv-seccion">Proyectos</p>
+      <p>Sistema de facturación (C#, SQLite) · Hermes, base de conocimiento con IA · Herramienta de indicadores (FastAPI, React, SQL Server) · Automatizaciones (Python, SQL) · este portafolio (HTML, CSS, Bootstrap, jQuery).</p>
     </section>
   </main>
 
