@@ -1,6 +1,6 @@
 [project]
 name = "portafolio"
-version = "0.1.0"
+version = "1.0.0"
 description = "Pruebas y scripts del portafolio web (Taller Herramientas III). El sitio vive en sitio/ y no necesita Python."
 requires-python = ">=3.12"
 dependencies = []
