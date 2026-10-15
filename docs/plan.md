@@ -25,7 +25,7 @@ desarrollo de TI.
 | D7 | 2026-10-14 | IA: LLM en el navegador (WebLLM + WebGPU) sobre un perfil público, con terminal de comandos como base. Hermes descartado (conocimiento confidencial de Conaltura y depende del PC de JD) |
 | D8 | 2026-10-14 | Contacto por Formspree (cuenta creada con ffdalsu.dev@gmail.com; el identificador del formulario es público) |
 | D9 | 2026-10-14 | Entrega en más de 2 semanas, con el refinamiento. La F7 es el punto de entrega seguro |
-| D10 | 2026-10-14 | Inicio = **mascota guía «bit» + océano ASCII**: bit flota sobre el campo de ondas, sigue el cursor, se duerme y guía; habilidades = criaturas, proyectos = islas. En la F12 bit es la voz de la IA |
+| D10 | 2026-10-14 | Inicio = **mascota guía «bit» + océano ASCII**: bit flota sobre el campo de ondas, sigue el cursor, se duerme y guía; habilidades = criaturas, proyectos = islas. En la F13 bit es la voz de la IA |
 | D11 | 2026-10-14 | `index.html` conserva «Sobre mí» (corta) y «Habilidades», contadas por el ecosistema; `sobre-mi.html` tiene la versión completa. Cada página trata solo su tema |
 | D12 | 2026-10-14 | Videos 16:9 de 30-45 s hechos por Claude con código (escenas ASCII grabadas con Playwright + ffmpeg); JD los sube a YouTube como no listados |
 | D13 | 2026-10-14 | Proyectos reales: Hermes / base de conocimiento, Sistema de facturación, Herramienta de Indicadores, Vigía / automatizaciones (+ Tammamon cuando JD diga qué es), descritos sin datos internos |
@@ -41,15 +41,16 @@ desarrollo de TI.
 | D23 | 2026-10-14 | Los títulos (`.titulo-grande`, `.titulo`) se arman desde estática ASCII al entrar en pantalla, como las habilidades; en los videos el título del proyecto hace lo mismo |
 | D24 | 2026-10-15 | Sonido **apagado por defecto**; se activa con un clic y se recuerda la elección de cada visitante |
 | D25 | 2026-10-15 | Un control con tres posiciones en el encabezado: `┤ sonido ├ silencio · efectos · + música` |
-| D26 | 2026-10-15 | Música: experimento con 3 variantes (océano lo-fi, chiptune enérgico, generativa desde ψ); JD elige oyéndolas en la F9 |
+| D26 | 2026-10-15 | Música: experimento con 3 variantes (océano lo-fi, chiptune enérgico, generativa desde ψ); JD elige oyéndolas en la F10 |
 | D27 | 2026-10-15 | Los videos llevan música + efectos sincronizados; se regraban antes de subirlos |
 | D28 | 2026-10-15 | Todo el sonido se sintetiza con Web Audio (sin archivos ni licencias); el mismo sintetizador sirve en vivo y offline para los videos |
+| D29 | 2026-10-15 | **Portada en tres actos** (cielo con el nombre a pantalla completa → horizonte con bit e islas → el mar con el contenido), como en `docs/diseno/portada.html`; va antes del sonido |
 
 ## Supuestos (JD puede vetarlos)
 - El repo es esta carpeta: `sitio/` (lo que se publica y se empaqueta), `videos/`, `docs/`, `pruebas/`, `scripts/`.
   `recursos/` (PDF del docente) queda fuera de git. Repo público.
 - Sin paso de compilación y **scripts clásicos, sin módulos ES**, para que el zip funcione al abrirlo con doble clic
-  (`file://`). Solo la IA (F12) exige http; bajo `file://` muestra su alternativa.
+  (`file://`). Solo la IA (F13) exige http; bajo `file://` muestra su alternativa.
 - Un JS por responsabilidad, comentarios en español, paleta central en `css/estilos.css` (como `EstiloVisual.cs` del
   referente WinForms).
 - El canvas es decoración (`aria-hidden`); todo el contenido vive en HTML (accesible, validable y legible sin JS).
@@ -72,7 +73,7 @@ desarrollo de TI.
 ## Estructura (contrato desde la F1)
 ```
 sitio/
-  index.html  sobre-mi.html  projects.html  404.html (F14)
+  index.html  sobre-mi.html  projects.html  404.html (F15)
   css/estilos.css              tokens de los dos temas + componentes
   js/tema.js                   <html data-bs-theme="dark|light">, localStorage "tema"
   js/ascii/rejilla.js          rejilla de caracteres sobre canvas, por capas de color (F2)
@@ -81,11 +82,13 @@ sitio/
   js/oceano/bit.js             mascota: máquina de estados (F2)
   js/oceano/escena.js          océano fijo, cámara de inmersión y sonda de profundidad (F2)
   js/oceano/ecosistema.js      criaturas, islas, inmersión (F3)
+  js/oceano/coreografia.js     scroll → acto, cámara y nombre de la portada (F8)
+  js/oceano/cielo.js           luna o sol, estrellas, gaviotas y estrella fugaz (F8)
   js/miniaturas.js  js/proyectos.js  js/contacto.js  js/terminal.js  js/ia/ia.js
-  js/sonido/sintetizador.js    notas, ruido y efectos con nombre sobre cualquier BaseAudioContext (F8)
-  js/sonido/sonido.js          control del encabezado, desbloqueo con gesto, programador y registro (F8)
-  js/sonido/musica.js          secuenciador de las variantes de música (F9)
-  data/perfil.md               contenido público que usa la IA (F12)
+  js/sonido/sintetizador.js    notas, ruido y efectos con nombre sobre cualquier BaseAudioContext (F9)
+  js/sonido/sonido.js          control del encabezado, desbloqueo con gesto, programador y registro (F9)
+  js/sonido/musica.js          secuenciador de las variantes de música (F10)
+  data/perfil.md               contenido público que usa la IA (F13)
   lib/bootstrap-5.3.3/  lib/jquery-3.7.1/  lib/fontawesome-6.5.2/  lib/fuentes/ (IBM Plex Mono, Martian Mono)
   img/
 videos/escenas/<slug>.html     escenas que reutilizan sitio/js/ascii (F7); videos/salida/ queda fuera de git
@@ -204,7 +207,42 @@ método `estado()` que las pruebas leen.
 - **Rama y PR:** `feat/portafolio-f7`. **Depende de** F2 (motor ASCII) y F5 (contenido). **Quién:** Claude; JD sube
   los videos.
 
-### F8 · Sonido a: motor y efectos
+### F8 · Portada
+- **Objetivo:** el inicio se recorre en tres actos como en la maqueta aprobada (`docs/diseno/portada.html`, D29).
+  **Acto 1:** el nombre a pantalla completa bajo un cielo ASCII (luna con cráteres y halo, estrellas que titilan solo
+  sobre el horizonte, gaviotas aleteando, estrella fugaz; en papel, sol con rayos). **Acto 2:** el nombre se encoge a
+  la esquina superior izquierda, el subtítulo se desvanece, la cámara baja al horizonte, bit saluda entre las islas y
+  aparece el panel ψ. **Acto 3:** se entra al mar y sigue el contenido de hoy (Sobre mí con ficha, acuario, contacto).
+  En celular, el mismo recorrido compacto. Bit nunca queda tapado, el panel ψ no se desborda y hacer clic en el agua
+  no selecciona texto.
+- **Archivos:** crea `js/oceano/coreografia.js` (función pura scroll → estado), `js/oceano/cielo.js` (luna o sol,
+  estrellas, gaviotas, estrella fugaz) y `pruebas/test_portada.py`; modifica `index.html` (`.portada` fija con el
+  nombre, `.recorrido` que da la longitud del scroll, `.horizonte` como capa fija), `css/estilos.css`,
+  `js/oceano/escena.js` (cámara por coreografía, clics sobre el agua fuera de `.hero`, sonda con el acto),
+  `js/oceano/ecosistema.js` (islas visibles solo con el horizonte en pantalla) y adapta `pruebas/test_oceano.py` y
+  `pruebas/test_ecosistema.py`. No toca `sobre-mi.html`, `projects.html` ni los videos.
+- **Contratos:** `Portafolio.Coreografia(p, medidas)` → `{acto, horizonte (fila de pantalla), nombre: {x, y, escala},
+  lema (opacidad), campo (opacidad)}`, con p = pantallas bajadas; en el acto 3 el mar se mueve 1:1 con el contenido.
+  `Portafolio.Oceano.estado()` suma `{acto, progreso, horizonte, bit: {visible, caja}, cielo: {astro, gaviotas,
+  estrellas}}`. Se conserva todo lo que ya tiene el inicio: onda con «@», puntero, voz de bit, criaturas, islas como
+  enlaces HTML (fuera del foco cuando salen de pantalla), sonda, títulos que se descifran. Con «reducir movimiento» la
+  portada es estática (sin desplazamientos ligados al scroll). Solo se vuelve a medir la altura cuando cambia el ancho
+  (en celular la barra del navegador cambia la altura al hacer scroll).
+- **Pruebas:** `test_acto1_nombre_a_pantalla_completa`, `test_cielo_luna_estrellas_gaviotas` (y sol en papel),
+  `test_acto2_bit_e_islas_visibles`, `test_bit_nunca_tapado[1440x900|1280x650|1794x795|390x844]`,
+  `test_nombre_se_encoge`, `test_clic_en_agua_no_selecciona_texto`, `test_panel_campo_sin_desborde`,
+  `test_coreografia_continua` (la cámara no salta entre actos), `test_movimiento_reducido_portada_estatica`, y las
+  pruebas actuales del océano y del ecosistema adaptadas al recorrido. Terminado = `uv run pytest` y
+  `npm run validar` en verde.
+- **Puerta interna:** capturas de la versión de celular (390 px) para que JD la apruebe antes del PR (tope de 2
+  rondas).
+- **Riesgos:** la continuidad entre la cámara cinematográfica (actos 1-2) y el scroll del contenido (acto 3) (lo cubre
+  `test_coreografia_continua`); el cambio de altura del celular al hacer scroll (medir solo con cambio de ancho); si
+  el celular necesita más de 2 rondas, la fase se parte en F8a (escritorio) y F8b (celular).
+- **Rama y PR:** `feat/portafolio-f8` (lleva también el plan de sonido ya escrito). **Quién:** Claude.
+  **Revisión:** normal.
+
+### F9 · Sonido a: motor y efectos
 - **Objetivo:** el encabezado tiene `┤ sonido ├ [■] silencio [ ] efectos [ ] + música`; en «efectos» cada acción suena
   con un efecto 8 bit sintetizado, y JD los aprobó antes en un tablero de sonidos.
 - **Archivos:** crea `js/sonido/sintetizador.js`, `js/sonido/sonido.js`, `docs/diseno/sonidos.html` (tablero, se
@@ -225,9 +263,9 @@ método `estado()` que las pruebas leen.
 - **Riesgos:** el Chromium sin pantalla del CI podría no crear `AudioContext` (es lo primero que se prueba; el
   respaldo es `OfflineAudioContext`); que los efectos cansen (volumen conservador y sin sonido al solo pasar el
   puntero, salvo en islas y criaturas).
-- **Rama y PR:** `feat/portafolio-f8`. **Quién:** Claude. **Revisión:** normal.
+- **Rama y PR:** `feat/portafolio-f9`. **Depende de** F8 (los sonidos se diseñan sobre la portada final). **Quién:** Claude. **Revisión:** normal.
 
-### F9 · Sonido b: música
+### F10 · Sonido b: música
 - **Objetivo:** en «+ música» suena la variante que JD eligió entre tres (océano lo-fi, chiptune enérgico, generativa
   desde ψ); se pausa con la pestaña oculta y en la inmersión se apaga como bajo el agua.
 - **Archivos:** crea `js/sonido/musica.js`; amplía `docs/diseno/sonidos.html` con las 3 variantes; modifica
@@ -239,9 +277,9 @@ método `estado()` que las pruebas leen.
   `test_profundidad_cierra_el_filtro`, `test_musica_offline_audible[variante]`.
 - **Puerta interna:** las 3 variantes en el tablero; JD elige una (D26) antes de dejarla fija.
 - **Riesgos:** que ninguna variante convenza a la primera (tope de 2 rondas; se ajustan tempo, escala e instrumentos).
-- **Rama y PR:** `feat/portafolio-f9`. **Depende de** F8. **Quién:** Claude. **Revisión:** normal.
+- **Rama y PR:** `feat/portafolio-f10`. **Depende de** F9. **Quién:** Claude. **Revisión:** normal.
 
-### F10 · Sonido c: videos con sonido (punto de entrega seguro)
+### F11 · Sonido c: videos con sonido (punto de entrega seguro)
 - **Objetivo:** los 5 videos tienen la música elegida y efectos sincronizados con la imagen; JD los sube como no
   listados, pasa los ID y quedan en `projects.html`. Con esto la guía queda cumplida.
 - **Archivos:** modifica `videos/escena.html` (lista de señales de audio derivada de los mismos tiempos de la
@@ -254,9 +292,9 @@ método `estado()` que las pruebas leen.
   40 s ± 0,2; `volumedetect` > −40 dB) y las de formato de la F7.
 - **Riesgos:** desfase entre imagen y sonido (las señales salen de las mismas constantes de tiempo; una prueba compara
   ambos); el tamaño de los MP4 (AAC 192 kbps suma cerca de 1 MB por video).
-- **Rama y PR:** `feat/portafolio-f10`. **Depende de** F9. **Quién:** Claude; JD sube los videos.
+- **Rama y PR:** `feat/portafolio-f11`. **Depende de** F10. **Quién:** Claude; JD sube los videos.
 
-### F11 · Terminal interactiva
+### F12 · Terminal interactiva
 - **Objetivo:** `/` o `[>_]` abre una terminal superpuesta: `help`, `whoami`, `ls`, `cat <archivo>`,
   `open <proyecto>`, `tema [ambar|papel]`, `contacto`, `clear`; Tab autocompleta y las flechas recorren el historial.
 - **Archivos:** crea `js/terminal.js`; modifica los 3 HTML y `css/estilos.css`.
@@ -266,9 +304,9 @@ método `estado()` que las pruebas leen.
   `test_open_abre_modal`, `test_contacto_abre_formulario`, `test_tab_autocompleta`, `test_historial_flechas`,
   `test_comando_desconocido_sugiere`, `test_tema_desde_terminal`, `test_esc_cierra_y_devuelve_foco`.
 - **Riesgos:** choque de atajos con los campos de texto (cubierto por una prueba).
-- **Rama y PR:** `feat/portafolio-f11`. **Quién:** Claude. **Revisión:** normal.
+- **Rama y PR:** `feat/portafolio-f12`. **Quién:** Claude. **Revisión:** normal.
 
-### F12 · IA en el navegador (bit es la voz)
+### F13 · IA en el navegador (bit es la voz)
 - **Objetivo:** `pregunta <texto>` en la terminal, o hablarle a bit en el inicio, responde sobre el perfil público de
   JD con un LLM que corre en el navegador. «Modo por dentro» muestra las 5 alternativas más probables de cada token
   como barras ASCII. Sin WebGPU, o bajo `file://`, aparece una alternativa honesta.
@@ -284,46 +322,46 @@ método `estado()` que las pruebas leen.
   `test_perfil_sin_datos_internos`, `test_prompt_incluye_perfil`.
 - **Riesgos:** un modelo flojo en español o lento. Si da no-go, se para y se vuelve a `ti-plan` (plan B: Worker de
   Cloudflare con Workers AI).
-- **Rama y PR:** `feat/portafolio-f12`. **Depende de** F11. **Quién:** Claude. **Revisión:** reforzada en `perfil.md`.
+- **Rama y PR:** `feat/portafolio-f13`. **Depende de** F12. **Quién:** Claude. **Revisión:** reforzada en `perfil.md`.
 
-### F13 · Refinamiento a: referentes y maqueta v2
+### F14 · Refinamiento a: referentes y maqueta v2
 - **Objetivo:** JD elige los detalles de la v2 a partir de 5 referentes terminal/ASCII/generativos (Atlas + externos),
   con su ADN y una maqueta de detalles.
 - **Archivos:** `docs/diseno/referentes-v2.md`, `docs/diseno/adn-*.md`, `docs/diseno/maqueta-v2.html`. Los
   referentes nuevos aprobados van al Atlas con `ti-referente`.
-- **Contratos:** la lista de detalles aprobados es el alcance de la F14.
+- **Contratos:** la lista de detalles aprobados es el alcance de la F15.
 - **Pruebas:** cierre liviano con capturas en 375, 768 y 1440 px, claro y oscuro.
 - **Riesgos:** que el alcance crezca sin fin; tope de 2 rondas.
 - **Rama y PR:** `docs/diseno-v2`. Puede ir en paralelo desde la F3. **Quién:** Claude con `ti-web-ui`.
 
-### F14 · Refinamiento b: implementación
-- **Objetivo:** el sitio tiene los detalles aprobados en la F13. Candidatos: secuencia de arranque, transición ASCII
+### F15 · Refinamiento b: implementación
+- **Objetivo:** el sitio tiene los detalles aprobados en la F14. Candidatos: secuencia de arranque, transición ASCII
   entre páginas (View Transitions entre documentos), atajos de teclado, 404 ASCII, favicon vivo, imagen para compartir,
   hoja de impresión como CV.
-- **Archivos:** según la F13.
+- **Archivos:** según la F14.
 - **Pruebas:** las de cada detalle, la suite completa en verde, y Lighthouse ≥ 90 en accesibilidad, buenas prácticas y
   SEO y ≥ 85 en rendimiento (escritorio).
 - **Riesgos:** que el rendimiento baje; Lighthouse en cada PR.
-- **Rama y PR:** `feat/portafolio-f14` (se parte si no cabe en 2 días). **Quién:** Claude. **Revisión:** normal.
+- **Rama y PR:** `feat/portafolio-f15` (se parte si no cabe en 2 días). **Quién:** Claude. **Revisión:** normal.
 
-### F15 · Pulido, QA y entrega
+### F16 · Pulido, QA y entrega
 - **Objetivo:** pulido `max` y QA con veredicto SHIP; zip y URL listos para el formulario de entrega.
 - **Archivos:** `docs/qa/informe-*.md`, README final y los ajustes que salgan.
 - **Pruebas:** `ti-pulir` (max) → `ti-probar` → SHIP; `uv run python scripts/empaquetar.py` → zip validado; tag
   `v1.0.0` y Release.
 - **Riesgos:** que falte contenido de JD; se pide desde ya.
-- **Rama y PR:** `feat/portafolio-f15`. **Quién:** Claude; JD entrega el zip y la URL.
+- **Rama y PR:** `feat/portafolio-f16`. **Quién:** Claude; JD entrega el zip y la URL.
 
 ## Dependencias
 - F1 va antes de todo.
 - F2 → F3.
 - F4 es independiente de F2 y F3.
 - F7 necesita F2 y F5.
-- F8 → F9 → F10 (sonido; la F10 necesita también la F7).
-- F5 → F11 → F12.
-- F13 puede ir en paralelo desde la F3.
-- F14 necesita F12 y F13.
-- F15 va al final.
+- F8 (portada) → F9 → F10 → F11 (sonido; la F11 necesita también la F7).
+- F5 → F12 → F13.
+- F14 puede ir en paralelo desde la F3.
+- F15 necesita F13 y F14.
+- F16 va al final.
 
 ## Matriz requisito → fase
 | Requisito | Fase |
@@ -332,16 +370,16 @@ método `estado()` que las pruebas leen.
 | Encabezado, Sobre mí y Habilidades con FontAwesome en `index.html` | F2, F3 |
 | Sobre mí completa (D11) | F4 |
 | ≥ 3 proyectos + modal jQuery con YouTube | F5 |
-| Videos relacionados con cada proyecto (D12) | F7, F10 (con sonido e ID reales) |
+| Videos relacionados con cada proyecto (D12) | F7, F11 (con sonido e ID reales) |
 | Responsive | F3, F4, F5 (pruebas en 375, 768 y 1440) |
 | Publicado en un servidor gratuito | F1 |
-| Zip con la estructura pedida | F6, F15 |
+| Zip con la estructura pedida | F6, F16 |
 | Tema claro/oscuro (D4) | F1 |
 | Formulario de contacto (D8, D16) | F6 |
-| Mascota y ecosistema (D10) | F2, F3 |
-| IA (D7) | F11, F12 |
-| Refinamiento visual | F13, F14, F15 |
-| Sonido y música (D24-D28) | F8, F9, F10 |
+| Mascota y ecosistema (D10) | F2, F3, F8 (portada) |
+| IA (D7) | F12, F13 |
+| Refinamiento visual | F14, F15, F16 |
+| Sonido y música (D24-D28) | F9, F10, F11 |
 
 ## Plan de pruebas
 - `uv run pytest -q`: Playwright contra un servidor local de `sitio/` (fixture en `pruebas/conftest.py`); reloj simulado
@@ -350,13 +388,15 @@ método `estado()` que las pruebas leen.
 - `test_sin_datos_internos` sobre todo `sitio/` desde la F4.
 - CI en cada PR: las anteriores. Despliegue a Pages solo desde `main`.
 - Sonido: registro de efectos de `Portafolio.Sonido.estado()` y render con `OfflineAudioContext` (determinista y audible).
-- Videos: `ffprobe` en la F7 y, desde la F10, pista AAC no silenciosa. Desde la F14: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
+- Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F15: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
 - **Dónde quedamos:** F1-F7 publicadas en https://ffdalsu.github.io/; Formspree configurado y probado en vivo
-  (2026-10-15). Plan de sonido aprobado (F8-F10, D24-D28); las fases pendientes se renumeraron (terminal F11, IA F12,
-  refinamiento F13-F14, pulido y entrega F15). Rama `feat/portafolio-f8` con el plan.
-- **Pendiente de JD:** no subir aún los videos (se regraban con sonido en la F10); confirmar que mostrar los proyectos
+  (2026-10-15). Maqueta de la portada aprobada (D29). Plan aprobado: F8 portada, F9-F11 sonido (la F11 es el punto
+  de entrega seguro), F12 terminal, F13 IA, F14-F15 refinamiento, F16 pulido y entrega. Rama `feat/portafolio-f8`
+  con el plan.
+- **Pendiente de JD:** no subir aún los videos (se regraban con sonido en la F11); confirmar que mostrar los proyectos
   de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F8 · tablero de sonidos para aprobar los efectos, luego el motor y el control.
-- **Para el refinamiento (F13-F14):** en celular las dos islas lejanas quedan algo en el aire.
+- **Siguiente paso:** F8 · Portada.
+- **Para el refinamiento (F14-F15):** en celular las dos islas lejanas quedan algo en el aire (la portada puede
+  resolverlo).
