@@ -49,6 +49,7 @@ desarrollo de TI.
 | D31 | 2026-10-15 | Música elegida por JD tras oír las 3 variantes y 3 prototipos de banda sonora: **el sitio usa la generativa desde ψ** y **los videos el chiptune enérgico**. Se cambia con una sola constante, `MUSICA_DEL_SITIO` en `js/sonido/sonido.js` (opciones: 'generativa', 'oceano', 'chiptune'), sin control visible |
 | D32 | 2026-10-15 | El sonido no debe cortarse al cambiar de página. Ahora (A): al cargar se intenta sonar de inmediato (Chrome y Edge lo permiten al llegar por un enlace del sitio); si el navegador lo bloquea, aviso y el primer gesto lo arranca. Después (B): fase «Navegación sin recargar» antes de la terminal, para que la música nunca se corte en ningún navegador y llegue la transición entre páginas |
 | D33 | 2026-10-15 | Celular: menú lateral (offcanvas de Bootstrap por la derecha, abierto con jQuery) con páginas, contacto, tema y sonido; corte en 768 px; escritorio sin cambios. Se declara `color-scheme: light dark` para que Chrome Android no oscurezca el tema papel |
+| D34 | 2026-10-15 | **F15 descartada (no-go).** En el PC de JD ningún modelo en el navegador cumple: Qwen2.5-1.5B 5,9 tok/s y 7/10 a mano; Llama-3.2-1B 3/10; Gemma 4 E2B demasiado pesado (~3,4 GB). La entrega va sin IA. A futuro, si se retoma: un modelo en servidor (Worker de Cloudflare con Workers AI y límite de peticiones), nunca Hermes ni las suscripciones personales de JD (D7) |
 | D35 | 2026-10-15 | **F16 · v2 guiada por ghostty.org** (`docs/diseno/referentes-v2.md`, `adn-ghostty.md`, `maqueta-v2.html`). Alcance de la F17: secuencia de arranque, transición ASCII entre páginas (en celular, fundido simple si no rinde), favicon vivo, 404 ASCII, hoja de impresión como CV e imagen para compartir; más `--tenue` del tema papel a `#5A6762` (contraste AA). Fuera: atajos de teclado e índice con puntos guía |
 
 ## Supuestos (JD puede vetarlos)
@@ -357,7 +358,7 @@ método `estado()` que las pruebas leen.
 - **Riesgos:** choque de atajos con los campos de texto (cubierto por una prueba).
 - **Rama y PR:** `feat/portafolio-f14`. **Depende de** F13 (la terminal navega sin recargar). **Quién:** Claude. **Revisión:** normal.
 
-### F15 · IA en el navegador (bit es la voz)
+### F15 · IA en el navegador (bit es la voz) — DESCARTADA (D34)
 - **Objetivo:** `pregunta <texto>` en la terminal, o hablarle a bit en el inicio, responde sobre el perfil público de
   JD con un LLM que corre en el navegador. «Modo por dentro» muestra las 5 alternativas más probables de cada token
   como barras ASCII. Sin WebGPU, o bajo `file://`, aparece una alternativa honesta.
@@ -410,9 +411,9 @@ método `estado()` que las pruebas leen.
 - F7 necesita F2 y F5.
 - F8 (portada) → F9 → F10 → F11 (sonido; la F11 necesita también la F7).
 - F12 (celular) → F13 (navegación sin recargar) → F14 (terminal).
-- F5 → F14 → F15.
+- F5 → F14. (F15 descartada, D34.)
 - F16 puede ir en paralelo desde la F3.
-- F17 necesita F15 y F16.
+- F17 necesita F16.
 - F18 va al final.
 
 ## Matriz requisito → fase
@@ -429,7 +430,7 @@ método `estado()` que las pruebas leen.
 | Tema claro/oscuro (D4) | F1 |
 | Formulario de contacto (D8, D16) | F6 |
 | Mascota y ecosistema (D10) | F2, F3, F8 (portada) |
-| IA (D7) | F14, F15 |
+| IA (D7, D34) | F14 (terminal); la IA queda fuera de la entrega |
 | Refinamiento visual | F16, F17, F18 |
 | Sonido y música (D24-D28) | F9, F10, F11 |
 
@@ -443,9 +444,10 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F16 terminada en `docs/diseno-v2` (2026-10-15, D35): 5 referentes con captura, ADN de Ghostty,
-  maqueta v2 con los 6 detalles funcionando y cierre liviano. F15 descartada (D34, PR #18).
-- **Pendiente de JD:** revisar la maqueta (`docs/diseno/maqueta-v2.html`); confirmar en su celular que el tema papel ya
-  no se oscurece; confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F17 · implementación de los detalles (`ti-plan` si hay que partirla; probablemente 17a arranque +
-  transición + favicon, 17b 404 + CV + imagen para compartir).
+- **Dónde quedamos:** F16 **aprobada por JD** (2026-10-15, D35): 5 referentes con captura, ADN de Ghostty y maqueta v2
+  (`docs/diseno/maqueta-v2.html`) con los 6 detalles; bit del arranque y de la imagen para compartir con volumen
+  (escena sombreada de 96 × 44). F15 descartada tras el spike (D34).
+- **Pendiente de JD:** fusionar el PR #18 y luego el #19; confirmar en su celular que el tema papel ya no se oscurece;
+  confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** F17 con `ti-plan` (partirla: 17a arranque + transición + favicon; 17b 404 + CV + imagen para
+  compartir + contraste de `--tenue`).
