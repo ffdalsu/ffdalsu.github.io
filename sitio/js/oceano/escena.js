@@ -190,10 +190,61 @@ Portafolio.Oceano = (function () {
     }
   }
 
-  function cuadro(ahora) {
-    if (!document.hidden && ahora - ultimo >= MS_POR_CUADRO) { ultimo = ahora; dibujar(ahora); }
-    if (!reducir.matches) requestAnimationFrame(cuadro);
+  /* ---------- Montaje (F13): la escena existe solo en el inicio; al cambiar de página se desmonta ---------- */
+  let activo = false, generacion = 0, intervalo = null, bucles = 0;
+  const ahora = () => performance.now();
+  const columna = (x) => x / rejilla.cw;
+  const filaMundo = (yPantalla) => camara + yPantalla / rejilla.ch;
+  const sobreAgua = (y) => activo && escena && y / rejilla.ch > escena.horizonte - 8;
+  const esContenido = (el) => el.closest('a, button, input, textarea, .lamina, .panel, .barra, .modal, .offcanvas');
+  const redibujar = () => { if (activo && reducir.matches) dibujar(ahora()); };
+
+  /** Bucle de dibujo de un montaje: se apaga solo cuando ese montaje deja de ser el actual. */
+  function bucle(gen) {
+    bucles++;
+    const cuadro = (t) => {
+      if (gen !== generacion) { bucles--; return; }
+      if (!document.hidden && t - ultimo >= MS_POR_CUADRO) { ultimo = t; dibujar(t); }
+      if (!reducir.matches) requestAnimationFrame(cuadro); else bucles--;
+    };
+    requestAnimationFrame(cuadro);
   }
+
+  // Oyentes de toda la visita: se registran una sola vez y solo actúan con la escena montada
+  window.addEventListener('pointermove', (e) => {
+    if (!activo) return;
+    bit.actividad(ahora());
+    Portafolio.Campo.moverPuntero(columna(e.clientX), filaMundo(e.clientY));
+    punteroPantalla = { c: columna(e.clientX), f: e.clientY / rejilla.ch };
+    bit.seguir(sobreAgua(e.clientY) && escena.acto < 3 ? columna(e.clientX) : null, ahora());
+  });
+  // con el dedo, levantarlo también dispara pointerleave: solo el mouse «sale» de la página
+  document.documentElement.addEventListener('pointerleave', (e) => {
+    if (!activo || e.pointerType !== 'mouse') return;
+    Portafolio.Campo.moverPuntero(null); punteroPantalla = null; bit.seguir(null, ahora());
+  });
+  // en pantallas táctiles no hay «pasar el puntero»: tocar el agua le dice a bit a dónde nadar
+  document.addEventListener('pointerdown', (e) => {
+    if (activo && e.pointerType !== 'mouse' && !esContenido(e.target) && sobreAgua(e.clientY)) bit.seguir(columna(e.clientX), ahora());
+  });
+  // clic sobre el agua (fuera del contenido): en bit, bit habla; en el agua, suelta una onda
+  document.addEventListener('click', (e) => {
+    if (!activo || esContenido(e.target) || !sobreAgua(e.clientY)) return;
+    const c = columna(e.clientX), f = e.clientY / rejilla.ch;
+    if (cajaBit && c >= bit.x && c <= bit.x + bit.sprite.ancho * ESCALA_BIT && f >= cajaBit.fila - 1 && f <= cajaBit.fila + bit.sprite.alto * ESCALA_BIT) {
+      bit.hablar(ahora());
+      sonar('voz', { texto: bit.frase });
+    } else {
+      Portafolio.Campo.salpicar(c, ahora() / 1000, filaMundo(e.clientY));
+      sonar('bloop');
+    }
+    redibujar();
+  });
+  window.addEventListener('scroll', () => { if (!activo) return; bit.actividad(ahora()); redibujar(); }, { passive: true });
+  window.addEventListener('keydown', () => { if (activo) bit.actividad(ahora()); });
+  window.addEventListener('resize', () => { if (!activo) return; medirPantalla(false); redibujar(); });
+  new MutationObserver(() => { if (!activo) return; leerColores(); redibujar(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
 
   function iniciar() {
     const canvas = document.getElementById('oceano');
@@ -208,53 +259,16 @@ Portafolio.Oceano = (function () {
     // las frases de bit viven en el HTML (data-frases del encabezado), separadas por «|»
     bit = Portafolio.Bit((hero.dataset.frases || '').split('|').filter(Boolean));
     sonda = document.getElementById('sonda');
+    saludo = false;
+    ancho = 0;
     leerColores();
     medirPantalla(true);
-
-    const ahora = () => performance.now();
-    const columna = (x) => x / rejilla.cw;
-    const filaMundo = (yPantalla) => camara + yPantalla / rejilla.ch;
-    const sobreAgua = (y) => escena && y / rejilla.ch > escena.horizonte - 8;
-    const esContenido = (el) => el.closest('a, button, input, textarea, .lamina, .panel, .barra, .modal');
-    const redibujar = () => { if (reducir.matches) dibujar(ahora()); };
-
-    window.addEventListener('pointermove', (e) => {
-      bit.actividad(ahora());
-      Portafolio.Campo.moverPuntero(columna(e.clientX), filaMundo(e.clientY));
-      punteroPantalla = { c: columna(e.clientX), f: e.clientY / rejilla.ch };
-      bit.seguir(sobreAgua(e.clientY) && escena.acto < 3 ? columna(e.clientX) : null, ahora());
-    });
-    // con el dedo, levantarlo también dispara pointerleave: solo el mouse «sale» de la página
-    document.documentElement.addEventListener('pointerleave', (e) => {
-      if (e.pointerType !== 'mouse') return;
-      Portafolio.Campo.moverPuntero(null); punteroPantalla = null; bit.seguir(null, ahora());
-    });
-    // en pantallas táctiles no hay «pasar el puntero»: tocar el agua le dice a bit a dónde nadar
-    document.addEventListener('pointerdown', (e) => {
-      if (e.pointerType !== 'mouse' && !esContenido(e.target) && sobreAgua(e.clientY)) bit.seguir(columna(e.clientX), ahora());
-    });
-    // clic sobre el agua (fuera del contenido): en bit, bit habla; en el agua, suelta una onda
-    document.addEventListener('click', (e) => {
-      if (esContenido(e.target) || !sobreAgua(e.clientY)) return;
-      const c = columna(e.clientX), f = e.clientY / rejilla.ch;
-      if (cajaBit && c >= bit.x && c <= bit.x + bit.sprite.ancho * ESCALA_BIT && f >= cajaBit.fila - 1 && f <= cajaBit.fila + bit.sprite.alto * ESCALA_BIT) {
-        bit.hablar(ahora());
-        sonar('voz', { texto: bit.frase });
-      } else {
-        Portafolio.Campo.salpicar(c, ahora() / 1000, filaMundo(e.clientY));
-        sonar('bloop');
-      }
-      redibujar();
-    });
-    window.addEventListener('scroll', () => { bit.actividad(ahora()); redibujar(); }, { passive: true });
-    window.addEventListener('keydown', () => bit.actividad(ahora()));
-    window.addEventListener('resize', () => { medirPantalla(false); redibujar(); });
-    new MutationObserver(() => { leerColores(); redibujar(); })
-      .observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+    activo = true;
+    generacion++;
 
     // la sonda muestra el acto, la profundidad y el estado de bit; el panel ψ, las fuentes y el tiempo
     const nFuentes = document.getElementById('campo-fuentes'), nTiempo = document.getElementById('campo-t');
-    setInterval(() => {
+    intervalo = setInterval(() => {
       if (sonda && escena) sonda.textContent = 'acto ' + escena.acto + ' · prof ' + Math.round(profundidad) + ' m · bit: ' + bit.modo;
       if (Portafolio.Sonido) Portafolio.Sonido.profundidad(profundidad);   // la música se apaga bajo el agua
       if (nFuentes) nFuentes.textContent = Portafolio.Campo.fuentes(tiempo);
@@ -262,14 +276,25 @@ Portafolio.Oceano = (function () {
     }, 250);
 
     dibujar(ahora());
-    if (!reducir.matches) requestAnimationFrame(cuadro);
+    if (!reducir.matches) bucle(generacion);
   }
 
-  $(iniciar);
+  function detener() {
+    if (!activo) return;
+    activo = false;
+    generacion++;   // el bucle del montaje anterior se apaga en su próximo cuadro
+    clearInterval(intervalo);
+    profundidad = 0;
+    if (Portafolio.Sonido) Portafolio.Sonido.profundidad(0);   // fuera del inicio la música suena sin filtro
+  }
+
+  Portafolio.Paginas.montar(iniciar);
+  Portafolio.Paginas.desmontar(detener);
 
   return {
     estado: function () {
-      return bit ? {
+      return (bit && activo) ? {
+        bucles: bucles,
         acto: escena.acto,
         progreso: progreso,
         horizonte: escena.horizonte,

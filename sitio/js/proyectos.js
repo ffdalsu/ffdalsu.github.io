@@ -35,7 +35,7 @@ Portafolio.Proyectos = (function () {
     })();
   }
 
-  $(function () {
+  Portafolio.Paginas.montar(function () {
     const $modal = $('#modal-video');
     const $iframe = $modal.find('iframe');
     const $pantalla = $modal.find('.video-pendiente');
@@ -64,6 +64,8 @@ Portafolio.Proyectos = (function () {
       if (destino && destino.classList.contains('proyecto')) destino.classList.add('resaltado');
     }
   });
+
+  Portafolio.Paginas.desmontar(function () { animandoEstatica = false; });
 
   return { urlVideo: urlVideo };
 })();

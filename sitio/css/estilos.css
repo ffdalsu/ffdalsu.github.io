@@ -579,3 +579,13 @@ button.boton:hover { background: var(--texto); color: var(--fondo); }
 .controles-lateral .control-sonido::before { content: none; }
 .controles-lateral .control-tema { flex-wrap: wrap; row-gap: 6px; }
 .menu-movil:focus, .menu-movil:focus-visible { outline: none; }   /* el panel recibe el foco al abrir; el contorno queda en sus botones */
+
+/* ---------- Transición entre páginas (F13, js/navegacion.js con View Transitions) ----------
+   La página vieja se apaga en 4 pasos y la nueva se despliega de arriba abajo por renglones, como un monitor */
+::view-transition-old(root) { animation: 160ms steps(4) both salir-pagina; }
+::view-transition-new(root) { animation: 420ms steps(14) both entrar-pagina; }
+@keyframes salir-pagina { to { opacity: 0; } }
+@keyframes entrar-pagina { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}

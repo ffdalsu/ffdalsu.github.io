@@ -8,6 +8,9 @@ window.Portafolio = window.Portafolio || {};
 Portafolio.Miniaturas = (function () {
   const reducir = window.matchMedia('(prefers-reduced-motion: reduce)');
   let colores = {};
+  // lo de la página montada: se detiene al cambiar de página (js/navegacion.js) para que no se acumulen bucles
+  let generacion = 0;
+  const observadores = [], rejillas = [];
 
   function leerColores() {
     const s = getComputedStyle(document.documentElement);
@@ -92,27 +95,39 @@ Portafolio.Miniaturas = (function () {
     if (!escena) return;
     const r = Portafolio.Rejilla(canvas, { tamFuente: 11 });
     let visible = false;
+    const gen = generacion;
     const cuadro = (ahora) => {
-      if (!visible) return;
+      if (!visible || gen !== generacion) return;
       r.limpiar(); escena(r, ahora / 1000);
       requestAnimationFrame(cuadro);
     };
     if (reducir.matches) { r.limpiar(); escena(r, 3); canvas.dataset.dibujada = '1'; return; }
-    new IntersectionObserver(([e]) => {
+    const io = new IntersectionObserver(([e]) => {
       const antes = visible;
       visible = e.isIntersecting;
       if (visible) canvas.dataset.dibujada = '1';
       if (visible && !antes) requestAnimationFrame(cuadro);
-    }).observe(canvas);
-    window.addEventListener('resize', () => r.medir());
+    });
+    io.observe(canvas);
+    observadores.push(io);
+    rejillas.push(r);
   }
 
-  $(function () {
+  // para toda la visita: un solo oyente de tamaño y otro de tema
+  window.addEventListener('resize', () => rejillas.forEach((r) => r.medir()));
+  new MutationObserver(leerColores).observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+
+  Portafolio.Paginas.montar(function () {
     leerColores();
-    new MutationObserver(leerColores).observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
     document.querySelectorAll('canvas[data-miniatura]').forEach(animar);
+  });
+  Portafolio.Paginas.desmontar(function () {
+    generacion++;
+    observadores.forEach((o) => o.disconnect());
+    observadores.length = 0;
+    rejillas.length = 0;
   });
 
   // las escenas también las usan los videos de proyecto (videos/escena.html)
-  return { escenas: ESCENAS, usarColores: function (c) { colores = c; } };
+  return { escenas: ESCENAS, usarColores: function (c) { colores = c; }, estado: function () { return { activas: rejillas.length }; } };
 })();

@@ -14,7 +14,10 @@ Portafolio.SobreMi = (function () {
   const ESCUDO = [' .-------. ', ' |VE | RI| ', ' |---+---| ', ' |  TAS  | ', '  \\     /  ', '   `---´   '];
   let colores = {};
   const vistos = new Set();
-  let desbordes = 0;   // textos que no cupieron en su canvas ni corriéndolos (las pruebas exigen 0)
+  let desbordes = 0;
+  // lo de la página montada: se detiene al cambiar de página (js/navegacion.js) para que no se acumulen bucles
+  let generacion = 0;
+  const observadores = [], rejillas = [];   // textos que no cupieron en su canvas ni corriéndolos (las pruebas exigen 0)
 
   function leerColores() {
     const s = getComputedStyle(document.documentElement);
@@ -161,32 +164,46 @@ Portafolio.SobreMi = (function () {
       return dibujoOriginal(filas, col, fila, color, escala, borrar, fondo);
     };
     let visible = false, inicio = 0;
+    const gen = generacion;
     const cuadro = (ahora) => {
-      if (!visible) return;
+      if (!visible || gen !== generacion) return;
       r.limpiar();
       dibujar(r, (ahora - inicio) / 1000);
       requestAnimationFrame(cuadro);
     };
     if (reducir.matches) { r.limpiar(); dibujar(r, 4.5); vistos.add(tipo); return; }
-    new IntersectionObserver(([e]) => {
+    const io = new IntersectionObserver(([e]) => {
       const antes = visible;
       visible = e.isIntersecting;
       if (visible && !antes) { vistos.add(tipo); if (!inicio) inicio = performance.now(); requestAnimationFrame(cuadro); }
-    }, { threshold: 0.25 }).observe(canvas);
-    window.addEventListener('resize', () => r.medir());
+    }, { threshold: 0.25 });
+    io.observe(canvas);
+    observadores.push(io);
+    rejillas.push(r);
   }
 
-  $(function () {
+  // para toda la visita: un solo oyente de tamaño y otro de tema
+  window.addEventListener('resize', () => rejillas.forEach((r) => r.medir()));
+  new MutationObserver(leerColores).observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+
+  Portafolio.Paginas.desmontar(function () {
+    generacion++;
+    observadores.forEach((o) => o.disconnect());
+    observadores.length = 0;
+    rejillas.length = 0;
+  });
+
+  Portafolio.Paginas.montar(function () {
     leerColores();
-    new MutationObserver(leerColores).observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
     document.querySelectorAll('canvas[data-anim]').forEach(animar);
 
     // diplomas: se despliegan al verlos (si no hay movimiento, ya aparecen desplegados)
     const diplomas = document.querySelectorAll('.diploma');
+    const contenedor = document.querySelector('.diplomas');
+    if (!contenedor) return;   // esta página no tiene diplomas
     if (reducir.matches || !('IntersectionObserver' in window)) { diplomas.forEach((d) => d.classList.add('desplegado')); return; }
     diplomas.forEach((d) => d.classList.add('por-desplegar'));
     // se observa el contenedor: un diploma enrollado (clip-path al 100 %) no tiene área visible y nunca «se vería»
-    const contenedor = document.querySelector('.diplomas');
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) {
         diplomas.forEach((d) => d.classList.add('desplegado'));
@@ -196,7 +213,8 @@ Portafolio.SobreMi = (function () {
       }
     }, { threshold: 0.2 });
     io.observe(contenedor);
+    observadores.push(io);
   });
 
-  return { estado: function () { return { animacionesVistas: Array.from(vistos), desbordes: desbordes }; } };
+  return { estado: function () { return { animacionesVistas: Array.from(vistos), desbordes: desbordes, activas: rejillas.length }; } };
 })();

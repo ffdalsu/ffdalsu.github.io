@@ -93,6 +93,7 @@ sitio/
   js/sonido/sonido.js          control del encabezado, desbloqueo con gesto, programador y registro (F9)
   js/sonido/musica.js          secuenciador de las variantes de música (F10)
   js/menu.js                   menú lateral del celular (F12)
+  js/paginas.js                registro montar/desmontar de cada página (F13)
   js/navegacion.js             cambio de página sin recargar (F13)
   data/perfil.md               contenido público que usa la IA (F15)
   lib/bootstrap-5.3.3/  lib/jquery-3.7.1/  lib/fontawesome-6.5.2/  lib/fuentes/ (IBM Plex Mono, Martian Mono)
@@ -441,11 +442,10 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F12 · Celular terminada en `feat/portafolio-f12` (2026-10-15): encabezado de una línea con `[≡]`
-  y menú lateral (offcanvas con jQuery) con páginas, contacto, tema y sonido; luna o sol dentro y bajo el encabezado;
-  borrado por silueta (sin rectángulo alrededor de bit ni de las criaturas); `color-scheme: light dark` y `theme-color`
-  por tema; etiquetas de criaturas dentro de la pantalla; globo de bit bajo el agua en celular; hitos sin texto
-  cortado. Escritorio igual. 154 pruebas en verde. PR abierto.
-- **Pendiente de JD:** confirmar en su celular (modo oscuro del teléfono activo + tema papel) que ya no se oscurece;
-  confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F13 · Navegación sin recargar.
+- **Dónde quedamos:** F13 · Navegación sin recargar terminada en `feat/portafolio-f13` (2026-10-15): `js/navegacion.js`
+  cambia de página sin recargar (la música y los efectos no se cortan), con transición por renglones (View
+  Transitions), Atrás/Adelante, foco al título y navegación normal desde `file://`. Cada módulo se monta y desmonta con
+  `js/paginas.js`; las 3 páginas cargan los mismos scripts. 163 pruebas en verde. PR abierto.
+- **Pendiente de JD:** confirmar en su celular (modo oscuro del teléfono + tema papel) que ya no se oscurece; confirmar
+  que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** F14 · terminal interactiva.

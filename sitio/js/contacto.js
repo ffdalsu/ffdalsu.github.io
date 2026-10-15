@@ -38,7 +38,7 @@ Portafolio.Contacto = (function () {
     lineas.forEach(function (l) { $('<span>').addClass(l.tipo).text(l.texto).appendTo($log).after('\n'); });
   }
 
-  $(function () {
+  Portafolio.Paginas.montar(function () {
     const $form = $('#form-contacto');
     if (!$form.length) return;
     const $log = $('#log-contacto');
