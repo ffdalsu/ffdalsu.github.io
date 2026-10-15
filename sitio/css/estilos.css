@@ -11,6 +11,7 @@
 /* ---------- Tokens ---------- */
 :root,
 [data-bs-theme="light"] {
+  color-scheme: light;      /* declarado: así Chrome Android no oscurece el tema papel por su cuenta */
   --fondo: #EDF0EC;        /* papel */
   --panel: #E2E7E2;        /* papel un tono más oscuro, para campos enfocados */
   --texto: #1E2B2A;        /* tinta */
@@ -77,7 +78,7 @@ mark { background: none; color: var(--acento); padding: 0; }
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px 22px;
+  gap: 10px 16px;
   padding-block: 12px;
 }
 
@@ -91,7 +92,7 @@ mark { background: none; color: var(--acento); padding: 0; }
 .menu {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 18px;
+  gap: 4px 14px;
   margin: 0 auto 0 0;
   padding: 0;
   list-style: none;
@@ -105,14 +106,14 @@ mark { background: none; color: var(--acento); padding: 0; }
 .control-tema {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   border: 1px solid var(--linea);
   padding: 5px 10px;
-  font-size: 13px;
+  font-size: 12px;
 }
 .control-tema .etiqueta { color: var(--tenue); }
 /* tema y sonido comparten una sola caja para que el encabezado quepa en una fila */
-.controles { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; border: 1px solid var(--linea); padding: 5px 10px; }
+.controles { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; border: 1px solid var(--linea); padding: 5px 10px; }
 .controles .control-tema { border: 0; padding: 0; }
 .controles .control-sonido::before { content: "│"; color: var(--linea); margin-right: 6px; }
 .opcion-tema, .opcion-sonido {
@@ -543,3 +544,38 @@ button.boton:hover { background: var(--texto); color: var(--fondo); }
 }
 @keyframes aviso-latido { 50% { border-color: var(--linea); } }
 @media (prefers-reduced-motion: reduce) { .aviso-sonido { animation: none; } }
+
+/* ---------- Celular (F12): encabezado de una línea + menú lateral ---------- */
+.boton-menu {
+  all: unset;
+  display: none;
+  margin-left: auto;
+  cursor: pointer;
+  padding: 4px 10px;
+  border: 1px solid var(--linea);
+  color: var(--texto);
+  font: 600 16px/1 var(--fuente-texto);
+}
+.boton-menu:hover { border-color: var(--texto); }
+.boton-menu:focus-visible { outline: 1px dashed var(--acento); outline-offset: 3px; }
+@media (max-width: 767.98px) {
+  .barra nav, .barra .controles { display: none; }
+  .boton-menu { display: inline-block; }
+  .barra .envoltura { flex-wrap: nowrap; padding-block: 10px; }
+  .marca { font-size: 13px; }
+}
+
+.menu-movil { background: var(--fondo); color: var(--texto); border-left: 1px solid var(--linea) !important; width: min(320px, 86vw) !important; font-family: var(--fuente-texto); }
+.menu-movil .offcanvas-header { border-bottom: 1px solid var(--linea); padding: 12px 16px; }
+.menu-movil .offcanvas-title { font-size: 13px; font-weight: 500; margin: 0; }
+.menu-movil .offcanvas-title::before { content: "┤ "; color: var(--tenue); }
+.menu-movil .offcanvas-title::after { content: " ├"; color: var(--tenue); }
+.menu-movil .boton { background: none; color: inherit; font: inherit; cursor: pointer; }
+.menu-movil .boton:hover { background: var(--texto); color: var(--fondo); }
+.menu-movil .offcanvas-body { display: grid; align-content: start; gap: 18px; padding: 18px 16px; }
+.menu-lateral { flex-direction: column; gap: 6px; margin: 0; font-size: 18px; }
+.menu-lateral a { display: block; padding: 6px 0; }
+.controles-lateral { flex-direction: column; align-items: flex-start; gap: 10px; }
+.controles-lateral .control-sonido::before { content: none; }
+.controles-lateral .control-tema { flex-wrap: wrap; row-gap: 6px; }
+.menu-movil:focus, .menu-movil:focus-visible { outline: none; }   /* el panel recibe el foco al abrir; el contorno queda en sus botones */

@@ -65,10 +65,12 @@ Portafolio.Ecosistema = (function () {
     criaturas.forEach((k) => {
       const ancho = Math.max.apply(null, k.filas.map((f) => Array.from(f).length)) * ESCALA;
       const etiqueta = k.nombre.length + 4;
-      const mitad = r.cols / 2;
-      const recorrido = Math.max(4, mitad - ancho - etiqueta - 6);
+      // en pantallas angostas las criaturas usan todo el ancho (una columna); en escritorio, mitad y mitad
+      const angosta = r.cols < 70;
+      const mitad = angosta ? r.cols : r.cols / 2;
+      const recorrido = Math.max(2, mitad - ancho - etiqueta - 6);
       const vaiven = Math.sin(t * 0.25 + k.fase);
-      const x = k.lado * mitad + 3 + (vaiven + 1) / 2 * recorrido;
+      const x = (angosta ? 0 : k.lado * mitad) + 3 + (vaiven + 1) / 2 * recorrido;
       const derecha = Math.cos(t * 0.25 + k.fase) >= 0;   // la derivada del vaiven dice hacia dónde nada
       const y = arriba + 2 + k.prof * (alto - 6) + Math.sin(t * 0.9 + k.fase) * 0.6;
       k.x = x; k.y = y; k.ancho = ancho;
@@ -81,10 +83,16 @@ Portafolio.Ecosistema = (function () {
       k.li.classList.toggle('activa', k.activa);
 
       const filas = derecha ? k.filas : espejo(k.filas);
-      r.dibujo(filas, x, y, k.activa ? colores.acento : colores.texto, ESCALA, true, colores.fondo);
+      r.dibujo(filas, x, y, k.activa ? colores.acento : colores.texto, ESCALA, 'silueta', colores.fondo);
       const texto = k.activa ? '[ ' + k.nombre + ' ]' : '← ' + k.nombre;
       const fy = Math.round(y + (k.filas.length * ESCALA) / 2 - 0.5);
-      r.dibujo([texto], Math.ceil(x + ancho + 2), fy, k.activa ? colores.acento : colores.tenue, 1, true, colores.fondo);
+      // la etiqueta va a la derecha; si no cabe, a la izquierda; si tampoco, debajo de la criatura
+      const largo = Array.from(texto).length;
+      let ex = Math.ceil(x + ancho + 2), ey = fy;
+      if (ex + largo > r.cols) ex = Math.floor(x - largo - 2);
+      if (ex < 0) { ex = Math.max(0, Math.min(r.cols - largo, Math.floor(x))); ey = Math.ceil(y + k.filas.length * ESCALA); }
+      k.etiqueta = { desde: ex, hasta: ex + largo };
+      r.dibujo([texto], ex, ey, k.activa ? colores.acento : colores.tenue, 1, true, colores.fondo);
     });
   }
 
@@ -112,7 +120,7 @@ Portafolio.Ecosistema = (function () {
     moverIslas: moverIslas,
     estado: function () {
       return {
-        criaturas: criaturas.map((k) => ({ nombre: k.nombre, activa: k.activa })),
+        criaturas: criaturas.map((k) => ({ nombre: k.nombre, activa: k.activa, etiqueta: k.etiqueta || null })),
         islas: islas.length
       };
     }

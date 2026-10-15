@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#EDF0EC">
   <meta name="description" content="Formación, certificados y experiencia de Juan David.">
   <meta name="author" content="Juan David">
   <title>Sobre mí · Juan David</title>
@@ -45,6 +47,7 @@
         <button type="button" class="opcion-sonido" data-sonido="todo" aria-pressed="false">+ música</button>
       </div>
       </div>
+      <button type="button" class="boton-menu" aria-controls="menu-movil" aria-label="Abrir el menú">[≡]</button>
     </div>
   </header>
 
@@ -272,9 +275,42 @@
     </div>
   </div>
 
+  <!-- Menú lateral del celular (F12): offcanvas de Bootstrap que abre js/menu.js con jQuery -->
+  <div class="offcanvas offcanvas-end menu-movil" tabindex="-1" id="menu-movil" aria-labelledby="menu-movil-titulo">
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title" id="menu-movil-titulo">menú</h2>
+      <button type="button" class="boton boton-x" data-bs-dismiss="offcanvas" aria-label="Cerrar el menú">[x]</button>
+    </div>
+    <div class="offcanvas-body">
+      <p class="comando">cd</p>
+      <nav aria-label="Menú del celular">
+        <ul class="menu menu-lateral">
+        <li><a href="index.html">inicio</a></li>
+        <li><a href="sobre-mi.html" aria-current="page">sobre mí</a></li>
+        <li><a href="projects.html">proyectos</a></li>
+        </ul>
+      </nav>
+      <button type="button" class="boton abrir-contacto">[ escríbeme ]</button>
+      <div class="controles controles-lateral">
+      <div class="control-tema" role="group" aria-label="Tema">
+        <span class="etiqueta" aria-hidden="true">┤ ◐ ├</span>
+        <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
+        <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
+      </div>
+      <div class="control-tema control-sonido" role="group" aria-label="Sonido">
+        <span class="etiqueta" aria-hidden="true">┤ ♪ ├</span>
+        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">no</button>
+        <button type="button" class="opcion-sonido" data-sonido="efectos" aria-pressed="false">efectos</button>
+        <button type="button" class="opcion-sonido" data-sonido="todo" aria-pressed="false">+ música</button>
+      </div>
+      </div>
+    </div>
+  </div>
+
   <script src="lib/jquery-3.7.1/jquery.min.js"></script>
   <script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
   <script src="js/tema.js?v=dev"></script>
+  <script src="js/menu.js?v=dev"></script>
   <script src="js/sonido/sintetizador.js?v=dev"></script>
   <script src="js/sonido/musica.js?v=dev"></script>
   <script src="js/sonido/sonido.js?v=dev"></script>

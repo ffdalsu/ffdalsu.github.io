@@ -21,7 +21,7 @@ Portafolio.Oceano = (function () {
 
   let rejilla = null, hero = null, bit = null, sonda = null, punteroPantalla = null;
   let portada = null, nombre = null, lema = null, panelCampo = null, baja = null;
-  let colores = {}, alto = 0, ancho = 0, escena = null, camara = 0, cajaBit = null, saludo = false;
+  let colores = {}, alto = 0, ancho = 0, escena = null, camara = 0, cajaBit = null, saludo = false, cajaGlobo = null;
   let ultimo = 0, msCuadro = 0, profundidad = 0, calientes = 0, tiempo = 0, progreso = 0;
   const reducir = window.matchMedia('(prefers-reduced-motion: reduce)');
   const sonar = (n, d, r) => { if (Portafolio.Sonido) Portafolio.Sonido.efecto(n, d, r); };   // js/sonido/sonido.js
@@ -77,7 +77,9 @@ Portafolio.Oceano = (function () {
 
     r.limpiar();
     // el cielo (luna o sol, estrellas, gaviotas) mientras se vea algo de cielo
-    if (Portafolio.Cielo) Portafolio.Cielo.dibujar(r, t, colores, horizonte, esNoche());
+    const barra = document.querySelector('.barra');
+    const margen = barra ? barra.getBoundingClientRect().bottom / r.ch : 0;   // filas que tapa el encabezado fijo
+    if (Portafolio.Cielo) Portafolio.Cielo.dibujar(r, t, colores, horizonte, esNoche(), margen);
 
     // el mar: solo las filas por debajo del horizonte
     const filasMundo = document.documentElement.scrollHeight / r.ch;
@@ -140,7 +142,7 @@ Portafolio.Oceano = (function () {
     const visible = filaBit > -s.alto * ESCALA_BIT && filaBit < r.filas;
     cajaBit = visible ? { x: bit.x * r.cw, y: filaBit * r.ch, ancho: anchoBit * r.cw, alto: s.alto * ESCALA_BIT * r.ch, fila: filaBit } : null;
     if (visible) {
-      r.dibujo(s.cuadro(bit.estadoSprite(), t, bit.ritmo()), bit.x, filaBit, colores.acento, ESCALA_BIT, true, colores.fondo);
+      r.dibujo(s.cuadro(bit.estadoSprite(), t, bit.ritmo()), bit.x, filaBit, colores.acento, ESCALA_BIT, 'silueta', colores.fondo);
       adornos(t, filaBit, anchoBit, -camara);
     }
 
@@ -163,6 +165,7 @@ Portafolio.Oceano = (function () {
       const z = Math.floor(t * 1.5) % 3;
       r.dibujo([z === 2 ? 'Z' : 'z'], x + Math.ceil(anchoBit) + z, y - z, colores.tenue, 1);
     }
+    cajaGlobo = null;
     if (bit.modo === 'habla') {
       // el globo va al lado de la cabeza: a la derecha si cabe, si no a la izquierda, con una colita hacia bit
       const ancho2 = Array.from(bit.frase).length + 4;
@@ -170,14 +173,19 @@ Portafolio.Oceano = (function () {
       const izquierda = x - ancho2 - 2 >= 0;
       const linea = '─'.repeat(ancho2 - 2);
       const globo = ['┌' + linea + '┐', '│ ' + bit.frase + ' │', '└' + linea + '┘'];
-      if (derecha || izquierda) {
+      // en pantallas angostas las islas rodean a bit: el globo siempre va abajo, en el agua
+      if ((derecha || izquierda) && r.cols >= 70) {
         const bx = derecha ? x + Math.ceil(anchoBit) + 2 : x - ancho2 - 2;
         r.dibujo(globo, bx, y + 1, colores.texto, 1, true, colores.fondo);
         r.dibujo(['─'], derecha ? bx - 1 : bx + ancho2, y + 2, colores.texto, 1);
+        cajaGlobo = { x: bx * r.cw, y: (y + 1) * r.ch, ancho: ancho2 * r.cw, alto: 3 * r.ch };
       } else {
-        // pantalla angosta: el globo va encima de bit, centrado y dentro de la pantalla
+        // pantalla angosta: el globo va debajo de bit, en el agua, donde no hay islas que tapar
         const bx = Math.max(0, Math.min(r.cols - ancho2, Math.round(x + anchoBit / 2 - ancho2 / 2)));
-        r.dibujo(globo.concat([' '.repeat(Math.max(0, Math.round(x + anchoBit / 2) - bx)) + '│']), bx, y - 4, colores.texto, 1, true, colores.fondo);
+        // por debajo de bit y de las etiquetas de las islas cercanas (que llegan ~3 filas bajo la superficie)
+        const by = Math.max(y + Math.ceil(bit.sprite.alto * ESCALA_BIT) + 1, Math.ceil(filaAgua) + 4);
+        r.dibujo([' '.repeat(Math.max(0, Math.round(x + anchoBit / 2) - bx)) + '│'].concat(globo), bx, by, colores.texto, 1, true, colores.fondo);
+        cajaGlobo = { x: bx * r.cw, y: (by + 1) * r.ch, ancho: ancho2 * r.cw, alto: 3 * r.ch };
       }
     }
   }
@@ -271,6 +279,7 @@ Portafolio.Oceano = (function () {
           visible: !!cajaBit, caja: cajaBit, fila: cajaBit ? cajaBit.fila : null, ch: rejilla.ch
         },
         cielo: Portafolio.Cielo ? Portafolio.Cielo.estado() : null,
+        globo: cajaGlobo,
         ecosistema: Portafolio.Ecosistema ? Portafolio.Ecosistema.estado() : null,
         profundidad: profundidad,
         calientes: calientes,

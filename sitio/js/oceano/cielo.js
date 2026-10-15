@@ -16,6 +16,7 @@ Portafolio.Cielo = (function () {
   const CRATERES = [[-0.35, -0.2, 0.22], [0.25, 0.3, 0.16], [0.1, -0.45, 0.12], [-0.1, 0.45, 0.1]];
   const azar = (n) => { const x = Math.sin(n * 12.9898) * 43758.5453; return x - Math.floor(x); };
   let cuenta = { estrellas: 0, gaviotas: 0 };
+  let caja = null;   // dónde quedó el astro en el último cuadro (px), para las pruebas
 
   function estrellas(r, t, colores, desplazamiento, horizonte) {
     let n = 0;
@@ -39,11 +40,13 @@ Portafolio.Cielo = (function () {
     return n;
   }
 
-  function astro(r, t, colores, desplazamiento, noche, movil) {
+  function astro(r, t, colores, desplazamiento, noche, movil, margen) {
     const R = Math.max(4, Math.min(movil ? 5 : 8, Math.floor(r.filas * 0.13)));
     const asp = r.ch / r.cw;
-    const cc = Math.floor(r.cols * (movil ? 0.72 : 0.8));
-    const fc = Math.floor(r.filas * (movil ? 0.22 : 0.3)) - desplazamiento * 0.3;
+    // dentro de la pantalla (el halo llega a 1,3 radios) y nunca debajo del encabezado fijo
+    const cc = Math.min(Math.floor(r.cols * (movil ? 0.72 : 0.8)), Math.floor(r.cols - R * asp * 1.3 - 1));
+    const fc = Math.max(Math.floor(r.filas * (movil ? 0.22 : 0.3)), Math.ceil((margen || 0) + R * 1.3 + 1)) - desplazamiento * 0.3;
+    caja = { x: (cc - R * asp * 1.3) * r.cw, y: (fc - R * 1.3) * r.ch, ancho: R * asp * 2.6 * r.cw, alto: R * 2.6 * r.ch };
     if (fc + R * 1.3 < 0) return;
     for (let f = -R - 2; f <= R + 2; f++) {
       for (let c = Math.floor(-R * asp) - 4; c <= R * asp + 4; c++) {
@@ -82,14 +85,14 @@ Portafolio.Cielo = (function () {
   }
 
   /** Dibuja el cielo; horizonte en filas de pantalla. No dibuja nada si el cielo ya salió de la pantalla. */
-  function dibujar(r, t, colores, horizonte, noche) {
-    if (horizonte < 1) { cuenta = { estrellas: 0, gaviotas: 0 }; return; }
+  function dibujar(r, t, colores, horizonte, noche, margenSuperior) {
+    if (horizonte < 1) { cuenta = { estrellas: 0, gaviotas: 0 }; caja = null; return; }
     const movil = r.cols < 70;
     const desplazamiento = r.filas * 1.25 - horizonte;
     const nE = noche ? estrellas(r, t, colores, desplazamiento, horizonte) : 0;
-    astro(r, t, colores, desplazamiento, noche, movil);
+    astro(r, t, colores, desplazamiento, noche, movil, margenSuperior);
     const nG = gaviotas(r, t, colores, desplazamiento, horizonte, movil);
-    cuenta = { estrellas: nE, gaviotas: nG, astro: noche ? 'luna' : 'sol' };
+    cuenta = { estrellas: nE, gaviotas: nG, astro: noche ? 'luna' : 'sol', caja: caja };
   }
 
   return { dibujar: dibujar, estado: function () { return cuenta; } };

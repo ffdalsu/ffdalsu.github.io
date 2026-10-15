@@ -25,7 +25,7 @@ desarrollo de TI.
 | D7 | 2026-10-14 | IA: LLM en el navegador (WebLLM + WebGPU) sobre un perfil público, con terminal de comandos como base. Hermes descartado (conocimiento confidencial de Conaltura y depende del PC de JD) |
 | D8 | 2026-10-14 | Contacto por Formspree (cuenta creada con ffdalsu.dev@gmail.com; el identificador del formulario es público) |
 | D9 | 2026-10-14 | Entrega en más de 2 semanas, con el refinamiento. La F7 es el punto de entrega seguro |
-| D10 | 2026-10-14 | Inicio = **mascota guía «bit» + océano ASCII**: bit flota sobre el campo de ondas, sigue el cursor, se duerme y guía; habilidades = criaturas, proyectos = islas. En la F13 bit es la voz de la IA |
+| D10 | 2026-10-14 | Inicio = **mascota guía «bit» + océano ASCII**: bit flota sobre el campo de ondas, sigue el cursor, se duerme y guía; habilidades = criaturas, proyectos = islas. En la F15 bit es la voz de la IA |
 | D11 | 2026-10-14 | `index.html` conserva «Sobre mí» (corta) y «Habilidades», contadas por el ecosistema; `sobre-mi.html` tiene la versión completa. Cada página trata solo su tema |
 | D12 | 2026-10-14 | Videos 16:9 de 30-45 s hechos por Claude con código (escenas ASCII grabadas con Playwright + ffmpeg); JD los sube a YouTube como no listados |
 | D13 | 2026-10-14 | Proyectos reales: Hermes / base de conocimiento, Sistema de facturación, Herramienta de Indicadores, Vigía / automatizaciones (+ Tammamon cuando JD diga qué es), descritos sin datos internos |
@@ -48,12 +48,13 @@ desarrollo de TI.
 | D30 | 2026-10-15 | Efectos aprobados por JD en el tablero (`docs/diseno/sonidos.html`). El control queda `┤ ♪ ├ no · efectos · + música` junto a `┤ ◐ ├ ámbar · papel` en una sola caja. Los CSS y JS propios llevan `?v=<commit>` (versionado en el flujo de Pages) para que la caché no mezcle versiones |
 | D31 | 2026-10-15 | Música elegida por JD tras oír las 3 variantes y 3 prototipos de banda sonora: **el sitio usa la generativa desde ψ** y **los videos el chiptune enérgico**. Se cambia con una sola constante, `MUSICA_DEL_SITIO` en `js/sonido/sonido.js` (opciones: 'generativa', 'oceano', 'chiptune'), sin control visible |
 | D32 | 2026-10-15 | El sonido no debe cortarse al cambiar de página. Ahora (A): al cargar se intenta sonar de inmediato (Chrome y Edge lo permiten al llegar por un enlace del sitio); si el navegador lo bloquea, aviso y el primer gesto lo arranca. Después (B): fase «Navegación sin recargar» antes de la terminal, para que la música nunca se corte en ningún navegador y llegue la transición entre páginas |
+| D33 | 2026-10-15 | Celular: menú lateral (offcanvas de Bootstrap por la derecha, abierto con jQuery) con páginas, contacto, tema y sonido; corte en 768 px; escritorio sin cambios. Se declara `color-scheme: light dark` para que Chrome Android no oscurezca el tema papel |
 
 ## Supuestos (JD puede vetarlos)
 - El repo es esta carpeta: `sitio/` (lo que se publica y se empaqueta), `videos/`, `docs/`, `pruebas/`, `scripts/`.
   `recursos/` (PDF del docente) queda fuera de git. Repo público.
 - Sin paso de compilación y **scripts clásicos, sin módulos ES**, para que el zip funcione al abrirlo con doble clic
-  (`file://`). Solo la IA (F13) exige http; bajo `file://` muestra su alternativa.
+  (`file://`). Solo la IA (F15) exige http; bajo `file://` muestra su alternativa.
 - Un JS por responsabilidad, comentarios en español, paleta central en `css/estilos.css` (como `EstiloVisual.cs` del
   referente WinForms).
 - El canvas es decoración (`aria-hidden`); todo el contenido vive en HTML (accesible, validable y legible sin JS).
@@ -76,7 +77,7 @@ desarrollo de TI.
 ## Estructura (contrato desde la F1)
 ```
 sitio/
-  index.html  sobre-mi.html  projects.html  404.html (F15)
+  index.html  sobre-mi.html  projects.html  404.html (F17)
   css/estilos.css              tokens de los dos temas + componentes
   js/tema.js                   <html data-bs-theme="dark|light">, localStorage "tema"
   js/ascii/rejilla.js          rejilla de caracteres sobre canvas, por capas de color (F2)
@@ -91,7 +92,9 @@ sitio/
   js/sonido/sintetizador.js    notas, ruido y efectos con nombre sobre cualquier BaseAudioContext (F9)
   js/sonido/sonido.js          control del encabezado, desbloqueo con gesto, programador y registro (F9)
   js/sonido/musica.js          secuenciador de las variantes de música (F10)
-  data/perfil.md               contenido público que usa la IA (F13)
+  js/menu.js                   menú lateral del celular (F12)
+  js/navegacion.js             cambio de página sin recargar (F13)
+  data/perfil.md               contenido público que usa la IA (F15)
   lib/bootstrap-5.3.3/  lib/jquery-3.7.1/  lib/fontawesome-6.5.2/  lib/fuentes/ (IBM Plex Mono, Martian Mono)
   img/
 videos/escenas/<slug>.html     escenas que reutilizan sitio/js/ascii (F7); videos/salida/ queda fuera de git
@@ -297,7 +300,50 @@ método `estado()` que las pruebas leen.
   ambos); el tamaño de los MP4 (AAC 192 kbps suma cerca de 1 MB por video).
 - **Rama y PR:** `feat/portafolio-f11`. **Depende de** F10. **Quién:** Claude; JD sube los videos.
 
-### F12 · Terminal interactiva
+### F12 · Celular
+- **Objetivo:** en celular (< 768 px) el encabezado es una línea con `juan-david:~/` y `[≡]`, que abre un menú lateral
+  (offcanvas de Bootstrap por la derecha, abierto con jQuery, estilo terminal) con las páginas, `[ escríbeme ]`, el
+  tema y el sonido; en escritorio todo queda igual. Se corrigen los bugs del barrido: luna o sol recortados, rectángulo
+  alrededor de bit y de las criaturas, modo claro oscurecido por Chrome Android, etiquetas de criaturas cortadas, globo
+  de bit sobre las islas, texto cortado en los hitos y el texto del acuario que solo habla de puntero.
+- **Archivos:** modifica los 3 HTML (botón `[≡]`, `#menu-movil` con los controles duplicados, `<meta name="color-scheme"
+  content="light dark">` y `<meta name="theme-color">`), `css/estilos.css`, `js/tema.js` (color de la barra del
+  navegador), `js/ascii/rejilla.js` (borrado por silueta), `js/oceano/cielo.js` (margen superior y borde derecho),
+  `js/oceano/escena.js` (globo bajo el agua en pantallas angostas), `js/oceano/ecosistema.js` (etiquetas dentro),
+  `js/sobre-mi.js` (textos que caben); crea `js/menu.js` y `pruebas/test_movil.py`.
+- **Contratos:** `Portafolio.Rejilla.dibujo(..., borrar: 'silueta')` borra por fila solo entre el primer y el último
+  carácter visible; `Portafolio.Cielo.dibujar(..., margenSuperior)` y `Cielo.estado().caja` (px); `Ecosistema.estado()`
+  con las cajas de las etiquetas; `Oceano.estado().globo` (px). El menú se abre con `$('#menu-movil').offcanvas('show')`.
+  Los botones de tema y sonido existen dos veces (encabezado y menú) y se pintan juntos.
+- **Pruebas:** a 390 y 360 px: `test_menu_movil_abre_con_jquery` (espía `$.fn.offcanvas`), `test_encabezado_movil_de_una_linea`
+  (≤ 64 px), `test_astro_dentro_y_bajo_el_encabezado`, `test_etiquetas_de_criaturas_dentro`, `test_globo_no_tapa_islas`,
+  `test_hitos_sin_texto_cortado`, `test_controles_duplicados_sincronizados`; además `test_escritorio_sin_cambios` (1440),
+  `test_borrado_solo_la_silueta`, `test_color_scheme_declarado` (y `theme-color` por tema).
+- **Riesgos:** el oscurecimiento forzado de Android no se reproduce en las pruebas (JD lo confirma en su celular);
+  controles duplicados desincronizados (cubierto por prueba).
+- **Rama y PR:** `feat/portafolio-f12`. **Quién:** Claude. **Revisión:** normal.
+
+### F13 · Navegación sin recargar (D32-B)
+- **Objetivo:** pasar entre Inicio, Sobre mí y Proyectos (menú, menú lateral, islas, pie) no recarga la página: la
+  música y los efectos no se cortan en ningún navegador, y el cambio lleva una transición ASCII (View Transitions).
+  Atrás y Adelante funcionan; el foco va al título de la página nueva; desde `file://` o sin JS se navega normal.
+- **Archivos:** crea `js/navegacion.js` y `pruebas/test_navegacion.py`; los 3 HTML cargan todos los scripts y marcan
+  `<main data-pagina="inicio|sobre-mi|proyectos">`; adapta a `montar(raiz)` / `desmontar()` los módulos con estado:
+  `oceano/escena.js`, `oceano/ecosistema.js`, `sobre-mi.js`, `miniaturas.js`, `proyectos.js`, `titulos.js`,
+  `arbol.js`, `contacto.js`, `tema.js`, `menu.js` y los controles de `sonido.js` (el audio en sí no se desmonta).
+- **Contratos:** `Portafolio.Paginas.registrar(nombre, { montar, desmontar })`; el enrutador intercepta los enlaces del
+  mismo origen a las 3 páginas, baja el HTML, reemplaza el contenido del `<body>` (sin los `<script>`), copia la clase
+  del `<body>` y el `<title>`, hace `history.pushState`, llama a desmontar y montar, y respeta `#ancla`. Ante cualquier
+  error, navegación normal.
+- **Pruebas:** `test_navegar_no_recarga` (una marca en `window` sobrevive), `test_musica_sigue_al_cambiar_de_pagina`,
+  `test_atras_y_adelante`, `test_isla_llega_al_proyecto` (ancla y resaltado), `test_cada_pagina_se_monta_y_desmonta`
+  (tras 5 cambios hay una sola escena y un solo bucle), `test_foco_va_al_titulo`, `test_file_navega_normal`, y la suite
+  completa en verde.
+- **Riesgos:** fugas al desmontar (bucles de animación o intervalos duplicados → lentitud), cubiertas por la prueba de
+  instancias; si pasa de 2 días se parte en F13a (enrutador e inicio) y F13b (Sobre mí y Proyectos).
+- **Rama y PR:** `feat/portafolio-f13`. **Depende de** F12. **Quién:** Claude. **Revisión:** normal.
+
+### F14 · Terminal interactiva
 - **Objetivo:** `/` o `[>_]` abre una terminal superpuesta: `help`, `whoami`, `ls`, `cat <archivo>`,
   `open <proyecto>`, `tema [ambar|papel]`, `contacto`, `clear`; Tab autocompleta y las flechas recorren el historial.
 - **Archivos:** crea `js/terminal.js`; modifica los 3 HTML y `css/estilos.css`.
@@ -307,9 +353,9 @@ método `estado()` que las pruebas leen.
   `test_open_abre_modal`, `test_contacto_abre_formulario`, `test_tab_autocompleta`, `test_historial_flechas`,
   `test_comando_desconocido_sugiere`, `test_tema_desde_terminal`, `test_esc_cierra_y_devuelve_foco`.
 - **Riesgos:** choque de atajos con los campos de texto (cubierto por una prueba).
-- **Rama y PR:** `feat/portafolio-f12`. **Quién:** Claude. **Revisión:** normal.
+- **Rama y PR:** `feat/portafolio-f14`. **Depende de** F13 (la terminal navega sin recargar). **Quién:** Claude. **Revisión:** normal.
 
-### F13 · IA en el navegador (bit es la voz)
+### F15 · IA en el navegador (bit es la voz)
 - **Objetivo:** `pregunta <texto>` en la terminal, o hablarle a bit en el inicio, responde sobre el perfil público de
   JD con un LLM que corre en el navegador. «Modo por dentro» muestra las 5 alternativas más probables de cada token
   como barras ASCII. Sin WebGPU, o bajo `file://`, aparece una alternativa honesta.
@@ -325,35 +371,35 @@ método `estado()` que las pruebas leen.
   `test_perfil_sin_datos_internos`, `test_prompt_incluye_perfil`.
 - **Riesgos:** un modelo flojo en español o lento. Si da no-go, se para y se vuelve a `ti-plan` (plan B: Worker de
   Cloudflare con Workers AI).
-- **Rama y PR:** `feat/portafolio-f13`. **Depende de** F12. **Quién:** Claude. **Revisión:** reforzada en `perfil.md`.
+- **Rama y PR:** `feat/portafolio-f15`. **Depende de** F14. **Quién:** Claude. **Revisión:** reforzada en `perfil.md`.
 
-### F14 · Refinamiento a: referentes y maqueta v2
+### F16 · Refinamiento a: referentes y maqueta v2
 - **Objetivo:** JD elige los detalles de la v2 a partir de 5 referentes terminal/ASCII/generativos (Atlas + externos),
   con su ADN y una maqueta de detalles.
 - **Archivos:** `docs/diseno/referentes-v2.md`, `docs/diseno/adn-*.md`, `docs/diseno/maqueta-v2.html`. Los
   referentes nuevos aprobados van al Atlas con `ti-referente`.
-- **Contratos:** la lista de detalles aprobados es el alcance de la F15.
+- **Contratos:** la lista de detalles aprobados es el alcance de la F17.
 - **Pruebas:** cierre liviano con capturas en 375, 768 y 1440 px, claro y oscuro.
 - **Riesgos:** que el alcance crezca sin fin; tope de 2 rondas.
 - **Rama y PR:** `docs/diseno-v2`. Puede ir en paralelo desde la F3. **Quién:** Claude con `ti-web-ui`.
 
-### F15 · Refinamiento b: implementación
-- **Objetivo:** el sitio tiene los detalles aprobados en la F14. Candidatos: secuencia de arranque, transición ASCII
+### F17 · Refinamiento b: implementación
+- **Objetivo:** el sitio tiene los detalles aprobados en la F16. Candidatos: secuencia de arranque, transición ASCII
   entre páginas (View Transitions entre documentos), atajos de teclado, 404 ASCII, favicon vivo, imagen para compartir,
   hoja de impresión como CV.
-- **Archivos:** según la F14.
+- **Archivos:** según la F16.
 - **Pruebas:** las de cada detalle, la suite completa en verde, y Lighthouse ≥ 90 en accesibilidad, buenas prácticas y
   SEO y ≥ 85 en rendimiento (escritorio).
 - **Riesgos:** que el rendimiento baje; Lighthouse en cada PR.
-- **Rama y PR:** `feat/portafolio-f15` (se parte si no cabe en 2 días). **Quién:** Claude. **Revisión:** normal.
+- **Rama y PR:** `feat/portafolio-f17` (se parte si no cabe en 2 días). **Quién:** Claude. **Revisión:** normal.
 
-### F16 · Pulido, QA y entrega
+### F18 · Pulido, QA y entrega
 - **Objetivo:** pulido `max` y QA con veredicto SHIP; zip y URL listos para el formulario de entrega.
 - **Archivos:** `docs/qa/informe-*.md`, README final y los ajustes que salgan.
 - **Pruebas:** `ti-pulir` (max) → `ti-probar` → SHIP; `uv run python scripts/empaquetar.py` → zip validado; tag
   `v1.0.0` y Release.
 - **Riesgos:** que falte contenido de JD; se pide desde ya.
-- **Rama y PR:** `feat/portafolio-f16`. **Quién:** Claude; JD entrega el zip y la URL.
+- **Rama y PR:** `feat/portafolio-f18`. **Quién:** Claude; JD entrega el zip y la URL.
 
 ## Dependencias
 - F1 va antes de todo.
@@ -361,10 +407,11 @@ método `estado()` que las pruebas leen.
 - F4 es independiente de F2 y F3.
 - F7 necesita F2 y F5.
 - F8 (portada) → F9 → F10 → F11 (sonido; la F11 necesita también la F7).
-- F5 → F12 → F13.
-- F14 puede ir en paralelo desde la F3.
-- F15 necesita F13 y F14.
-- F16 va al final.
+- F12 (celular) → F13 (navegación sin recargar) → F14 (terminal).
+- F5 → F14 → F15.
+- F16 puede ir en paralelo desde la F3.
+- F17 necesita F15 y F16.
+- F18 va al final.
 
 ## Matriz requisito → fase
 | Requisito | Fase |
@@ -376,12 +423,12 @@ método `estado()` que las pruebas leen.
 | Videos relacionados con cada proyecto (D12) | F7, F11 (con sonido e ID reales) |
 | Responsive | F3, F4, F5 (pruebas en 375, 768 y 1440) |
 | Publicado en un servidor gratuito | F1 |
-| Zip con la estructura pedida | F6, F16 |
+| Zip con la estructura pedida | F6, F18 |
 | Tema claro/oscuro (D4) | F1 |
 | Formulario de contacto (D8, D16) | F6 |
 | Mascota y ecosistema (D10) | F2, F3, F8 (portada) |
-| IA (D7) | F12, F13 |
-| Refinamiento visual | F14, F15, F16 |
+| IA (D7) | F14, F15 |
+| Refinamiento visual | F16, F17, F18 |
 | Sonido y música (D24-D28) | F9, F10, F11 |
 
 ## Plan de pruebas
@@ -391,11 +438,14 @@ método `estado()` que las pruebas leen.
 - `test_sin_datos_internos` sobre todo `sitio/` desde la F4.
 - CI en cada PR: las anteriores. Despliegue a Pages solo desde `main`.
 - Sonido: registro de efectos de `Portafolio.Sonido.estado()` y render con `OfflineAudioContext` (determinista y audible).
-- Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F15: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
+- Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** **guía cumplida** (punto de entrega seguro, 2026-10-15): los 5 videos con sonido están en YouTube
-  (no listados) y sus ID en `projects.html`. Escudos de los diplomas sin barras de desplazamiento. 133 pruebas.
-- **Pendiente de JD:** confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** planear con `ti-plan` la fase «Navegación sin recargar» (D32-B) antes de la terminal.
-- **Para el refinamiento:** revisar en celular las dos islas lejanas.
+- **Dónde quedamos:** F12 · Celular terminada en `feat/portafolio-f12` (2026-10-15): encabezado de una línea con `[≡]`
+  y menú lateral (offcanvas con jQuery) con páginas, contacto, tema y sonido; luna o sol dentro y bajo el encabezado;
+  borrado por silueta (sin rectángulo alrededor de bit ni de las criaturas); `color-scheme: light dark` y `theme-color`
+  por tema; etiquetas de criaturas dentro de la pantalla; globo de bit bajo el agua en celular; hitos sin texto
+  cortado. Escritorio igual. 154 pruebas en verde. PR abierto.
+- **Pendiente de JD:** confirmar en su celular (modo oscuro del teléfono activo + tema papel) que ya no se oscurece;
+  confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** F13 · Navegación sin recargar.

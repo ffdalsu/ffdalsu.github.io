@@ -22,9 +22,11 @@ Portafolio.Tema = (function () {
     pintarBotones();
   }
 
-  /** Marca con aria-pressed el botón del tema activo. */
+  /** Marca con aria-pressed el botón del tema activo y da a la barra del navegador (celular) el color del fondo. */
   function pintarBotones() {
     const tema = actual();
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--fondo').trim());
     $('.opcion-tema').each(function () {
       $(this).attr('aria-pressed', String($(this).data('tema') === tema));
     });
