@@ -26,7 +26,7 @@ Portafolio.Arbol = (function () {
     }, MS);
   }
 
-  $(function () {
+  Portafolio.Paginas.montar(function () {
     $('.habilidades li').on('mouseenter focus', function () {
       const sc = this.querySelector('.sc');
       if (sc) revolver(sc);

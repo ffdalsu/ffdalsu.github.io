@@ -6,14 +6,14 @@
 window.Portafolio = window.Portafolio || {};
 
 Portafolio.Menu = (function () {
-  $(function () {
+  Portafolio.Paginas.montar(function () {
     const $menu = $('#menu-movil');
     if (!$menu.length) return;
     $('.boton-menu').on('click', function () { $menu.offcanvas('show'); });
     // [ escríbeme ] dentro del menú: primero se cierra el menú y luego se abre el formulario
     $menu.find('.abrir-contacto').on('click', function () { $menu.offcanvas('hide'); });
-    // si la pantalla se agranda hasta escritorio con el menú abierto, se cierra
-    window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => { if (e.matches) $menu.offcanvas('hide'); });
   });
+  // si la pantalla se agranda hasta escritorio con el menú abierto, se cierra (un solo oyente para toda la visita)
+  window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => { if (e.matches) $('#menu-movil').offcanvas('hide'); });
   return {};
 })();

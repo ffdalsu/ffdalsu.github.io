@@ -137,10 +137,18 @@ Portafolio.Sonido = (function () {
     efecto('blip');
   }
 
-  $(function () {
+  // el control y el aviso son de cada página: se vuelven a montar al cambiar de página sin recargar (js/navegacion.js)
+  Portafolio.Paginas.montar(function () {
     pintarControl();
-    intentarAlCargar();
     $('.opcion-sonido').on('click', function () { cambiar($(this).data('sonido')); });
+    if (aviso === null && modo !== 'silencio' && (!ctx || ctx.state !== 'running')) mostrarAviso(true);
+  });
+  // el aviso vivía en el body que se reemplaza: se olvida para volver a crearlo si hace falta
+  Portafolio.Paginas.desmontar(function () { aviso = null; });
+
+  // lo de toda la visita: el audio no se desmonta nunca, así la música sigue al cambiar de página
+  $(function () {
+    intentarAlCargar();
 
     // el primer gesto despierta el audio si el visitante ya lo había activado en otra visita
     ['pointerdown', 'keydown', 'touchend'].forEach((ev) => document.addEventListener(ev, despertar, { capture: true }));

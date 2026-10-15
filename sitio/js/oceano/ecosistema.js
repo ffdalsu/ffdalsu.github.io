@@ -113,7 +113,7 @@ Portafolio.Ecosistema = (function () {
     });
   }
 
-  $(iniciar);
+  Portafolio.Paginas.montar(iniciar);
 
   return {
     dibujar: dibujar,

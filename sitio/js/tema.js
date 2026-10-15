@@ -32,7 +32,7 @@ Portafolio.Tema = (function () {
     });
   }
 
-  $(function () {
+  Portafolio.Paginas.montar(function () {
     $('.opcion-tema').on('click', function () { aplicar($(this).data('tema')); });
     pintarBotones();
   });

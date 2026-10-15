@@ -30,14 +30,16 @@ Portafolio.Titulos = (function () {
     }, MS);
   }
 
-  $(function () {
+  let io = null;
+  Portafolio.Paginas.montar(function () {
     const titulos = document.querySelectorAll('.titulo-grande, .titulo');
     if (reducir.matches || !('IntersectionObserver' in window)) return;
-    const io = new IntersectionObserver((entradas) => entradas.forEach((e) => {
+    io = new IntersectionObserver((entradas) => entradas.forEach((e) => {
       if (e.isIntersecting) { io.unobserve(e.target); descifrar(e.target); }
     }), { threshold: 0.6 });
     titulos.forEach((t) => io.observe(t));
   });
+  Portafolio.Paginas.desmontar(function () { if (io) io.disconnect(); io = null; });
 
   return { descifrar: descifrar };
 })();

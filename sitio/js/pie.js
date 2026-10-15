@@ -7,12 +7,9 @@ Portafolio.Reloj = (function () {
   function hora() {
     return new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Bogota' });
   }
-  $(function () {
-    const reloj = document.getElementById('reloj');
-    if (!reloj) return;
-    const pintar = () => { reloj.textContent = hora(); };
-    pintar();
-    setInterval(pintar, 15000);
-  });
+  // un solo intervalo para toda la visita; cada tic busca el reloj de la página que esté montada
+  const pintar = () => { const reloj = document.getElementById('reloj'); if (reloj) reloj.textContent = hora(); };
+  setInterval(pintar, 15000);
+  Portafolio.Paginas.montar(pintar);
   return { hora: hora };
 })();
