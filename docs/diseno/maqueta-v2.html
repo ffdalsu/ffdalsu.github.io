@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="es" data-bs-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta v2 · detalles</title>
+<link rel="stylesheet" href="../../sitio/lib/fuentes/fuentes.css">
+<link rel="icon" id="favicon" href="../../sitio/img/favicon.svg">
+<style>
+/* Tokens: los mismos del sitio (sitio/css/estilos.css) */
+:root, [data-bs-theme="light"] {
+  color-scheme: light;
+  --fondo: #EDF0EC; --panel: #E2E7E2; --texto: #1E2B2A; --tenue: #5A6762; --acento: #B93C0B; --linea: #B4BFB9;
+  --fuente-display: "Martian Mono", "Cascadia Mono", Consolas, monospace;
+  --fuente-texto: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+  --gutter: clamp(16px, 4vw, 48px);
+}
+[data-bs-theme="dark"] {
+  color-scheme: dark;
+  --fondo: #120D04; --panel: #1B1407; --texto: #FFB547; --tenue: #A57A30; --acento: #FFE2A6; --linea: #4D3812;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fondo); color: var(--texto); font: 15px/1.6 var(--fuente-texto); padding-inline: var(--gutter); }
+.envoltura { max-width: 1180px; margin: 0 auto; padding-block: 32px 80px; }
+header.portada { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--linea); padding-bottom: 16px; }
+h1 { font: 600 clamp(20px, 3vw, 28px)/1.2 var(--fuente-display); margin: 0; }
+h2 { font: 600 17px/1.3 var(--fuente-display); margin: 0 0 4px; }
+p { margin: 0 0 8px; max-width: 70ch; }
+.tenue { color: var(--tenue); }
+button { font: inherit; color: var(--texto); background: transparent; border: 1px solid var(--texto); border-radius: 0; padding: 4px 12px; cursor: pointer; transition: background-color .15s, color .15s; }
+button:hover, button:focus-visible { background: var(--texto); color: var(--fondo); outline: none; }
+button[aria-pressed="true"] { background: var(--texto); color: var(--fondo); }
+.detalle { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 24px; padding-block: 40px; border-bottom: 1px solid var(--linea); }
+@media (max-width: 860px) { .detalle { grid-template-columns: 1fr; } }
+.rotulo { color: var(--acento); }
+.notas ul { margin: 4px 0 12px; padding-left: 18px; }
+.notas li { margin-bottom: 4px; }
+.notas h3 { font: 600 13px/1.3 var(--fuente-display); margin: 12px 0 0; text-transform: lowercase; }
+.acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+/* Ventana estilo Ghostty, con las esquinas rectas del sitio */
+.ventana { border: 1px solid var(--linea); background: var(--fondo); position: relative; overflow: hidden; }
+.ventana > .barra { height: 34px; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--linea); color: var(--tenue); font-size: 12px; }
+.ventana > .barra::before { content: "● ● ●"; position: absolute; left: 12px; letter-spacing: 2px; color: var(--linea); }
+.ventana .cuerpo { position: relative; height: clamp(300px, 46vw, 440px); overflow: hidden; }
+pre { margin: 0; font-family: var(--fuente-texto); }
+.acento { color: var(--acento); }
+
+/* Arranque */
+#arranque .cuerpo { padding: 16px; font-size: clamp(10px, 1.3vw, 13px); line-height: 1.45; }
+#arranque .saltar { position: absolute; right: 12px; bottom: 10px; font-size: 12px; color: var(--tenue); }
+#arranque .cuerpo { height: clamp(380px, 54vw, 560px); }
+#bitGrande { position: absolute; left: 50%; bottom: 36px; transform: translateX(-50%); white-space: pre; }
+
+/* Transición */
+.pagina-falsa { position: absolute; inset: 0; padding: 20px; }
+.pagina-falsa .nav { display: flex; gap: 16px; font-size: 13px; border-bottom: 1px solid var(--linea); padding-bottom: 8px; margin-bottom: 16px; }
+.pagina-falsa .nav span[aria-current] { color: var(--acento); }
+.pagina-falsa .titulo { font: 600 clamp(18px, 2.4vw, 26px)/1.25 var(--fuente-display); margin-bottom: 10px; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.tarjetas div { border: 1px solid var(--linea); padding: 10px; font-size: 12px; }
+#velo { position: absolute; inset: 0; font-size: 14px; line-height: 16px; white-space: pre; pointer-events: none; color: var(--texto); overflow: hidden; }
+.fundido { transition: opacity .25s; }
+
+/* Favicon */
+.favicons { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; padding: 24px; }
+.favicons figure { margin: 0; text-align: center; font-size: 12px; color: var(--tenue); }
+.favicons canvas { width: 96px; height: 96px; image-rendering: pixelated; border: 1px solid var(--linea); display: block; margin-bottom: 6px; }
+.pestana { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--linea); border-bottom: 0; padding: 6px 14px; font-size: 12px; margin: 0 24px; }
+.pestana canvas { width: 16px; height: 16px; }
+
+/* 404 */
+#mar404 { position: absolute; inset: 0; font-size: 13px; line-height: 15px; white-space: pre; color: var(--tenue); overflow: hidden; }
+.aviso404 { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 6px; padding: 16px; }
+.aviso404 .codigo { font: 700 clamp(40px, 7vw, 72px)/1 var(--fuente-display); }
+.aviso404 .bit { white-space: pre; line-height: 1.15; display: inline-block; text-align: left; margin: 0 auto 6px; background: var(--fondo); padding: 4px 8px; }
+.aviso404 .linea { background: var(--fondo); padding: 2px 8px; }
+.aviso404 a { color: var(--acento); }
+
+/* Hoja CV */
+.hoja-marco { background: var(--panel); padding: 20px; display: grid; place-items: center; }
+.hoja { background: #fff; color: #111; width: min(100%, 460px); aspect-ratio: 210 / 297; padding: 7% 8%; font: 9.5px/1.45 var(--fuente-texto); box-shadow: 0 1px 0 #0002; overflow: hidden; }
+.hoja h4 { font: 700 18px/1.1 var(--fuente-display); margin: 0; }
+.hoja .sub { color: #555; margin-bottom: 10px; }
+.hoja .sec { font: 600 9.5px var(--fuente-display); border-bottom: 1px solid #111; margin: 10px 0 4px; text-transform: uppercase; letter-spacing: .06em; }
+.hoja .fila { display: grid; grid-template-columns: 74px 1fr; gap: 8px; margin-bottom: 3px; }
+.hoja .bit-mini { float: right; white-space: pre; line-height: 1.1; font-size: 8px; }
+
+/* Imagen para compartir */
+.compartir-marco { overflow-x: auto; }
+.tarjeta-og { width: 100%; aspect-ratio: 1200 / 630; background: #120D04; color: #FFB547; border: 1px solid #4D3812; display: grid; grid-template-rows: auto 1fr; container-type: inline-size; }
+.tarjeta-og .barra { height: 5.4cqw; border-bottom: 1px solid #4D3812; display: flex; align-items: center; justify-content: center; position: relative; color: #A57A30; font-size: 1.8cqw; }
+.tarjeta-og .barra::before { content: "● ● ●"; position: absolute; left: 2cqw; color: #4D3812; letter-spacing: .3cqw; }
+.tarjeta-og .cuerpo { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 3cqw; padding: 0 4cqw; }
+.tarjeta-og pre { white-space: pre; }
+.tarjeta-og .acento { color: #FFE2A6; }
+.tarjeta-og .tenue { color: #A57A30; }
+.tarjeta-og .nombre { font: 700 6.4cqw/1.05 var(--fuente-display); }
+.tarjeta-og .rol { font-size: 2.3cqw; color: #FFE2A6; margin-top: 1.6cqw; }
+.tarjeta-og .url { font-size: 2cqw; color: #A57A30; margin-top: 3cqw; }
+
+@media (prefers-reduced-motion: reduce) { .fundido { transition: none; } }
+
+@media print {
+  body { background: #fff; padding: 0; }
+  body > .envoltura > *:not(#cv) { display: none !important; }
+  #cv { display: block; border: 0; padding: 0; }
+  #cv .notas, #cv .acciones { display: none; }
+  .hoja-marco { background: none; padding: 0; }
+  .hoja { width: 100%; aspect-ratio: auto; box-shadow: none; font-size: 10.5pt; padding: 0; }
+  .hoja h4 { font-size: 22pt; }
+  .hoja .fila { grid-template-columns: 30mm 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="envoltura">
+
+<header class="portada">
+  <div>
+    <h1>Maqueta v2 · detalles del refinamiento</h1>
+    <p class="tenue">F16 · guía: ghostty.org (D35). Seis detalles elegidos por JD; cada uno con su demostración, lo seguro y sus riesgos.</p>
+  </div>
+  <div class="acciones">
+    <button id="tema" aria-pressed="false">tema: papel</button>
+  </div>
+</header>
+
+<!-- Arranque -->
+<section class="detalle" id="arranque">
+  <div class="ventana">
+    <div class="barra">bit — ~/portafolio</div>
+    <div class="cuerpo"><pre id="bootLog"></pre><pre id="bitGrande" aria-hidden="true"></pre><span class="saltar">[esc] saltar</span></div>
+  </div>
+  <div class="notas">
+    <h2>Secuencia de arranque</h2>
+    <p>La primera visita de la sesión: cuatro líneas de «sistema» y bit aparece grande, hecho de caracteres con volumen (formas sombreadas con una rampa de densidad, como el logo de Ghostty). Se revela desde el centro, saluda, parpadea, le laten las luces del pecho y el barco de papel se mece. Luego cede el paso al océano del inicio, donde sigue el bit pequeño de siempre.</p>
+    <h3>Seguro</h3>
+    <ul><li>Dura ~1,6 s, una vez por sesión (<code>sessionStorage</code>); Esc, clic o cualquier tecla la saltan.</li>
+    <li>Con «reducir movimiento» aparece el cuadro final, sin animar.</li>
+    <li>Las cifras son reales del sitio (habilidades y proyectos), no adorno.</li></ul>
+    <h3>Riesgos</h3>
+    <ul><li>Si se siente lenta, retrasa el contenido: el docente la verá en cada pestaña nueva.</li>
+    <li>Debe convivir con la música (F11): el sonido no arranca hasta que termina.</li></ul>
+    <div class="acciones"><button id="repetirBoot">repetir</button></div>
+  </div>
+</section>
+
+<!-- Transición -->
+<section class="detalle" id="transicion">
+  <div class="ventana">
+    <div class="barra">transición entre páginas</div>
+    <div class="cuerpo" id="escenario">
+      <div class="pagina-falsa" id="pagina"></div>
+      <pre id="velo" aria-hidden="true"></pre>
+    </div>
+  </div>
+  <div class="notas">
+    <h2>Transición ASCII entre páginas</h2>
+    <p>Al navegar (F13), la página se llena de caracteres en orden aleatorio, cambia por debajo y se vacía: ~450 ms en total. Es la misma rampa del arranque, para que todo se sienta de una pieza.</p>
+    <h3>Seguro</h3>
+    <ul><li>Solo en escritorio por decisión de JD si el celular no rinde: allá queda un fundido simple de 250 ms.</li>
+    <li>Una sola capa <code>&lt;pre&gt;</code> que se reescribe por cuadro; no anima el DOM de la página.</li>
+    <li>Con «reducir movimiento», fundido simple.</li></ul>
+    <h3>Riesgos</h3>
+    <ul><li>Si la página nueva tarda en llegar, el velo se queda lleno: hay que esperar al contenido antes de vaciar.</li>
+    <li>Repetida muchas veces puede cansar; por eso es corta.</li></ul>
+    <div class="acciones"><button data-ir="inicio">ir a inicio</button><button data-ir="proyectos">ir a proyectos</button><button id="modoMovil" aria-pressed="false">simular celular</button></div>
+  </div>
+</section>
+
+<!-- Favicon -->
+<section class="detalle" id="favicon-vivo">
+  <div class="ventana">
+    <div class="barra">favicon vivo</div>
+    <div class="cuerpo" style="height:auto">
+      <div style="padding-top:24px"><span class="pestana"><canvas id="favPestana" width="64" height="64"></canvas>Juan David · portafolio</span></div>
+      <div class="favicons" style="border-top:1px solid var(--linea)">
+        <figure><canvas id="fav0" width="64" height="64"></canvas>quieto</figure>
+        <figure><canvas id="fav1" width="64" height="64"></canvas>parpadea (cada ~4 s)</figure>
+        <figure><canvas id="fav2" width="64" height="64"></canvas>música ♪</figure>
+        <figure><canvas id="fav3" width="64" height="64"></canvas>pestaña oculta: duerme</figure>
+      </div>
+    </div>
+  </div>
+  <div class="notas">
+    <h2>Favicon vivo</h2>
+    <p>El ícono de la pestaña es bit: parpadea de vez en cuando, mueve las olas cuando suena la música y se duerme si cambias de pestaña. <strong>Esta misma página ya lo hace:</strong> mira la pestaña del navegador.</p>
+    <h3>Seguro</h3>
+    <ul><li>Se dibuja en un <code>canvas</code> de 64 px y se cambia el <code>href</code> del ícono; el SVG actual queda como respaldo.</li>
+    <li>Pocos cambios por segundo (2-4) para no gastar batería.</li></ul>
+    <h3>Riesgos</h3>
+    <ul><li>Safari ignora los favicons animados: allí se queda quieto (aceptable).</li>
+    <li>A 16 px los ojos casi no se ven: el parpadeo debe ser evidente o no vale la pena.</li></ul>
+    <div class="acciones"><button id="musica" aria-pressed="false">♪ música</button></div>
+  </div>
+</section>
+
+<!-- 404 -->
+<section class="detalle" id="e404">
+  <div class="ventana">
+    <div class="barra">ffdalsu.github.io/isla-perdida</div>
+    <div class="cuerpo">
+      <pre id="mar404" aria-hidden="true"></pre>
+      <div class="aviso404">
+        <div class="codigo">404</div>
+        <pre class="bit" id="bit404"></pre>
+        <div class="linea">esta isla no está en el mapa.</div>
+        <div class="linea tenue">$ cd ~ &nbsp;→ <a href="#e404">volver al inicio</a> · <a href="#e404">proyectos</a> · <a href="#e404">sobre mí</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="notas">
+    <h2>404 ASCII</h2>
+    <p>Bit flota perdido en el océano, solo y centrado (la «pieza protagonista» de Ghostty), con tres salidas claras. La terminal (F14) también funciona aquí.</p>
+    <h3>Seguro</h3>
+    <ul><li><code>404.html</code> en la raíz: GitHub Pages la sirve sola para cualquier ruta que no exista.</li>
+    <li>Rutas absolutas (<code>/css/…</code>) porque puede abrirse desde cualquier carpeta.</li></ul>
+    <h3>Riesgos</h3>
+    <ul><li>En el zip y con <code>file://</code> no se ve nunca (solo existe en el servidor).</li>
+    <li>Si es muy divertida, alguien podría pensar que es la portada: la palabra «404» va grande a propósito.</li></ul>
+  </div>
+</section>
+
+<!-- CV -->
+<section class="detalle" id="cv">
+  <div class="hoja-marco">
+    <div class="hoja">
+      <pre class="bit-mini"> .-.
+[o_o]
+\___/</pre>
+      <h4>Juan David</h4>
+      <div class="sub">Matemático puro · desarrollador · transformación digital e IA<br>Medellín, Colombia · ffdalsu.dev@gmail.com · ffdalsu.github.io</div>
+      <div class="sec">Perfil</div>
+      <p>Matemático puro de la Universidad Nacional que encontró en la programación dónde usar su carrera. Hoy automatiza procesos, construye webs internas e innova con inteligencia artificial.</p>
+      <div class="sec">Experiencia</div>
+      <div class="fila"><span>2024 – hoy</span><span><b>Conaltura</b> · transformación digital: automatizaciones, webs internas e IA.</span></div>
+      <div class="fila"><span>2022 – 2024</span><span><b>Bancolombia</b> · modelos financieros y automatización de procesos.</span></div>
+      <div class="sec">Formación</div>
+      <div class="fila"><span>2021</span><span>Matemático puro · Universidad Nacional de Colombia.</span></div>
+      <div class="fila"><span>2023 – 2024</span><span>Harvard: CS50x, CS50P, CS50 SQL y CS50AI · tres certificados profesionales de HarvardX.</span></div>
+      <div class="sec">Habilidades</div>
+      <p>Python · SQL Server · FastAPI · JavaScript · HTML/CSS · Bootstrap · jQuery · Git · modelos y automatización con IA.</p>
+      <div class="sec">Proyectos</div>
+      <p>Base de conocimiento para agentes de IA · Sistema de facturación (C#, SQLite) · Herramienta de indicadores · Automatizaciones.</p>
+    </div>
+  </div>
+  <div class="notas">
+    <h2>Hoja de impresión como CV</h2>
+    <p>Al imprimir <code>sobre-mi.html</code> (Ctrl+P) sale esta hoja: sin océano, sin menús, en negro sobre blanco aunque estés en el tema ámbar. Bit queda pequeño en la esquina como firma.</p>
+    <h3>Seguro</h3>
+    <ul><li>Solo una hoja <code>@media print</code>; el contenido sale del mismo HTML (no hay que mantener un PDF aparte).</li>
+    <li>Una página A4 con las fechas de muestra de D21.</li></ul>
+    <h3>Riesgos</h3>
+    <ul><li>Si cambia «Sobre mí», hay que revisar que siga cabiendo en una hoja.</li>
+    <li>Cada navegador pone sus márgenes; se prueba en Chrome y Edge.</li></ul>
+    <div class="acciones"><button id="imprimir">imprimir esta hoja</button></div>
+  </div>
+</section>
+
+<!-- Compartir -->
+<section class="detalle" id="compartir">
+  <div class="compartir-marco">
+    <div class="tarjeta-og" role="img" aria-label="Imagen para compartir: bit y el nombre de Juan David">
+      <div class="barra">bit — ffdalsu.github.io</div>
+      <div class="cuerpo">
+        <pre id="bitOg"></pre>
+        <div><div class="nombre">Juan David</div><div class="rol">matemático · desarrollador · IA</div><div class="url">$ open ffdalsu.github.io_</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="notas">
+    <h2>Imagen para compartir</h2>
+    <p>La tarjeta que aparece al pegar el enlace en WhatsApp, LinkedIn o el formulario de entrega: la ventana de Ghostty con bit grande y tu nombre, siempre en ámbar (se ve mejor en las vistas previas).</p>
+    <h3>Seguro</h3>
+    <ul><li>PNG de 1200 × 630 generado con Playwright a partir de esta misma tarjeta (<code>scripts/</code>), no dibujado a mano.</li>
+    <li>Etiquetas <code>og:</code> y <code>twitter:</code> en las tres páginas, con la URL absoluta.</li></ul>
+    <h3>Riesgos</h3>
+    <ul><li>WhatsApp y LinkedIn guardan la vista previa: si se cambia luego, tarda en actualizarse.</li>
+    <li>Si cambias el texto, hay que volver a generar el PNG (una prueba lo compara).</li></ul>
+  </div>
+</section>
+
+</div>
+
+<script>
+(() => {
+  const html = document.documentElement;
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const color = (v) => getComputedStyle(html).getPropertyValue(v).trim();
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+  // ---------- Tema ----------
+  const btnTema = document.getElementById('tema');
+  btnTema.addEventListener('click', () => {
+    const oscuro = html.dataset.bsTheme !== 'dark';
+    html.dataset.bsTheme = oscuro ? 'dark' : 'light';
+    btnTema.textContent = 'tema: ' + (oscuro ? 'ámbar' : 'papel');
+    btnTema.setAttribute('aria-pressed', String(oscuro));
+    pintarFavicons();
+  });
+
+  // ---------- Bit grande (arranque, compartir) ----------
+  // Bit se dibuja con formas (distancias con signo) y se sombrea con una rampa de densidad, como el logo de Ghostty.
+  // Capas: 0 = cuerpo (--texto), 1 = luz (--acento: ojos, antena, luces del pecho, halo, mar), 2 = tenue (pliegues).
+  const RAMPA = ' ·:-=+*#';
+  const RAMPA_BIT = ' .:-=+*x%#@';
+  const COLS = 96, FILAS = 44, ASPECTO = 0.54, ESCALA = 30 / FILAS;   // la escena se diseña en 30 filas y se muestrea más fino
+  const largo = (x, y) => Math.hypot(x, y);
+  const caja = (px, py, hx, hy, r) => { const qx = Math.abs(px) - hx + r, qy = Math.abs(py) - hy + r; return largo(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r; };
+  const segmento = (px, py, ax, ay, bx, by, r) => { const pax = px - ax, pay = py - ay, bax = bx - ax, bay = by - ay; const h = Math.max(0, Math.min(1, (pax * bax + pay * bay) / (bax * bax + bay * bay))); return largo(pax - bax * h, pay - bay * h) - r; };
+  const dentro = (px, py, pol) => { let s = false; for (let i = 0, j = pol.length - 1; i < pol.length; j = i++) { const [xi, yi] = pol[i], [xj, yj] = pol[j]; if ((yi > py) !== (yj > py) && px < (xj - xi) * (py - yi) / (yj - yi) + xi) s = !s; } return s; };
+  const borde = (px, py, pol) => { let d = 1e9; for (let i = 0, j = pol.length - 1; i < pol.length; j = i++) d = Math.min(d, segmento(px, py, pol[j][0], pol[j][1], pol[i][0], pol[i][1], 0)); return dentro(px, py, pol) ? -d : d; };
+  const CASCO = [[-17.5, 2.6], [-10, 5.3], [10, 5.3], [17.5, 2.6], [12, 9.6], [-12, 9.6]];
+
+  // Un cuadro de la escena en el segundo t. parpadeo: 1 = ojos abiertos, 0 = cerrados. saludo: -1..1, altura del brazo.
+  function escenaBit(t, opciones) {
+    const o = Object.assign({ parpadeo: 1, saludo: Math.sin(t * 5) }, opciones);
+    const flote = Math.sin(t * 1.3) * 0.35;
+    const chars = [], capas = [];
+    for (let y = 0; y < FILAS; y++) {
+      let fila = ''; const capa = [];
+      for (let x = 0; x < COLS; x++) {
+        const u = (x - COLS / 2 + 0.5) * ASPECTO * ESCALA, v = (y - FILAS / 2 + 0.5) * ESCALA;
+        const luz = (-u / 18 - v / 22) * 0.06;           // luz desde arriba a la izquierda
+        let d = 0, c = 0;
+        const pinta = (sdf, base, capaNueva, aro) => { if (sdf < 0) { d = base + luz + (sdf > -0.55 ? (aro == null ? 0.22 : aro) : 0); c = capaNueva; } };
+        const bv = v - flote;                             // bit y el barco se mecen juntos
+        // Halo (el anillo de Ghostty): puntos sueltos que giran
+        const rh = largo(u, v + 3);
+        if (Math.abs(rh - 14.4) < 0.3 && v < 7.5) { d = 0.28 + 0.18 * Math.sin(Math.atan2(v + 3, u) * 16 - t * 2); c = 1; }
+        // Antena
+        pinta(segmento(u, bv, 0, -12, 0, -9, 0.32), 0.62, 0);
+        pinta(largo(u, bv + 13.1) - 1.25, 0.75 + Math.sin(t * 3) * 0.2, 1, 0.3);
+        // Orejas, cabeza y pantalla
+        pinta(caja(Math.abs(u) - 6.9, bv + 5, 0.8, 1.8, 0.35), 0.55, 0);
+        pinta(caja(u, bv + 5, 6.2, 4.6, 2), 0.7, 0);
+        pinta(caja(u, bv + 5.1, 4.7, 3.3, 1.4), (y % 2 ? 0.1 : 0.03), 0, 0.12);   // pantalla con líneas de barrido
+        // Ojos (se cierran al parpadear) y sonrisa
+        for (const ox of [-2.2, 2.2]) {
+          const ey = (bv + 5.9) / Math.max(0.1, o.parpadeo);
+          pinta(largo(u - ox, ey) - 1.35, 0.98, 1, 0.05);
+          if (o.parpadeo > 0.6) pinta(largo(u - ox + 0.45, ey + 0.45) - 0.38, 0.15, 0, 0);   // brillo del ojo
+        }
+        pinta(Math.min(segmento(u, bv, -1.5, -3.3, 0, -2.75, 0.34), segmento(u, bv, 0, -2.75, 1.5, -3.3, 0.34)), 0.85, 1, 0);
+        // Cuello, cuerpo, luces del pecho y brazos
+        pinta(caja(u, bv + 0.5, 1.3, 0.7, 0.2), 0.45, 0);
+        pinta(caja(u, bv - 2.7, 4.4, 2.7, 1.2), 0.62, 0);
+        [-1.6, 0, 1.6].forEach((lx, i) => pinta(largo(u - lx, bv - 2.3) - 0.55, 0.35 + 0.6 * Math.max(0, Math.sin(t * 4 - i * 1.2)), 1, 0));
+        const mano = [7.4, -2.2 + o.saludo * 1.2];
+        pinta(segmento(u, bv, -4.2, 1, -6.6, 4.2, 0.75), 0.6, 0);
+        pinta(largo(u + 6.8, bv - 4.4) - 0.95, 0.66, 0);
+        pinta(segmento(u, bv, 4.2, 1, mano[0], mano[1], 0.75), 0.6, 0);
+        pinta(largo(u - mano[0], bv - mano[1] + 0.3) - 0.95, 0.66, 0);
+        // Barco de papel: casco con puntas levantadas y dos pliegues
+        const db = borde(u, bv, CASCO);
+        if (db < 0) {
+          d = 0.42 + luz + (db > -0.5 ? 0.3 : 0); c = 0;
+          if (Math.min(segmento(u, bv, -10, 5.3, -6.5, 9.6, 0), segmento(u, bv, 10, 5.3, 6.5, 9.6, 0)) < 0.3) { d = 0.25; c = 2; }
+        }
+        // Mar: superficie con dos ondas; tapa el fondo del casco
+        const sup = 8.9 + 0.5 * Math.sin(u * 0.45 + t * 1.6) + 0.3 * Math.sin(u * 0.9 - t * 1.1);
+        if (v > sup) { const prof = v - sup; const onda = 0.5 + 0.5 * Math.sin(u * 0.7 - t * 2 + prof * 1.3); d = Math.max(0.08, (prof < 0.7 ? 0.65 : 0.42 - prof * 0.05) * (0.55 + 0.45 * onda)); c = 1; }
+        const k = Math.max(0, Math.min(RAMPA_BIT.length - 1, Math.round(d * (RAMPA_BIT.length - 1))));
+        fila += RAMPA_BIT[k]; capa.push(c);
+      }
+      chars.push(fila); capas.push(capa);
+    }
+    return { chars, capas };
+  }
+  const CLASE = ['', 'acento', 'tenue'];
+  function aHtml({ chars, capas }, filtro) {
+    let s = '';
+    for (let y = 0; y < chars.length; y++) {
+      let actual = 0;
+      for (let x = 0; x < chars[y].length; x++) {
+        const ch = filtro ? filtro(x, y, chars[y][x]) : chars[y][x];
+        const c = ch === ' ' ? actual : capas[y][x];
+        if (c !== actual) { if (actual > 0) s += '</span>'; if (c > 0) s += '<span class="' + CLASE[c] + '">'; actual = c; }
+        s += ch;
+      }
+      if (actual > 0) s += '</span>';
+      s += '\n';
+    }
+    return s;
+  }
+  // Tamaño de letra para que la rejilla quepa en su caja (la celda mono mide ~0,6 × 1,12 em).
+  function ajustar(pre, ancho, alto) {
+    pre.style.fontSize = Math.min(ancho / (COLS * 0.6), alto / (FILAS * 1.12)).toFixed(2) + 'px';
+    pre.style.lineHeight = '1.12';
+  }
+
+  // ---------- Arranque ----------
+  const LOG = [
+    'bit-os 2.0 · ffdalsu.github.io',
+    '[ ok ] montando océano ............ 120 olas',
+    '[ ok ] soltando criaturas ......... 9 habilidades',
+    '[ ok ] trazando islas ............. 4 proyectos',
+    '[ ok ] despertando a bit'
+  ];
+  const bootLog = document.getElementById('bootLog');
+  const bitGrande = document.getElementById('bitGrande');
+  const cuerpoBoot = bitGrande.parentElement;
+  let bootId = 0;
+  const encajarBoot = () => ajustar(bitGrande, cuerpoBoot.clientWidth - 32, cuerpoBoot.clientHeight - 5 * 19 - 72);
+  function arrancar() {
+    const id = ++bootId;
+    encajarBoot(); bootLog.textContent = ''; bitGrande.innerHTML = '';
+    if (quieto) { bootLog.textContent = LOG.join('\n'); bitGrande.innerHTML = aHtml(escenaBit(0, { saludo: 1 })); return; }
+    LOG.forEach((l, i) => setTimeout(() => { if (id === bootId) bootLog.textContent += (i ? '\n' : '') + l; }, i * 140));
+    const t0 = performance.now() + LOG.length * 140, REVELA = 900;
+    const azar = Array.from({ length: COLS * FILAS }, () => Math.random());
+    (function cuadro(ahora) {
+      if (id !== bootId) return;
+      const ms = ahora - t0;
+      if (ms >= 0) {
+        const t = ms / 1000, p = ms / REVELA, ciclo = t % 3.2;
+        const escena = escenaBit(t, { parpadeo: ciclo > 3.0 ? Math.abs(ciclo - 3.1) * 10 : 1, saludo: t < 2.4 ? Math.sin(t * 7) : 1 });
+        bitGrande.innerHTML = aHtml(escena, p >= 1 ? null : (x, y, ch) => {
+          // cada celda llega en su momento (primero el centro, con algo de azar); antes de llegar, cicla la rampa
+          const llega = (largo((x - COLS / 2) * ASPECTO, y - FILAS / 2) / 18) * 0.65 + azar[y * COLS + x] * 0.35;
+          if (ch === ' ' || p >= llega) return ch;
+          const k = Math.floor((p - llega + 0.3) / 0.3 * RAMPA.length);
+          return k <= 0 ? ' ' : RAMPA[Math.min(RAMPA.length - 1, k)];
+        });
+      }
+      if (ms < 8000) requestAnimationFrame(cuadro);
+    })(performance.now());
+  }
+  document.getElementById('repetirBoot').addEventListener('click', arrancar);
+  addEventListener('resize', encajarBoot);
+  new IntersectionObserver((e, o) => { if (e[0].isIntersecting) { arrancar(); o.disconnect(); } }).observe(document.getElementById('arranque'));
+
+  // ---------- Transición ----------
+  const PAGINAS = {
+    inicio: '<div class="nav"><span aria-current="page">inicio</span><span>sobre mí</span><span>proyectos</span></div><div class="titulo">Juan David</div><p>Matemático puro que resuelve con código los problemas que antes resolvía en un tablero.</p><p class="tenue">↓ el océano sigue abajo, con bit y las criaturas</p>',
+    proyectos: '<div class="nav"><span>inicio</span><span>sobre mí</span><span aria-current="page">proyectos</span></div><div class="titulo">Proyectos</div><div class="tarjetas"><div>Base de conocimiento<br><span class="tenue">IA · Markdown</span></div><div>Sistema de facturación<br><span class="tenue">C# · SQLite</span></div><div>Herramienta de indicadores<br><span class="tenue">FastAPI · React</span></div><div>Automatizaciones<br><span class="tenue">Python · SQL</span></div></div>'
+  };
+  const pagina = document.getElementById('pagina'), velo = document.getElementById('velo'), escenario = document.getElementById('escenario');
+  pagina.innerHTML = PAGINAS.inicio;
+  let movil = false, ocupado = false;
+  document.getElementById('modoMovil').addEventListener('click', (e) => { movil = !movil; e.currentTarget.setAttribute('aria-pressed', String(movil)); });
+  function transicion(destino) {
+    if (ocupado) return; ocupado = true;
+    if (quieto || movil) {
+      pagina.classList.add('fundido'); pagina.style.opacity = 0;
+      setTimeout(() => { pagina.innerHTML = PAGINAS[destino]; pagina.style.opacity = 1; ocupado = false; }, 250);
+      return;
+    }
+    const cols = Math.ceil(escenario.clientWidth / 8.4) + 1, filas = Math.ceil(escenario.clientHeight / 16) + 1;
+    const t = Array.from({ length: cols * filas }, () => Math.random());
+    const fase = (llenar, dur, fin) => {
+      const t0 = performance.now();
+      (function cuadro(ahora) {
+        const p = Math.min(1, (ahora - t0) / dur);
+        let s = '';
+        for (let y = 0; y < filas; y++) {
+          for (let x = 0; x < cols; x++) {
+            const u = t[y * cols + x];
+            const nivel = llenar ? (p - u * 0.7) / 0.3 : 1 - (p - u * 0.7) / 0.3;
+            s += nivel <= 0 ? ' ' : (nivel >= 1 ? '█' : RAMPA[Math.floor(nivel * (RAMPA.length - 1)) + 1]);
+          }
+          s += '\n';
+        }
+        velo.textContent = s;
+        if (p < 1) requestAnimationFrame(cuadro); else fin();
+      })(t0);
+    };
+    fase(true, 220, () => { pagina.innerHTML = PAGINAS[destino]; fase(false, 230, () => { velo.textContent = ''; ocupado = false; }); });
+  }
+  document.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => transicion(b.dataset.ir)));
+
+  // ---------- Favicon ----------
+  const CARAS = ['[o_o]', '[-_-]', '[o_o]', '[-.-]'];
+  let musica = false, oculto = false, parpadeo = false, fase = 0;
+  function dibujar(canvas, cara, olas, desfase) {
+    const c = canvas.getContext('2d');
+    c.fillStyle = '#120D04'; c.fillRect(0, 0, 64, 64);
+    c.fillStyle = '#FFB547'; c.font = '700 21px Consolas, "Cascadia Mono", monospace'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillText(cara, 32, olas ? 28 : 30);
+    c.strokeStyle = '#FFB547'; c.lineWidth = 3; c.lineCap = 'round'; c.beginPath();
+    for (let x = 6; x <= 58; x++) { const y = 50 + Math.sin((x + desfase) / 5) * (olas ? 4 : 2); x === 6 ? c.moveTo(x, y) : c.lineTo(x, y); }
+    c.stroke();
+    if (olas) { c.font = '700 14px sans-serif'; c.fillText('♪', 54 - (desfase % 6), 10); }
+  }
+  function pintarFavicons() {
+    dibujar(document.getElementById('fav0'), CARAS[0], false, 0);
+    dibujar(document.getElementById('fav1'), CARAS[1], false, 0);
+    dibujar(document.getElementById('fav2'), CARAS[0], true, 4);
+    dibujar(document.getElementById('fav3'), CARAS[3], false, 0);
+  }
+  pintarFavicons();
+  const lienzo = document.createElement('canvas'); lienzo.width = lienzo.height = 64;
+  const link = document.getElementById('favicon'), pestana = document.getElementById('favPestana');
+  function tic() {
+    fase++;
+    const cara = oculto ? CARAS[3] : (parpadeo ? CARAS[1] : CARAS[0]);
+    dibujar(lienzo, cara, musica && !oculto, musica ? fase * 3 : 0);
+    dibujar(pestana, cara, musica && !oculto, musica ? fase * 3 : 0);
+    link.href = lienzo.toDataURL('image/png');
+  }
+  if (!quieto) {
+    setInterval(tic, 400);
+    setInterval(() => { parpadeo = true; setTimeout(() => { parpadeo = false; }, 250); }, 4000);
+  } else tic();
+  document.addEventListener('visibilitychange', () => { oculto = document.hidden; tic(); });
+  document.getElementById('musica').addEventListener('click', (e) => { musica = !musica; e.currentTarget.setAttribute('aria-pressed', String(musica)); tic(); });
+
+  // ---------- 404 ----------
+  const mar = document.getElementById('mar404');
+  document.getElementById('bit404').textContent = ' .-.\n[o_o] ?\n\\___/';
+  let t404 = 0;
+  function pintarMar() {
+    const cols = Math.ceil(mar.clientWidth / 7.8) + 1, filas = Math.ceil(mar.clientHeight / 15) + 1;
+    let s = '';
+    for (let y = 0; y < filas; y++) {
+      for (let x = 0; x < cols; x++) {
+        const v = Math.sin(x / 6 + t404 + y * 0.7) + Math.sin(x / 11 - t404 * 0.6 + y * 0.3);
+        s += v > 1.2 ? '~' : v > 0.6 ? '-' : v > 0.1 ? '.' : ' ';
+      }
+      s += '\n';
+    }
+    mar.textContent = s;
+  }
+  pintarMar();
+  if (!quieto) setInterval(() => { t404 += 0.12; pintarMar(); }, 120);
+
+  // ---------- Compartir ----------
+  const bitOg = document.getElementById('bitOg');
+  const tarjetaOg = bitOg.closest('.tarjeta-og');
+  const encajarOg = () => { const w = tarjetaOg.clientWidth; ajustar(bitOg, w * 0.5, w * (630 / 1200 - 0.054) * 0.94); };
+  bitOg.innerHTML = aHtml(escenaBit(0.6, { saludo: 1 })); encajarOg(); addEventListener('resize', encajarOg);
+
+  // ---------- CV ----------
+  document.getElementById('imprimir').addEventListener('click', () => window.print());
+})();
+</script>
+</body>
+</html>

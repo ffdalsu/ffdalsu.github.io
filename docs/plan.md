@@ -50,6 +50,7 @@ desarrollo de TI.
 | D32 | 2026-10-15 | El sonido no debe cortarse al cambiar de página. Ahora (A): al cargar se intenta sonar de inmediato (Chrome y Edge lo permiten al llegar por un enlace del sitio); si el navegador lo bloquea, aviso y el primer gesto lo arranca. Después (B): fase «Navegación sin recargar» antes de la terminal, para que la música nunca se corte en ningún navegador y llegue la transición entre páginas |
 | D33 | 2026-10-15 | Celular: menú lateral (offcanvas de Bootstrap por la derecha, abierto con jQuery) con páginas, contacto, tema y sonido; corte en 768 px; escritorio sin cambios. Se declara `color-scheme: light dark` para que Chrome Android no oscurezca el tema papel |
 | D34 | 2026-10-15 | **F15 descartada (no-go).** En el PC de JD ningún modelo en el navegador cumple: Qwen2.5-1.5B 5,9 tok/s y 7/10 a mano; Llama-3.2-1B 3/10; Gemma 4 E2B demasiado pesado (~3,4 GB). La entrega va sin IA. A futuro, si se retoma: un modelo en servidor (Worker de Cloudflare con Workers AI y límite de peticiones), nunca Hermes ni las suscripciones personales de JD (D7) |
+| D35 | 2026-10-15 | **F16 · v2 guiada por ghostty.org** (`docs/diseno/referentes-v2.md`, `adn-ghostty.md`, `maqueta-v2.html`). Alcance de la F17: secuencia de arranque, transición ASCII entre páginas (en celular, fundido simple si no rinde), favicon vivo, 404 ASCII, hoja de impresión como CV e imagen para compartir; más `--tenue` del tema papel a `#5A6762` (contraste AA). Fuera: atajos de teclado e índice con puntos guía |
 
 ## Supuestos (JD puede vetarlos)
 - El repo es esta carpeta: `sitio/` (lo que se publica y se empaqueta), `videos/`, `docs/`, `pruebas/`, `scripts/`.
@@ -386,9 +387,9 @@ método `estado()` que las pruebas leen.
 - **Rama y PR:** `docs/diseno-v2`. Puede ir en paralelo desde la F3. **Quién:** Claude con `ti-web-ui`.
 
 ### F17 · Refinamiento b: implementación
-- **Objetivo:** el sitio tiene los detalles aprobados en la F16. Candidatos: secuencia de arranque, transición ASCII
-  entre páginas (View Transitions entre documentos), atajos de teclado, 404 ASCII, favicon vivo, imagen para compartir,
-  hoja de impresión como CV.
+- **Objetivo:** el sitio tiene los detalles aprobados en la F16 (D35): secuencia de arranque, transición ASCII entre
+  páginas, favicon vivo, 404 ASCII, hoja de impresión como CV, imagen para compartir y el contraste de `--tenue`.
+  Referencia: `docs/diseno/maqueta-v2.html`.
 - **Archivos:** según la F16.
 - **Pruebas:** las de cada detalle, la suite completa en verde, y Lighthouse ≥ 90 en accesibilidad, buenas prácticas y
   SEO y ≥ 85 en rendimiento (escritorio).
@@ -443,8 +444,10 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F14 · Terminal fusionada (PR #17). F15 · IA en el navegador **descartada** tras el spike
-  (2026-10-15, D34): resultados en `docs/ia-evals.md`; la página `docs/spike-ia.html` queda como evidencia.
-- **Pendiente de JD:** confirmar en su celular (modo oscuro del teléfono + tema papel) que ya no se oscurece; confirmar
-  que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F16 · Refinamiento a (referentes y maqueta v2) con `ti-web-ui`.
+- **Dónde quedamos:** F16 **aprobada por JD** (2026-10-15, D35): 5 referentes con captura, ADN de Ghostty y maqueta v2
+  (`docs/diseno/maqueta-v2.html`) con los 6 detalles; bit del arranque y de la imagen para compartir con volumen
+  (escena sombreada de 96 × 44). F15 descartada tras el spike (D34).
+- **Pendiente de JD:** fusionar el PR #18 y luego el #19; confirmar en su celular que el tema papel ya no se oscurece;
+  confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** F17 con `ti-plan` (partirla: 17a arranque + transición + favicon; 17b 404 + CV + imagen para
+  compartir + contraste de `--tenue`).
