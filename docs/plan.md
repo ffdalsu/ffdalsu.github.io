@@ -386,15 +386,91 @@ método `estado()` que las pruebas leen.
 - **Riesgos:** que el alcance crezca sin fin; tope de 2 rondas.
 - **Rama y PR:** `docs/diseno-v2`. Puede ir en paralelo desde la F3. **Quién:** Claude con `ti-web-ui`.
 
-### F17 · Refinamiento b: implementación
-- **Objetivo:** el sitio tiene los detalles aprobados en la F16 (D35): secuencia de arranque, transición ASCII entre
-  páginas, favicon vivo, 404 ASCII, hoja de impresión como CV, imagen para compartir y el contraste de `--tenue`.
-  Referencia: `docs/diseno/maqueta-v2.html`.
-- **Archivos:** según la F16.
-- **Pruebas:** las de cada detalle, la suite completa en verde, y Lighthouse ≥ 90 en accesibilidad, buenas prácticas y
-  SEO y ≥ 85 en rendimiento (escritorio).
-- **Riesgos:** que el rendimiento baje; Lighthouse en cada PR.
-- **Rama y PR:** `feat/portafolio-f17` (se parte si no cabe en 2 días). **Quién:** Claude. **Revisión:** normal.
+### F17a · Arranque, transición ASCII y favicon vivo
+- **Objetivo:** la primera visita de la sesión (a cualquiera de las páginas) abre con la secuencia de arranque: cuatro
+  líneas de sistema y bit con volumen que se revela, saluda y parpadea (~2 s; Esc, clic o cualquier tecla la saltan;
+  sin destello del contenido debajo). Al navegar entre páginas, la pantalla se llena de caracteres y se vacía
+  (~450 ms). La pestaña muestra a bit, que parpadea, mueve olas si suena la música y se duerme con la pestaña oculta.
+  Referencia: `docs/diseno/maqueta-v2.html` (D35).
+- **Archivos:** crea `js/ascii/bit-grande.js` (la escena sombreada de la maqueta, 96 × 44, sin DOM), `js/arranque.js`,
+  `js/velo.js`, `js/favicon.js`, `pruebas/test_arranque.py`, `pruebas/test_velo.py` y `pruebas/test_favicon.py`.
+  Modifica los 3 HTML (script en línea del `<head>`: clase `arrancando` antes de pintar; cargan los 4 scripts nuevos),
+  `css/estilos.css` (capa del arranque y del velo; se quita la transición CSS de la F13 salvo como respaldo),
+  `js/navegacion.js` (usa el velo y conserva los nodos `[data-permanente]` al cambiar el `<body>`),
+  `js/sonido/sonido.js` (el arranque automático del audio espera a `portafolio:arranque-fin`) y `pruebas/conftest.py`
+  (marca el arranque como visto en todas las pruebas, salvo en `test_arranque.py`). No toca el océano ni el bit
+  pequeño del sitio.
+- **Contratos:**
+  - `Portafolio.BitGrande = { COLS, FILAS, RAMPA, escena(t, {parpadeo, saludo}) → {chars, capas}, html(escena, filtro) }`.
+    Es una función pura; la reutiliza la F17b para la imagen para compartir.
+  - El arranque se muestra si `sessionStorage['arranque'] !== 'visto'`. El script del `<head>` pone
+    `html.arrancando` (CSS oculta todo lo demás) y un seguro que la quita a los 4 s si `arranque.js` no carga. Al
+    terminar o saltarse: guarda «visto», quita la clase y emite `document` → `portafolio:arranque-fin`. Mientras está
+    activo, las teclas no llegan a la terminal. Con «reducir movimiento»: cuadro final quieto ~1 s, sin animación.
+    `Portafolio.Arranque.estado() → {activo, fase: 'log'|'revela'|'saluda'|'sale'|'fin', saltado}`.
+  - `Portafolio.Velo.cubrir() → Promise` (220 ms) y `.descubrir() → Promise` (230 ms). Es un `<pre class="velo"
+    data-permanente>` fijo a pantalla completa; la celda se mide tras `document.fonts.ready`. `navegar()` hace: bajar
+    el HTML → cubrir → aplicar → descubrir; el velo nunca se vacía antes de tener la página nueva.
+    `Portafolio.Velo.estado() → {fase: 'quieto'|'cubre'|'lleno'|'descubre', usos, modo: 'velo'|'fundido'}`.
+    En celular (`pointer: coarse` o ≤ 768 px) se mide con la CPU frenada 4×: si el cuadro medio pasa de 16 ms,
+    `modo = 'fundido'` (la transición de la F13) y queda escrito como decisión.
+  - `Portafolio.Favicon.estado() → {cara: 'abierto'|'parpadeo'|'duerme', olas, cuadros}`. Lienzo de 64 px →
+    `link[rel=icon]` con PNG; `favicon.svg` queda de respaldo. 2-4 cambios por segundo; olas solo si
+    `Portafolio.Sonido.estado().musica`; con «reducir movimiento», quieto. Es de toda la visita (no se desmonta).
+- **Pruebas** (`pruebas/test_arranque.py`, `test_velo.py`, `test_favicon.py`):
+  - Arranque: `test_arranque_aparece_en_la_primera_visita`, `test_arranque_una_vez_por_sesion`,
+    `test_arranque_se_salta_con_esc_clic_o_tecla`, `test_sin_destello_del_contenido`, `test_seguro_si_no_carga_el_script`,
+    `test_teclas_no_llegan_a_la_terminal`, `test_musica_espera_al_arranque`, `test_movimiento_reducido_cuadro_quieto` y
+    `test_bit_grande_cabe_en_390_y_1440` (sin desborde).
+  - Velo: `test_velo_cubre_y_descubre`, `test_velo_no_queda_puesto` (tras 5 navegaciones), `test_velo_sobre_modal_terminal_y_menu`,
+    `test_velo_movimiento_reducido_sin_velo` y `test_velo_modo_en_celular`.
+  - Favicon: `test_favicon_es_png_de_bit`, `test_favicon_parpadea` (`page.clock`), `test_favicon_olas_con_musica` y
+    `test_favicon_duerme_con_pestana_oculta`.
+  - Terminado = `uv run pytest` y `npm run validar` → 0 fallos y 0 errores, incluidas todas las de la F13.
+- **Riesgos:**
+  - El arranque tapa los clics de las pruebas existentes: la marca de `conftest.py` va primero.
+  - El velo puede quedar debajo de un modal, de la terminal o del menú lateral: hay una prueba con cada uno abierto.
+  - Si las fuentes cambian, cambia la medida de las celdas: se mide después de `document.fonts.ready` y se vuelve a
+    medir con `resize`.
+  - Si pasa de 2 días, el favicon se pasa a la F17b.
+- **Rama y PR:** `feat/portafolio-f17a`. **Depende de** F16. **Quién:** Claude. **Revisión:** normal.
+
+### F17b · 404, CV para imprimir, imagen para compartir y contraste
+- **Objetivo:** una ruta que no existe muestra la 404 ASCII (bit perdido en el océano, «404» grande y tres salidas).
+  Ctrl+P en Sobre mí da el CV de la maqueta en una sola hoja A4, en negro sobre blanco. Pegar el enlace en WhatsApp o
+  LinkedIn muestra la tarjeta con bit y el nombre. El texto tenue del tema papel pasa AA. Lighthouse en verde.
+- **Archivos:** crea `sitio/404.html` (mismos scripts y menú que las otras páginas, con rutas absolutas `/…`),
+  `js/error404.js` (mar animado, se monta solo en `main[data-pagina="404"]`), `scripts/imagen_compartir.py` y su
+  plantilla `scripts/plantillas/compartir.html` (usa `sitio/js/ascii/bit-grande.js`), `sitio/img/compartir.png`,
+  `pruebas/test_404.py`, `pruebas/test_impresion.py` y `pruebas/test_compartir.py`. Modifica `sobre-mi.html` (bloque
+  `.cv-impresion`, oculto en pantalla), los 3 HTML (etiquetas `og:` y `twitter:`), `css/estilos.css` (`@media print`
+  y `--tenue: #5A6762` en papel), `pruebas/conftest.py` (como GitHub Pages: una ruta que no existe devuelve
+  `404.html` con estado 404), `pruebas/test_esqueleto.py` (404 en las pruebas por página) y `package.json`
+  (`lighthouse` fijado a una versión y el script `npm run lighthouse`).
+- **Contratos:**
+  - 404: solo la sirve GitHub Pages; en el zip o con `file://` no aplica. `navegacion.js` la trata como una página más
+    al salir de ella.
+  - Etiquetas `og:` y `twitter:` con URL absolutas: `og:image = https://ffdalsu.github.io/img/compartir.png`,
+    `twitter:card = summary_large_image`.
+  - `uv run python scripts/imagen_compartir.py` vuelve a generar el PNG (1200 × 630). Se corre a mano si cambia el
+    nombre o el rol.
+  - El CV usa las fechas de muestra de D21 y lo mismo que dice Sobre mí.
+- **Pruebas:**
+  - 404: `test_404_responde_con_la_pagina`, `test_404_desde_ruta_anidada_carga_estilos` y `test_404_tres_salidas`.
+  - CV: `test_cv_oculto_en_pantalla`, `test_cv_impresion_sin_oceano_ni_menus` (`emulate_media("print")`) y
+    `test_cv_cabe_en_una_hoja` (`page.pdf` A4 → 1 página).
+  - Compartir y contraste: `test_meta_og_en_las_paginas`, `test_imagen_compartir_1200x630` y `test_contraste_tenue_aa`
+    (papel y ámbar, sobre `--fondo` y `--panel`).
+  - Terminado = `uv run pytest`, `npm run validar` (que incluye `404.html`) y `npm run lighthouse` (escritorio, las 3
+    páginas: ≥ 90 en accesibilidad, buenas prácticas y SEO; ≥ 85 en rendimiento) en verde. El informe va a
+    `docs/qa/lighthouse-f17b.md`.
+- **Riesgos:**
+  - Cada navegador pone sus márgenes al imprimir: se prueba el PDF de Chromium y se revisa a mano en Edge.
+  - Las fuentes de la imagen dependen del equipo: el PNG se genera en el PC de JD y se versiona.
+  - Lighthouse puede necesitar Chrome: se le pasa el Chromium de Playwright (`CHROME_PATH`).
+  - La 404 con rutas absolutas no se ve en el zip: es aceptado (D35).
+- **Rama y PR:** `feat/portafolio-f17b`. **Depende de** F17a (`bit-grande.js`). **Quién:** Claude. **Revisión:**
+  normal; las etiquetas `og:` en los 3 HTML son mecánicas y pueden ir al agente `ejecutor`.
 
 ### F18 · Pulido, QA y entrega
 - **Objetivo:** pulido `max` y QA con veredicto SHIP; zip y URL listos para el formulario de entrega.
@@ -413,7 +489,7 @@ método `estado()` que las pruebas leen.
 - F12 (celular) → F13 (navegación sin recargar) → F14 (terminal).
 - F5 → F14. (F15 descartada, D34.)
 - F16 puede ir en paralelo desde la F3.
-- F17 necesita F16.
+- F17a necesita F16; F17b necesita F17a (`bit-grande.js`); F18 va después de F17b.
 - F18 va al final.
 
 ## Matriz requisito → fase
@@ -431,7 +507,7 @@ método `estado()` que las pruebas leen.
 | Formulario de contacto (D8, D16) | F6 |
 | Mascota y ecosistema (D10) | F2, F3, F8 (portada) |
 | IA (D7, D34) | F14 (terminal); la IA queda fuera de la entrega |
-| Refinamiento visual | F16, F17, F18 |
+| Refinamiento visual | F16, F17a, F17b, F18 |
 | Sonido y música (D24-D28) | F9, F10, F11 |
 
 ## Plan de pruebas
@@ -440,14 +516,14 @@ método `estado()` que las pruebas leen.
 - `npm run validar`: `html-validate` sobre `sitio/*.html`, 0 errores (la rúbrica penaliza errores de validación).
 - `test_sin_datos_internos` sobre todo `sitio/` desde la F4.
 - CI en cada PR: las anteriores. Despliegue a Pages solo desde `main`.
+- Desde la F17a, `conftest.py` marca el arranque como visto (`sessionStorage`) en todas las pruebas salvo
+  `test_arranque.py`; desde la F17b, el servidor de pruebas devuelve `404.html` como GitHub Pages.
 - Sonido: registro de efectos de `Portafolio.Sonido.estado()` y render con `OfflineAudioContext` (determinista y audible).
-- Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
+- Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17b: `npm run lighthouse` (local, escritorio) antes de cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F16 **aprobada por JD** (2026-10-15, D35): 5 referentes con captura, ADN de Ghostty y maqueta v2
-  (`docs/diseno/maqueta-v2.html`) con los 6 detalles; bit del arranque y de la imagen para compartir con volumen
-  (escena sombreada de 96 × 44). F15 descartada tras el spike (D34).
-- **Pendiente de JD:** fusionar el PR #18 y luego el #19; confirmar en su celular que el tema papel ya no se oscurece;
-  confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F17 con `ti-plan` (partirla: 17a arranque + transición + favicon; 17b 404 + CV + imagen para
-  compartir + contraste de `--tenue`).
+- **Dónde quedamos:** plan de la F17 aprobado por JD (2026-10-15): F17a (arranque, transición ASCII, favicon vivo) y
+  F17b (404, CV para imprimir, imagen para compartir, contraste, Lighthouse). F16 fusionada (#19), F15 descartada (#18).
+- **Pendiente de JD:** confirmar en su celular que el tema papel ya no se oscurece; confirmar que mostrar los proyectos
+  de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** F17a en `feat/portafolio-f17a`; lo primero es la marca del arranque en `conftest.py`.
