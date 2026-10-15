@@ -1,7 +1,7 @@
 # Evaluación de la IA del portafolio (F15)
 
 Diez preguntas para el spike de go/no-go. Una respuesta es correcta si contiene **alguna** de las palabras clave de su fila
-(sin importar mayúsculas ni tildes) y no inventa datos que no estén en `sitio/data/perfil.md`. La página
+(sin importar mayúsculas ni tildes) y no inventa datos que no estén en `docs/perfil-ia.md`. La página
 `docs/spike-ia.html` marca las palabras clave automáticamente; la revisión final de que no invente la hace JD.
 
 | # | Pregunta | Palabras clave (alguna) |

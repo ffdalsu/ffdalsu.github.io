@@ -77,7 +77,7 @@ const sistema = () => 'Eres bit, la mascota del portafolio de Juan David. Respon
 
 $('cargar').onclick = async () => {
   $('cargar').disabled = true;
-  perfil = await (await fetch('../sitio/data/perfil.md')).text();
+  perfil = await (await fetch('perfil-ia.md')).text();
   const inicio = performance.now();
   motor = await webllm.CreateMLCEngine($('modelo').value, {
     initProgressCallback: (p) => { $('progreso').textContent = p.text; }
