@@ -456,7 +456,7 @@ mark { background: none; color: var(--acento); padding: 0; }
   gap: 6px;
   justify-items: center;
 }
-.diploma-escudo { margin: 0 0 6px; color: var(--acento); font: 600 15px/1.15 var(--fuente-texto); }
+.diploma-escudo { margin: 0 0 6px; color: var(--acento); font: 600 15px/1.15 var(--fuente-texto); overflow: visible; }   /* Bootstrap pone overflow:auto en <pre>: con el sello aparecían barras */
 .diploma-emisor { margin: 0; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--tenue); }
 .diploma-programa { font: 700 18px/1.25 var(--fuente-display); letter-spacing: -.02em; margin: 6px 0; text-wrap: balance; }
 .diploma-otorgado { margin: 6px 0 0; font-size: 12px; color: var(--tenue); }
