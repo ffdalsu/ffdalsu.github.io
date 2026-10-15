@@ -55,7 +55,9 @@ uv run python scripts/grabar_video.py --todos        # o --proyecto facturacion
 ```
 
 La escena está en `videos/escena.html?proyecto=<slug>` (40 s: intro, problema, solución, stack y cierre). El script
-la recorre cuadro a cuadro con Playwright y la codifica con ffmpeg en `videos/salida/<slug>.mp4` (1920×1080, H.264).
+renderiza primero la pista de audio (chiptune + efectos sincronizados con la imagen, sintetizados con
+`sitio/js/sonido/`), luego recorre la escena cuadro a cuadro con Playwright y une todo con ffmpeg en
+`videos/salida/<slug>.mp4` (1920×1080, H.264 + AAC 192 kbps, volumen normalizado a −16 LUFS).
 Esos MP4 se suben a YouTube como «no listados» y su ID va en el `data-video-id` de cada botón de `projects.html`.
 
 ## Entrega del taller
@@ -63,3 +65,10 @@ Esos MP4 se suben a YouTube como «no listados» y su ID va en el `data-video-id
 ```powershell
 uv run python scripts/empaquetar.py                  # entrega/portafolio-juan-david-AAAAMMDD.zip
 ```
+
+## Sonido
+
+Todo el sonido se sintetiza en el navegador (Web Audio), sin archivos de audio: `sitio/js/sonido/sintetizador.js`
+(efectos), `musica.js` (tres variantes) y `sonido.js` (control del encabezado, apagado por defecto). Para cambiar la
+música del sitio basta la constante `MUSICA_DEL_SITIO` de `sonido.js` ('generativa', 'oceano' o 'chiptune').
+El tablero `docs/diseno/sonidos.html` permite oír cada efecto y cada música.

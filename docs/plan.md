@@ -47,6 +47,7 @@ desarrollo de TI.
 | D29 | 2026-10-15 | **Portada en tres actos** (cielo con el nombre a pantalla completa → horizonte con bit e islas → el mar con el contenido), como en `docs/diseno/portada.html`; va antes del sonido |
 | D30 | 2026-10-15 | Efectos aprobados por JD en el tablero (`docs/diseno/sonidos.html`). El control queda `┤ ♪ ├ no · efectos · + música` junto a `┤ ◐ ├ ámbar · papel` en una sola caja. Los CSS y JS propios llevan `?v=<commit>` (versionado en el flujo de Pages) para que la caché no mezcle versiones |
 | D31 | 2026-10-15 | Música elegida por JD tras oír las 3 variantes y 3 prototipos de banda sonora: **el sitio usa la generativa desde ψ** y **los videos el chiptune enérgico**. Se cambia con una sola constante, `MUSICA_DEL_SITIO` en `js/sonido/sonido.js` (opciones: 'generativa', 'oceano', 'chiptune'), sin control visible |
+| D32 | 2026-10-15 | El sonido no debe cortarse al cambiar de página. Ahora (A): al cargar se intenta sonar de inmediato (Chrome y Edge lo permiten al llegar por un enlace del sitio); si el navegador lo bloquea, aviso y el primer gesto lo arranca. Después (B): fase «Navegación sin recargar» antes de la terminal, para que la música nunca se corte en ningún navegador y llegue la transición entre páginas |
 
 ## Supuestos (JD puede vetarlos)
 - El repo es esta carpeta: `sitio/` (lo que se publica y se empaqueta), `videos/`, `docs/`, `pruebas/`, `scripts/`.
@@ -393,11 +394,11 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F15: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F10 · música terminada en `feat/portafolio-f10` (2026-10-15): `js/sonido/musica.js` con 3
-  variantes (océano lo-fi, chiptune, generativa ψ); en «+ música» suena la generativa (D31), se pausa con la pestaña
-  oculta y se apaga como sumergida al bajar por el inicio. El tablero `docs/diseno/sonidos.html` guarda las variantes y
-  los 3 prototipos de banda sonora. 122 pruebas en verde. PR abierto.
-- **Pendiente de JD:** no subir aún los videos (se regraban con sonido en la F11); confirmar que mostrar los proyectos
-  de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F11 · videos con sonido (chiptune + efectos sincronizados), regrabar los 5 y subirlos.
-- **Para el refinamiento (F14-F15):** revisar en celular las dos islas lejanas.
+- **Dónde quedamos:** F11 en `feat/portafolio-f11` (2026-10-15), PR #13: los 5 videos con chiptune + efectos
+  sincronizados (−16 LUFS) en `videos/salida/`, y el sonido ya no exige volver a marcar la opción al recargar o cambiar de
+  página (D32-A: intenta sonar al cargar; si el navegador lo bloquea, aviso y el primer gesto lo arranca). 131 pruebas.
+- **Pendiente de JD:** subir los 5 MP4 a YouTube como no listados y pasar sus ID (van en `data-video-id` de
+  `projects.html`); confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** con los ID, la guía queda cumplida. Luego planear con `ti-plan` la fase «Navegación sin recargar»
+  (D32-B) antes de la terminal.
+- **Para el refinamiento:** revisar en celular las dos islas lejanas.
