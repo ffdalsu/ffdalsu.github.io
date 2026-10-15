@@ -1,6 +1,7 @@
 /*
- * Menú lateral del celular (F12): en pantallas angostas el encabezado muestra solo el nombre y [≡], que abre un
+ * Menú lateral (F12, D38): por debajo de 1280 px el tema y el sonido salen de la barra y viven en [≡], que abre un
  * offcanvas de Bootstrap (con jQuery, como los modales) con las páginas, [ escríbeme ], el tema y el sonido.
+ * Además, los modales (video y contacto) devuelven el foco a quien los abrió al cerrarse.
  * Los controles del menú son copias de los del encabezado: tema.js y sonido.js pintan todas las copias juntas.
  */
 window.Portafolio = window.Portafolio || {};
@@ -14,6 +15,18 @@ Portafolio.Menu = (function () {
     $menu.find('.abrir-contacto').on('click', function () { $menu.offcanvas('hide'); });
   });
   // si la pantalla se agranda hasta escritorio con el menú abierto, se cierra (un solo oyente para toda la visita)
-  window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => { if (e.matches) $('#menu-movil').offcanvas('hide'); });
+  window.matchMedia('(min-width: 1280px)').addEventListener('change', (e) => { if (e.matches) $('#menu-movil').offcanvas('hide'); });
+
+  // Bootstrap solo devuelve el foco a los botones con data-bs-toggle; estos modales se abren con .modal('show'),
+  // así que se recuerda quién tenía el foco y se le devuelve al cerrar (teclado y lectores de pantalla)
+  let antesDelModal = null;
+  $(document).on('show.bs.modal', () => {
+    const el = document.activeElement;
+    antesDelModal = el && el !== document.body ? el : null;
+  });
+  $(document).on('hidden.bs.modal', () => {
+    if (antesDelModal && antesDelModal.isConnected) antesDelModal.focus({ preventScroll: true });
+    antesDelModal = null;
+  });
   return {};
 })();

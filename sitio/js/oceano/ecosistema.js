@@ -3,7 +3,8 @@
  *
  * Criaturas: cada <li data-criatura="…"> de la sección «Habilidades» tiene una criatura que nada en el
  * acuario (.acuario), la franja de mar abierto que hay justo encima de la lista. Pasar el puntero o el foco
- * por un ítem resalta su criatura, y acercar el puntero a una criatura resalta su ítem.
+ * por un ítem resalta su criatura y la hace nadar hasta el fondo del acuario, justo encima de la lista, para que
+ * se vea aunque viva más arriba; acercar el puntero a una criatura resalta su ítem.
  *
  * Islas: son enlaces HTML reales (.isla) dentro del encabezado; aquí solo se mueven para que floten sobre la
  * ola. Así se pueden enfocar con el teclado, las leen los lectores de pantalla y funcionan sin JavaScript.
@@ -28,6 +29,8 @@ Portafolio.Ecosistema = (function () {
   const espejo = (filas) => filas.map((f) => Array.from(f).reverse().map((c) => PARES[c] || c).join(''));
 
   const ESCALA = 1.6;
+  const reducir = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const suave = (u) => u * u * (3 - 2 * u);
   const sonar = (n, d, r) => { if (Portafolio.Sonido) Portafolio.Sonido.efecto(n, d, r); };   // js/sonido/sonido.js
   let criaturas = [], islas = [], acuario = null, contenedor = null;
 
@@ -42,6 +45,7 @@ Portafolio.Ecosistema = (function () {
       lado: i % 2,                           // mitad izquierda o derecha
       fase: i * 1.7,
       activa: false,
+      tira: 0,                               // 0 = nada en su sitio, 1 = junto a la lista
       x: 0, y: 0, ancho: 0
     }));
     criaturas.forEach((k) => {
@@ -72,7 +76,11 @@ Portafolio.Ecosistema = (function () {
       const vaiven = Math.sin(t * 0.25 + k.fase);
       const x = (angosta ? 0 : k.lado * mitad) + 3 + (vaiven + 1) / 2 * recorrido;
       const derecha = Math.cos(t * 0.25 + k.fase) >= 0;   // la derivada del vaiven dice hacia dónde nada
-      const y = arriba + 2 + k.prof * (alto - 6) + Math.sin(t * 0.9 + k.fase) * 0.6;
+      const yLibre = arriba + 2 + k.prof * (alto - 6) + Math.sin(t * 0.9 + k.fase) * 0.6;
+      const yLista = arriba + alto - 3 - k.filas.length * ESCALA + Math.sin(t * 0.9 + k.fase) * 0.4;
+      const meta = k.porItem ? 1 : 0;
+      k.tira = reducir.matches ? meta : k.tira + (meta - k.tira) * 0.12;
+      const y = yLibre + (yLista - yLibre) * suave(k.tira);
       k.x = x; k.y = y; k.ancho = ancho;
       if (y < -4 || y > r.filas + 1) { k.activa = !!k.porItem; return; }
 
@@ -120,7 +128,7 @@ Portafolio.Ecosistema = (function () {
     moverIslas: moverIslas,
     estado: function () {
       return {
-        criaturas: criaturas.map((k) => ({ nombre: k.nombre, activa: k.activa, etiqueta: k.etiqueta || null })),
+        criaturas: criaturas.map((k) => ({ nombre: k.nombre, activa: k.activa, etiqueta: k.etiqueta || null, fila: k.y })),
         islas: islas.length
       };
     }

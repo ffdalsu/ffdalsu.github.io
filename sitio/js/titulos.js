@@ -20,13 +20,15 @@ Portafolio.Titulos = (function () {
     if (!nodo) return;
     const final = nodo.textContent;
     const letras = Array.from(final);
+    // mientras se descifra, el nombre accesible es el texto real (tras navegar, el título recibe el foco)
+    el.setAttribute('aria-label', el.textContent.trim());
     let paso = 0;
     const intervalo = setInterval(() => {
       paso++;
       const fijas = paso / 1.5;
       if (Math.floor(fijas) > Math.floor((paso - 1) / 1.5)) sonar('tecleo', { i: Math.floor(fijas) });
       nodo.textContent = letras.map((c, i) => (c === ' ' || i < fijas) ? c : RUIDO[Math.floor(Math.random() * RUIDO.length)]).join('');
-      if (fijas >= letras.length) { clearInterval(intervalo); nodo.textContent = final; el.dataset.descifrado = '1'; }
+      if (fijas >= letras.length) { clearInterval(intervalo); nodo.textContent = final; el.dataset.descifrado = '1'; el.removeAttribute('aria-label'); }
     }, MS);
   }
 

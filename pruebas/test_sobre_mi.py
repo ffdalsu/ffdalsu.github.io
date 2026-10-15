@@ -15,7 +15,7 @@ def test_sobre_mi_tiene_formacion_experiencia_certificados(sobre_mi: Page):
     texto = sobre_mi.locator("main").inner_text()
     for dato in ["Universidad Nacional", "Bancolombia", "Conaltura", "CS50x", "CS50P", "CS50 SQL", "CS50AI"]:
         assert dato in texto, dato
-    expect(sobre_mi.locator("#ficha dt")).to_have_count(6)
+    expect(sobre_mi.locator("#ficha dt")).to_have_count(7)
 
 
 def test_hitos_en_orden_y_con_animacion(sobre_mi: Page):
@@ -93,7 +93,7 @@ def test_reloj_del_pie(page: Page, base_url: str, pagina: str):
 
 def test_ficha_tambien_en_el_inicio(page: Page, base_url: str):
     page.goto(f"{base_url}/index.html")
-    expect(page.locator("#sobre-mi #ficha dt")).to_have_count(6)
+    expect(page.locator("#sobre-mi #ficha dt")).to_have_count(7)
 
 
 @pytest.mark.parametrize("ancho", [375, 768, 1440])

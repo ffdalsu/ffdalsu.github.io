@@ -20,7 +20,7 @@ Portafolio.Oceano = (function () {
   const METROS_POR_FILA = 0.5;
 
   let rejilla = null, hero = null, bit = null, sonda = null, punteroPantalla = null;
-  let portada = null, nombre = null, lema = null, panelCampo = null, baja = null;
+  let portada = null, nombre = null, lema = null, comandoNombre = null, panelCampo = null, baja = null, observadorPie = null;
   let colores = {}, alto = 0, ancho = 0, escena = null, camara = 0, cajaBit = null, saludo = false, cajaGlobo = null;
   let ultimo = 0, msCuadro = 0, profundidad = 0, calientes = 0, tiempo = 0, progreso = 0;
   const reducir = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -61,6 +61,7 @@ Portafolio.Oceano = (function () {
     const y = (destinoY - nombre.offsetTop) * k - e.nombre.salida * alto;
     nombre.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + e.nombre.escala.toFixed(3) + ')';
     if (lema) lema.style.opacity = e.lema.toFixed(2);
+    if (comandoNombre) comandoNombre.style.opacity = e.lema.toFixed(2);   // «$ whoami» no queda como una mancha al encogerse
     if (panelCampo) { panelCampo.style.opacity = e.campo.toFixed(2); panelCampo.style.visibility = e.campo > 0.02 ? 'visible' : 'hidden'; }
     if (baja) baja.style.opacity = e.baja.toFixed(2);
   }
@@ -204,7 +205,9 @@ Portafolio.Oceano = (function () {
     bucles++;
     const cuadro = (t) => {
       if (gen !== generacion) { bucles--; return; }
-      if (!document.hidden && t - ultimo >= MS_POR_CUADRO) { ultimo = t; dibujar(t); }
+      // con la pestaña oculta o bajo la secuencia de arranque (js/arranque.js) no se gasta en dibujar lo que no se ve
+      const oculto = document.hidden || document.documentElement.classList.contains('arrancando');
+      if (!oculto && t - ultimo >= MS_POR_CUADRO) { ultimo = t; dibujar(t); }
       if (!reducir.matches) requestAnimationFrame(cuadro); else bucles--;
     };
     requestAnimationFrame(cuadro);
@@ -254,11 +257,18 @@ Portafolio.Oceano = (function () {
     portada = document.querySelector('.portada');
     nombre = document.querySelector('.portada-nombre');
     lema = document.querySelector('.portada-lema');
+    comandoNombre = document.querySelector('.portada-nombre .comando');
     panelCampo = document.querySelector('.panel-campo');
     baja = document.querySelector('.portada-baja');
     // las frases de bit viven en el HTML (data-frases del encabezado), separadas por «|»
     bit = Portafolio.Bit((hero.dataset.frases || '').split('|').filter(Boolean));
     sonda = document.getElementById('sonda');
+    // la sonda se desvanece cuando aparece el pie, para no tapar el reloj ni los enlaces
+    const pie = document.querySelector('.pie');
+    if (sonda && pie && 'IntersectionObserver' in window) {
+      observadorPie = new IntersectionObserver((entradas) => sonda.classList.toggle('oculta', entradas[0].isIntersecting));
+      observadorPie.observe(pie);
+    }
     saludo = false;
     ancho = 0;
     leerColores();
@@ -284,6 +294,7 @@ Portafolio.Oceano = (function () {
     activo = false;
     generacion++;   // el bucle del montaje anterior se apaga en su próximo cuadro
     clearInterval(intervalo);
+    if (observadorPie) { observadorPie.disconnect(); observadorPie = null; }
     profundidad = 0;
     if (Portafolio.Sonido) Portafolio.Sonido.profundidad(0);   // fuera del inicio la música suena sin filtro
   }
