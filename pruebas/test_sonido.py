@@ -183,3 +183,18 @@ def test_musica_offline_audible(inicio: Page, variante: str):
     )
     assert r["rms"] > 0.005, "quedó muda"
     assert r["pico"] < 1, "satura"
+
+
+def test_al_recargar_avisa_y_un_clic_basta(page: Page, base_url: str):
+    """Con el sonido ya elegido, recargar muestra un aviso; el primer clic en cualquier parte arranca todo sin remarcar."""
+    page.add_init_script("try { localStorage.setItem('sonido', 'todo'); } catch (e) {}")
+    page.goto(f"{base_url}/index.html")
+    page.wait_for_function(LISTO)
+    expect(page.locator(".aviso-sonido")).to_be_visible()
+    page.mouse.wheel(0, 600)  # el scroll no cuenta como gesto para el navegador
+    page.wait_for_timeout(300)
+    assert sonido(page)["contexto"] is None
+    page.mouse.click(700, 500)
+    page.wait_for_function("Portafolio.Sonido.estado().musica === true")
+    expect(page.locator(".aviso-sonido")).to_have_count(0)
+    expect(page.locator(".opcion-sonido[data-sonido=todo]")).to_have_attribute("aria-pressed", "true")

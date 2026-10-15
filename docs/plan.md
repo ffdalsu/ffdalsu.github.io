@@ -393,11 +393,9 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F15: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F10 · música terminada en `feat/portafolio-f10` (2026-10-15): `js/sonido/musica.js` con 3
-  variantes (océano lo-fi, chiptune, generativa ψ); en «+ música» suena la generativa (D31), se pausa con la pestaña
-  oculta y se apaga como sumergida al bajar por el inicio. El tablero `docs/diseno/sonidos.html` guarda las variantes y
-  los 3 prototipos de banda sonora. 122 pruebas en verde. PR abierto.
-- **Pendiente de JD:** no subir aún los videos (se regraban con sonido en la F11); confirmar que mostrar los proyectos
-  de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F11 · videos con sonido (chiptune + efectos sincronizados), regrabar los 5 y subirlos.
+- **Dónde quedamos:** F11 en `feat/portafolio-f11` (2026-10-15): los 5 videos con chiptune + efectos sincronizados
+  (señales derivadas de los mismos tiempos de la imagen), volumen normalizado a −16 LUFS, en `videos/salida/`.
+- **Pendiente de JD:** subir los 5 MP4 a YouTube como no listados y pasar sus ID (van en `data-video-id` de
+  `projects.html`); confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** con los ID puestos, la guía queda cumplida (punto de entrega seguro). Luego F12 · terminal.
 - **Para el refinamiento (F14-F15):** revisar en celular las dos islas lejanas.

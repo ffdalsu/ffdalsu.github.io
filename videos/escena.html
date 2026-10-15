@@ -27,6 +27,8 @@
   <script src="../sitio/js/ascii/sprite.js"></script>
   <script src="../sitio/js/oceano/bit.js"></script>
   <script src="../sitio/js/miniaturas.js"></script>
+  <script src="../sitio/js/sonido/sintetizador.js"></script>
+  <script src="../sitio/js/sonido/musica.js"></script>
   <script>
   (function () {
     const PROYECTOS = {
@@ -191,8 +193,69 @@
       cortina(t);
     }
 
+
+    /* ---------- Pista de audio (F11): chiptune de fondo + efectos en los mismos segundos que su imagen ---------- */
+    const MUSICA_DE_LOS_VIDEOS = 'chiptune';   // D31: el sitio usa la generativa; los videos, el chiptune
+    /** Lista de señales {t, efecto, datos}; sale de las mismas constantes de tiempo que dibuja render(). */
+    function senales() {
+      const s = [];
+      const teclas = (texto, t0, cps, cada) => Array.from(texto).forEach((c, i) => { if (c !== ' ' && i % (cada || 1) === 0) s.push({ t: t0 + (i + 1) / cps, efecto: 'tecleo', datos: { i } }); });
+      const descifrado = (texto, t0, dura) => { const n = Array.from(texto).length; for (let i = 0; i < n; i += 2) s.push({ t: t0 + (i + 1) / n * dura, efecto: 'tecleo', datos: { i } }); };
+      // intro
+      teclas('./presentar ' + slug, 0.4, 18);
+      descifrado(p.titulo, 2, 1.4);
+      s.push({ t: 2.85, efecto: 'voz', datos: { texto: '¡hola! te presento' } });
+      // el problema: zumbido en cada ✗ y teclas mientras se escribe
+      p.problema.forEach((l, i) => { const t0 = SEG.problema + 0.6 + i * 1.8; s.push({ t: t0, efecto: 'error' }); teclas(l, t0, 26, 3); });
+      // la solución: campanita en cada ✓
+      p.solucion.forEach((l, i) => { const t0 = SEG.solucion + 1 + i * 3; s.push({ t: t0 + 1 / 26, efecto: 'campana' }); teclas(l, t0, 26, 3); });
+      // el stack: cada caja aterriza un tercio de segundo después de empezar a caer
+      p.stack.forEach((_, i) => s.push({ t: SEG.stack + 0.6 + i * 0.9 + 1 / 3, efecto: 'sello' }));
+      // cortinas de estática en cada corte
+      [SEG.problema, SEG.solucion, SEG.stack, SEG.cierre].forEach((corte) => s.push({ t: corte - 0.25, efecto: 'cortina' }));
+      // cierre
+      descifrado(marca, SEG.cierre + 0.2, 1.2);
+      s.push({ t: SEG.cierre + 0.3, efecto: 'voz', datos: { texto: '¡gracias por ver!' } });
+      teclas('ffdalsu.github.io', SEG.cierre + 0.5, 20, 2);
+      s.push({ t: SEG.cierre + 1.8, efecto: 'fanfarria' });
+      return s.sort((a, b) => a.t - b.t);
+    }
+    const marca = 'juan-david:~/portafolio';
+
+    /** Renderiza la pista completa sin altavoces y la devuelve como WAV (PCM 16 bits, estéreo, 44,1 kHz) en base64. */
+    async function audio(duracion) {
+      const seg = duracion || SEG.fin, tasa = 44100;
+      const ctx = new OfflineAudioContext(2, Math.round(tasa * seg), tasa);
+      const maestro = ctx.createGain(); maestro.gain.value = 0.7;
+      const compresor = ctx.createDynamicsCompressor(); maestro.connect(compresor).connect(ctx.destination);
+      const sint = Portafolio.Sintetizador(ctx, maestro);
+      const fondo = ctx.createGain(); fondo.gain.value = 0.55; fondo.connect(maestro);   // la música va por debajo de los efectos
+      const m = Portafolio.Musica.crear(sint, fondo, MUSICA_DE_LOS_VIDEOS);
+      m.reiniciarOrigen(0); m.programar(0, seg - 1.5);
+      fondo.gain.setValueAtTime(0.55, Math.max(0, seg - 2.5)); fondo.gain.linearRampToValueAtTime(0.0001, seg - 0.2);   // la música se despide al final
+      senales().forEach(({ t, efecto, datos }) => {
+        if (t >= seg) return;
+        if (efecto === 'cortina') sint.ruido({ t, duracion: 0.5, filtro: 'bandpass', corte: 500, corteHasta: 6000, volumen: 0.12 });
+        else sint.efectos[efecto](t, datos);
+      });
+      const buffer = await ctx.startRendering();
+      const n = buffer.length, izq = buffer.getChannelData(0), der = buffer.getChannelData(1);
+      const wav = new DataView(new ArrayBuffer(44 + n * 4));
+      const texto = (o, s) => Array.from(s).forEach((c, i) => wav.setUint8(o + i, c.charCodeAt(0)));
+      texto(0, 'RIFF'); wav.setUint32(4, 36 + n * 4, true); texto(8, 'WAVE'); texto(12, 'fmt ');
+      wav.setUint32(16, 16, true); wav.setUint16(20, 1, true); wav.setUint16(22, 2, true); wav.setUint32(24, tasa, true);
+      wav.setUint32(28, tasa * 4, true); wav.setUint16(32, 4, true); wav.setUint16(34, 16, true); texto(36, 'data'); wav.setUint32(40, n * 4, true);
+      for (let i = 0; i < n; i++) {
+        wav.setInt16(44 + i * 4, Math.max(-1, Math.min(1, izq[i])) * 32767, true);
+        wav.setInt16(46 + i * 4, Math.max(-1, Math.min(1, der[i])) * 32767, true);
+      }
+      let binario = ''; const bytes = new Uint8Array(wav.buffer);
+      for (let i = 0; i < bytes.length; i += 0x8000) binario += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+      return btoa(binario);
+    }
+
     window.render = render;
-    window.VIDEO = { duracion: SEG.fin, cps: 30, proyecto: slug, listo: document.fonts.ready.then(() => { r.medir(); panel.medir(); return true; }) };
+    window.VIDEO = { duracion: SEG.fin, cps: 30, proyecto: slug, audio: audio, senales: senales, SEG: SEG, listo: document.fonts.ready.then(() => { r.medir(); panel.medir(); return true; }) };
   })();
   </script>
 </body>

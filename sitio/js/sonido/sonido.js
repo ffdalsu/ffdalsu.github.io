@@ -24,7 +24,7 @@ Portafolio.Sonido = (function () {
   const MUSICA_DEL_SITIO = 'generativa';
 
   let modo = 'silencio';
-  let ctx = null, sint = null, maestro = null, musica = null, relojMusica = null, metros = 0;
+  let ctx = null, sint = null, maestro = null, musica = null, relojMusica = null, metros = 0, aviso = null;
   const ultimos = [];          // registro de los últimos efectos programados (pruebas y depuración)
   const ultimaVez = {};
 
@@ -45,6 +45,24 @@ Portafolio.Sonido = (function () {
     }
     if (ctx.state === 'suspended' && !document.hidden) ctx.resume();
     sincronizarMusica();
+    mostrarAviso(false);
+  }
+
+  /**
+   * Al recargar con el sonido activado el navegador no deja sonar hasta un clic, una tecla o un toque (el scroll no
+   * cuenta). Para que no parezca roto, un aviso discreto lo dice; el primer gesto en cualquier parte lo quita.
+   */
+  function mostrarAviso(si) {
+    if (si && !aviso) {
+      aviso = document.createElement('p');
+      aviso.className = 'aviso-sonido';
+      aviso.setAttribute('role', 'status');
+      aviso.textContent = '♪ sonido activado · haz clic en cualquier parte para oírlo';
+      document.body.appendChild(aviso);
+    } else if (!si && aviso) {
+      aviso.remove();
+      aviso = null;
+    }
   }
 
   /** Programa un efecto ahora (o dentro de «retraso» segundos). */
@@ -89,17 +107,18 @@ Portafolio.Sonido = (function () {
     try { localStorage.setItem(CLAVE, modo); } catch (e) { /* la elección dura solo esta visita */ }
     pintarControl();
     sincronizarMusica();
-    if (modo === 'silencio') { if (ctx) ctx.suspend(); return; }
+    if (modo === 'silencio') { mostrarAviso(false); if (ctx) ctx.suspend(); return; }
     despertar();
     efecto('blip');
   }
 
   $(function () {
     pintarControl();
+    if (modo !== 'silencio') mostrarAviso(true);
     $('.opcion-sonido').on('click', function () { cambiar($(this).data('sonido')); });
 
     // el primer gesto despierta el audio si el visitante ya lo había activado en otra visita
-    ['pointerdown', 'keydown'].forEach((ev) => document.addEventListener(ev, despertar, { capture: true }));
+    ['pointerdown', 'keydown', 'touchend'].forEach((ev) => document.addEventListener(ev, despertar, { capture: true }));
 
     // efectos de interfaz: clic en enlaces y botones, y el interruptor del tema
     document.addEventListener('click', (e) => {

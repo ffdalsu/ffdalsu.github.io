@@ -1,8 +1,9 @@
 """Graba los videos de proyecto (F7) a partir de videos/escena.html.
 
-Abre la escena en Chromium (Playwright), avanza el tiempo cuadro a cuadro llamando a window.render(t), copia cada
-cuadro del canvas como PNG y se lo pasa a ffmpeg, que codifica un MP4 H.264 (yuv420p, 1920×1080, 30 cps) listo para
-subir a YouTube. Como la escena depende solo de t, cada grabación sale idéntica.
+Abre la escena en Chromium (Playwright). Primero renderiza la pista de audio (chiptune + efectos sincronizados) con
+VIDEO.audio() y la guarda como WAV; luego avanza el tiempo cuadro a cuadro llamando a window.render(t), copia cada
+cuadro del canvas como PNG y se lo pasa a ffmpeg, que une imagen y sonido en un MP4 (H.264 yuv420p 1920×1080 a 30 cps
++ AAC 192 kbps) listo para subir a YouTube. Como la escena depende solo de t, cada grabación sale idéntica.
 
 Uso:
     uv run python scripts/grabar_video.py --proyecto facturacion
@@ -47,6 +48,9 @@ def grabar(navegador, base: str, slug: str) -> Path:
     total = int(duracion * cps)
     SALIDA.mkdir(parents=True, exist_ok=True)
     destino = SALIDA / f"{slug}.mp4"
+    # la pista de audio se renderiza primero, sin altavoces (OfflineAudioContext), y queda como WAV al lado
+    pista = SALIDA / f"{slug}.wav"
+    pista.write_bytes(base64.b64decode(pagina.evaluate("VIDEO.audio()")))
     ffmpeg = subprocess.Popen(
         [
             "ffmpeg",
@@ -59,6 +63,12 @@ def grabar(navegador, base: str, slug: str) -> Path:
             str(cps),
             "-i",
             "-",
+            "-i",
+            str(pista),
+            "-map",
+            "0:v",
+            "-map",
+            "1:a",
             "-c:v",
             "libx264",
             "-preset",
@@ -67,6 +77,17 @@ def grabar(navegador, base: str, slug: str) -> Path:
             "18",
             "-pix_fmt",
             "yuv420p",
+            # volumen normalizado al estándar de YouTube (−16 LUFS, picos por debajo de −1,5 dB)
+            "-af",
+            "loudnorm=I=-16:TP=-1.5:LRA=11",
+            "-ar",
+            "44100",
+            "-c:a",
+            "aac",
+            "-b:a",
+            "192k",
+            "-t",
+            str(duracion),
             "-movflags",
             "+faststart",
             str(destino),
