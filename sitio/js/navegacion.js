@@ -4,8 +4,10 @@
  *
  * Al hacer clic en un enlace a una de las tres páginas: se baja su HTML, se reemplaza el contenido del <body> (los
  * <script> se quedan, porque todas las páginas cargan los mismos), se copia el <title> y la clase del <body>, se
- * desmontan y montan los módulos (js/paginas.js) y se actualiza el historial. El cambio lleva una transición ASCII
- * (View Transitions, css/estilos.css). Atrás y Adelante funcionan; el foco va al título de la página nueva.
+ * desmontan y montan los módulos (js/paginas.js) y se actualiza el historial. Los nodos marcados con data-permanente
+ * (el velo, la capa del arranque) son de toda la visita y no se quitan. El cambio lleva el velo ASCII (js/velo.js,
+ * F17a): cubrir → cambiar → descubrir; en modo «fundido», la transición de la F13 (View Transitions, css/estilos.css).
+ * Atrás y Adelante funcionan; el foco va al título de la página nueva.
  *
  * Si algo falla (sin red, file:// del zip, navegador sin fetch) se navega normal: el sitio sigue funcionando igual.
  */
@@ -16,6 +18,7 @@ Portafolio.Navegacion = (function () {
   const reducir = window.matchMedia('(prefers-reduced-motion: reduce)');
   let cambios = 0;
   let ocupado = false;
+  let pendiente = null;   // la última navegación pedida durante una transición (p. ej. «Atrás»): va al terminar
 
   /** Nombre de archivo de una ruta ('/' cuenta como index.html). */
   function archivo(url) {
@@ -30,7 +33,9 @@ Portafolio.Navegacion = (function () {
   /** Reemplaza el contenido del body por el de la página nueva, sin tocar los scripts. */
   function cambiar(doc) {
     const primerScript = document.body.querySelector(':scope > script');
-    Array.from(document.body.childNodes).forEach((n) => { if (n.nodeName !== 'SCRIPT') n.remove(); });
+    Array.from(document.body.childNodes).forEach((n) => {
+      if (n.nodeName !== 'SCRIPT' && !(n.dataset && 'permanente' in n.dataset)) n.remove();
+    });
     Array.from(doc.body.childNodes).forEach((n) => {
       if (n.nodeName === 'SCRIPT') return;
       document.body.insertBefore(document.importNode(n, true), primerScript);
@@ -49,7 +54,7 @@ Portafolio.Navegacion = (function () {
   }
 
   async function navegar(url, empujar) {
-    if (ocupado) return;
+    if (ocupado) { pendiente = { url: url, empujar: empujar }; return; }
     ocupado = true;
     try {
       const respuesta = await fetch(url.pathname, { headers: { Accept: 'text/html' } });
@@ -61,14 +66,23 @@ Portafolio.Navegacion = (function () {
         if (empujar) history.pushState({ portafolio: true }, '', url.href);
         Portafolio.Paginas.montarTodo();
         ubicar(url);
+        cambios++;
       };
-      if (document.startViewTransition && !reducir.matches) await document.startViewTransition(aplicar).updateCallbackDone;
-      else aplicar();
-      cambios++;
+      const modo = reducir.matches ? 'ninguno' : (Portafolio.Velo ? Portafolio.Velo.modo() : 'fundido');
+      if (modo === 'velo') {
+        await Portafolio.Velo.cubrir();   // la página nueva ya llegó: el velo nunca se queda lleno esperando la red
+        aplicar();
+        await Portafolio.Velo.descubrir();
+      } else if (modo === 'fundido' && document.startViewTransition) {
+        await document.startViewTransition(aplicar).updateCallbackDone;
+      } else {
+        aplicar();
+      }
     } catch (e) {
       location.href = url.href;   // cualquier problema: navegación normal
     } finally {
       ocupado = false;
+      if (pendiente) { const p = pendiente; pendiente = null; navegar(p.url, p.empujar); }
     }
   }
 

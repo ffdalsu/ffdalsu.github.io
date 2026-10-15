@@ -1,6 +1,7 @@
 """F9 · Sonido a: control de tres posiciones, audio solo con gesto, cada acción con su efecto y render determinista."""
 
 import pytest
+from conftest import ARRANQUE_VISTO
 from playwright.sync_api import Page, expect
 from portada_ayuda import LISTO, ir_al_horizonte, y_del_agua
 
@@ -209,6 +210,7 @@ def test_si_el_navegador_lo_permite_suena_sin_clic(browser_type, base_url: str):
     navegador = browser_type.launch(args=["--autoplay-policy=no-user-gesture-required"])
     page = navegador.new_page()
     page.add_init_script("try { localStorage.setItem('sonido', 'todo'); } catch (e) {}")
+    page.add_init_script(ARRANQUE_VISTO)
     page.goto(f"{base_url}/sobre-mi.html")
     page.wait_for_function("Portafolio.Sonido.estado().musica === true")
     assert page.locator(".aviso-sonido").count() == 0

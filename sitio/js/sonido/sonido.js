@@ -148,7 +148,12 @@ Portafolio.Sonido = (function () {
 
   // lo de toda la visita: el audio no se desmonta nunca, así la música sigue al cambiar de página
   $(function () {
-    intentarAlCargar();
+    // si está la secuencia de arranque (js/arranque.js), el audio espera a que termine
+    if (document.documentElement.classList.contains('arrancando')) {
+      document.addEventListener('portafolio:arranque-fin', intentarAlCargar, { once: true });
+    } else {
+      intentarAlCargar();
+    }
 
     // el primer gesto despierta el audio si el visitante ya lo había activado en otra visita
     ['pointerdown', 'keydown', 'touchend'].forEach((ev) => document.addEventListener(ev, despertar, { capture: true }));

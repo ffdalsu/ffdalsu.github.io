@@ -1,6 +1,7 @@
 """F3 · El ecosistema: criaturas por habilidad, islas que llevan a los proyectos, bit cuenta y llamado a contacto."""
 
 import pytest
+from conftest import ARRANQUE_VISTO
 from playwright.sync_api import Page, expect
 from portada_ayuda import ir_al_horizonte, y_del_agua
 
@@ -83,6 +84,7 @@ def test_bit_cuenta_sobre_mi(page: Page, base_url: str):
 
 def test_toque_movil_mueve_a_bit(browser, base_url: str):
     contexto = browser.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
+    contexto.add_init_script(ARRANQUE_VISTO)
     page = contexto.new_page()
     page.goto(f"{base_url}/index.html")
     page.wait_for_function(LISTO)

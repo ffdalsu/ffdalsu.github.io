@@ -24,3 +24,15 @@ def base_url():
     hilo.start()
     yield f"http://127.0.0.1:{servidor.server_port}"
     servidor.shutdown()
+
+
+# La secuencia de arranque (F17a) tapa la página ~2 s en la primera visita de la sesión. Las pruebas la dan por vista,
+# salvo test_arranque.py, que la prueba a propósito. Quien cree su propio contexto debe añadir ARRANQUE_VISTO.
+ARRANQUE_VISTO = "try { sessionStorage.setItem('arranque', 'visto'); } catch (e) {}"
+
+
+@pytest.fixture(autouse=True)
+def _arranque_visto(request):
+    if request.module.__name__.endswith("test_arranque") or "context" not in request.fixturenames:
+        return
+    request.getfixturevalue("context").add_init_script(ARRANQUE_VISTO)
