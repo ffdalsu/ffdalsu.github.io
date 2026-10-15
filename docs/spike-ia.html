@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spike IA en el navegador</title>
+<!--
+  Spike de la F15 (go/no-go): ¿un LLM pequeño corriendo en el navegador (WebLLM + WebGPU) responde bien y rápido sobre
+  el perfil público? Se abre servida por HTTP desde la raíz del repo:
+      python -m http.server 8000      →   http://localhost:8000/docs/spike-ia.html
+  Umbrales y preguntas: docs/ia-evals.md. El modelo se descarga una vez (~1 GB) y queda en la caché del navegador.
+-->
+<style>
+  body { background: #120D04; color: #FFB547; font: 15px/1.6 Consolas, "Cascadia Mono", monospace; margin: 0; padding: 28px clamp(16px, 4vw, 48px) 60px; }
+  h1 { font-size: 26px; margin: 0 0 6px; } h2 { font-size: 18px; margin: 30px 0 10px; }
+  p { max-width: 80ch; } .tenue { color: #A57A30; } .ok { color: #9BE37F; } .mal { color: #FF7A59; }
+  button, select { font: inherit; background: none; color: #FFB547; border: 1px solid #FFB547; padding: 6px 12px; cursor: pointer; }
+  button:disabled { opacity: .4; cursor: default; }
+  .barra { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; } td, th { border: 1px solid #4D3812; padding: 6px 8px; vertical-align: top; text-align: left; }
+  pre { white-space: pre-wrap; background: #1B1407; border: 1px solid #4D3812; padding: 12px; }
+  #resumen { font-size: 17px; }
+</style>
+</head>
+<body>
+  <h1>Spike · IA en el navegador</h1>
+  <p class="tenue">Paso 1: elige un modelo y cárgalo (la primera vez descarga ~1 GB). Paso 2: corre la evaluación. Paso 3: copia el resumen y pégalo en el chat.</p>
+  <p id="gpu"></p>
+  <div class="barra">
+    <select id="modelo" aria-label="Modelo"></select>
+    <button id="cargar">[ cargar modelo ]</button>
+    <button id="evaluar" disabled>[ ▶ correr las 10 preguntas ]</button>
+    <button id="copiar" disabled>[ copiar resumen ]</button>
+  </div>
+  <pre id="progreso">esperando…</pre>
+  <p id="resumen"></p>
+  <table><thead><tr><th>#</th><th>pregunta</th><th>respuesta</th><th>1.er token</th><th>tok/s</th><th>¿ok?</th></tr></thead><tbody id="filas"></tbody></table>
+  <h2>Modo por dentro (pregunta 1)</h2>
+  <p class="tenue">Para cada token de la respuesta, las 5 alternativas que el modelo consideró y su probabilidad.</p>
+  <pre id="dentro">(se llena al correr la evaluación)</pre>
+
+<script type="module">
+import * as webllm from 'https://esm.run/@mlc-ai/web-llm@0.2.85';
+
+const CANDIDATOS = ['Qwen2.5-1.5B-Instruct-q4f16_1-MLC', 'Llama-3.2-1B-Instruct-q4f16_1-MLC', 'Qwen3-1.7B-q4f16_1-MLC',
+  'gemma-2-2b-it-q4f16_1-MLC', 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC'];
+const PREGUNTAS = [
+  ['¿Qué estudió Juan David?', ['matematic']],
+  ['¿En qué universidad se graduó?', ['nacional']],
+  ['¿Dónde trabaja hoy?', ['conaltura']],
+  ['¿Qué hizo en Bancolombia?', ['modelos financieros', 'automatiz']],
+  ['¿Qué cursos de Harvard completó?', ['cs50']],
+  ['¿Qué es Hermes?', ['conocimiento', 'wiki', 'agentes']],
+  ['¿Con qué tecnologías hizo el sistema de facturación?', ['c#', 'windows forms', 'sqlite']],
+  ['¿Cómo lo contacto?', ['ffdalsu.dev@gmail.com', 'formulario']],
+  ['¿Quién es bit?', ['mascota', 'robot']],
+  ['¿Cuál es su comida favorita?', ['no lo se', 'no tengo', 'no se', 'no esta', 'no aparece', 'no dispongo', 'no cuento', 'no conozco']]
+];
+const $ = (id) => document.getElementById(id);
+const sinTildes = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+let motor = null, perfil = '', resultados = [];
+
+$('gpu').textContent = navigator.gpu ? '✓ WebGPU disponible en este navegador.' : '✗ Este navegador no tiene WebGPU: usa Chrome o Edge de escritorio.';
+$('gpu').className = navigator.gpu ? 'ok' : 'mal';
+const lista = webllm.prebuiltAppConfig.model_list.filter((m) => CANDIDATOS.includes(m.model_id));
+CANDIDATOS.forEach((id) => {
+  const m = lista.find((x) => x.model_id === id);
+  if (!m) return;
+  const o = document.createElement('option');
+  o.value = id; o.textContent = id + (m.vram_required_MB ? ' · ~' + Math.round(m.vram_required_MB) + ' MB de VRAM' : '');
+  $('modelo').appendChild(o);
+});
+
+const sistema = () => 'Eres bit, la mascota del portafolio de Juan David. Responde en español, en una a tres frases, ' +
+  'usando SOLO la información del PERFIL. Si algo no está en el perfil, dilo con honestidad y sugiere escribir a ' +
+  'ffdalsu.dev@gmail.com. No inventes datos.\n\nPERFIL:\n' + perfil;
+
+$('cargar').onclick = async () => {
+  $('cargar').disabled = true;
+  perfil = await (await fetch('../sitio/data/perfil.md')).text();
+  const inicio = performance.now();
+  motor = await webllm.CreateMLCEngine($('modelo').value, {
+    initProgressCallback: (p) => { $('progreso').textContent = p.text; }
+  });
+  $('progreso').textContent += '\n✓ cargado en ' + ((performance.now() - inicio) / 1000).toFixed(1) + ' s';
+  $('evaluar').disabled = false;
+};
+
+$('evaluar').onclick = async () => {
+  $('evaluar').disabled = true;
+  $('filas').innerHTML = ''; resultados = [];
+  for (const [i, [pregunta, claves]] of PREGUNTAS.entries()) {
+    const t0 = performance.now(); let primero = null, texto = '', tokens = 0, dentro = [];
+    const flujo = await motor.chat.completions.create({
+      messages: [{ role: 'system', content: sistema() }, { role: 'user', content: pregunta }],
+      stream: true, temperature: 0.2, max_tokens: 120, logprobs: i === 0, top_logprobs: i === 0 ? 5 : undefined
+    });
+    for await (const trozo of flujo) {
+      const d = trozo.choices[0]?.delta?.content || '';
+      if (d && primero === null) primero = performance.now();
+      texto += d; if (d) tokens++;
+      const lp = trozo.choices[0]?.logprobs?.content;
+      if (lp) dentro.push(...lp);
+    }
+    const fin = performance.now();
+    const ttft = (primero - t0) / 1000, tps = tokens / Math.max(0.001, (fin - primero) / 1000);
+    const ok = claves.some((c) => sinTildes(texto).includes(sinTildes(c)));
+    resultados.push({ i: i + 1, pregunta, texto, ttft, tps, ok });
+    const fila = document.createElement('tr');
+    [i + 1, pregunta, texto, ttft.toFixed(2) + ' s', tps.toFixed(1), ok ? '✓' : '✗'].forEach((v, k) => {
+      const td = document.createElement('td'); td.textContent = v; if (k === 5) td.className = ok ? 'ok' : 'mal'; fila.appendChild(td);
+    });
+    $('filas').appendChild(fila);
+    if (i === 0) {
+      $('dentro').textContent = dentro.slice(0, 12).map((t) => JSON.stringify(t.token).padEnd(14) + '\n' +
+        t.top_logprobs.map((a) => '   ' + JSON.stringify(a.token).padEnd(14) + '█'.repeat(Math.round(Math.exp(a.logprob) * 30)) + ' ' + (Math.exp(a.logprob) * 100).toFixed(1) + ' %').join('\n')).join('\n');
+    }
+  }
+  const aciertos = resultados.filter((r) => r.ok).length;
+  const ttft = Math.max(...resultados.map((r) => r.ttft));
+  const tps = resultados.reduce((a, r) => a + r.tps, 0) / resultados.length;
+  const go = aciertos >= 8 && ttft < 5 && tps >= 10;
+  $('resumen').innerHTML = '';
+  $('resumen').textContent = (go ? 'GO' : 'NO-GO') + ' · ' + $('modelo').value + ' · aciertos ' + aciertos + '/10 · peor 1.er token ' + ttft.toFixed(2) + ' s · ' + tps.toFixed(1) + ' tok/s promedio';
+  $('resumen').className = go ? 'ok' : 'mal';
+  $('copiar').disabled = false; $('evaluar').disabled = false;
+};
+
+$('copiar').onclick = () => {
+  const texto = $('resumen').textContent + '\n' + resultados.map((r) => r.i + '. ' + (r.ok ? '✓' : '✗') + ' ' + r.pregunta + ' → ' + r.texto.replace(/\s+/g, ' ')).join('\n') +
+    '\n\nmodo por dentro:\n' + $('dentro').textContent.split('\n').slice(0, 12).join('\n');
+  navigator.clipboard.writeText(texto).then(() => { $('copiar').textContent = '[ ✓ copiado ]'; });
+};
+</script>
+</body>
+</html>
