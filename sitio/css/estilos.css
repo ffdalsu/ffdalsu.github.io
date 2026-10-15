@@ -15,7 +15,7 @@
   --fondo: #EDF0EC;        /* papel */
   --panel: #E2E7E2;        /* papel un tono más oscuro, para campos enfocados */
   --texto: #1E2B2A;        /* tinta */
-  --tenue: #66746E;        /* textos secundarios y etiquetas */
+  --tenue: #5A6762;        /* textos secundarios y etiquetas (AA: 5,1:1 sobre el fondo, 4,7:1 sobre el panel) */
   --acento: #B93C0B;       /* naranja quemado: cursor, prompts, resaltados */
   --linea: #B4BFB9;        /* bordes finos */
 
@@ -619,6 +619,39 @@ html.arrancando body > *:not(.arranque):not(script) { visibility: hidden; }
 /* ---------- Velo entre páginas (F17a, js/velo.js): por encima de modales, menú lateral y terminal ---------- */
 .velo { position: fixed; inset: 0; z-index: 1990; width: 100%; height: 100%; pointer-events: none; visibility: hidden; }
 .velo.activo { visibility: visible; }
+
+/* ---------- 404 (F17b, 404.html + js/error404.js): bit perdido en el océano, la pieza protagonista ---------- */
+.ventana-404 { border: 1px solid var(--linea); background: var(--fondo); margin-top: 16px; }
+.ventana-404-barra {
+  height: 34px; display: flex; align-items: center; justify-content: center; position: relative;
+  border-bottom: 1px solid var(--linea); color: var(--tenue); font-size: 12px; overflow: hidden; white-space: nowrap;
+  padding-inline: 64px 12px;
+}
+.ventana-404-barra::before { content: "● ● ●"; position: absolute; left: 12px; letter-spacing: 2px; color: var(--linea); }
+.ventana-404-cuerpo { position: relative; height: clamp(320px, 52vh, 480px); overflow: hidden; }
+.mar404 { position: absolute; inset: 0; margin: 0; font: 13px/15px var(--fuente-texto); color: var(--tenue); white-space: pre; overflow: hidden; }
+.aviso404 { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 6px; padding: 16px; text-align: center; }
+.codigo404 { font: 700 clamp(48px, 9vw, 96px)/1 var(--fuente-display); margin: 0; background: var(--fondo); padding: 0 12px; }
+.bit404 { margin: 0 0 4px; font: 14px/1.15 var(--fuente-texto); text-align: left; background: var(--fondo); padding: 4px 10px; }
+.linea404 { margin: 0; background: var(--fondo); padding: 2px 10px; }
+.linea404 a { color: var(--acento); }
+
+/* ---------- CV para imprimir (F17b): solo existe en papel; en pantalla no se ve ---------- */
+.cv-impresion { display: none; }
+@media print {
+  @page { size: A4; margin: 16mm 18mm; }
+  html, body { background: #fff !important; color: #111 !important; }
+  body > *:not(main) { display: none !important; }
+  main > *:not(.cv-impresion) { display: none !important; }
+  .cv-impresion { display: block; font: 10pt/1.45 var(--fuente-texto); color: #111; }
+  .cv-impresion a { color: #111; text-decoration: none; }
+  .cv-bit { float: right; margin: 0; font: 8pt/1.1 var(--fuente-texto); }
+  .cv-nombre { font: 700 22pt/1.1 var(--fuente-display); margin: 0; }
+  .cv-sub { color: #444; margin: 2pt 0 10pt; }
+  .cv-seccion { font: 600 9pt var(--fuente-display); text-transform: uppercase; letter-spacing: .06em; border-bottom: 1px solid #111; margin: 12pt 0 4pt; padding-bottom: 2pt; }
+  .cv-fila { display: grid; grid-template-columns: 30mm 1fr; gap: 4mm; margin-bottom: 3pt; }
+  .cv-impresion p { margin: 0 0 4pt; }
+}
 
 /* ---------- Terminal (F14): consola fija abajo, sobre la página ---------- */
 .terminal {

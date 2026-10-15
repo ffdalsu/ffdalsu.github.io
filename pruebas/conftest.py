@@ -14,6 +14,20 @@ class _SinRegistro(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *args):  # silencia el log de cada petición
         pass
 
+    def send_error(self, code, message=None, explain=None):
+        """Como GitHub Pages: una ruta que no existe (también anidada) devuelve 404.html con estado 404."""
+        pagina = SITIO / "404.html"
+        if code != 404 or not pagina.exists():
+            super().send_error(code, message, explain)
+            return
+        cuerpo = pagina.read_bytes()
+        self.send_response(404)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(cuerpo)))
+        self.end_headers()
+        if self.command != "HEAD":
+            self.wfile.write(cuerpo)
+
 
 @pytest.fixture(scope="session")
 def base_url():

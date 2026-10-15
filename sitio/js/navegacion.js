@@ -91,7 +91,7 @@ Portafolio.Navegacion = (function () {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const a = e.target.closest('a[href]');
     if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
-    const url = new URL(a.getAttribute('href'), location.href);
+    const url = new URL(a.getAttribute('href'), document.baseURI);
     if (!esPaginaPropia(url)) return;
     // un ancla dentro de la misma página: que la maneje el navegador
     if (archivo(url) === archivo(new URL(location.href)) && url.hash) return;
@@ -110,7 +110,7 @@ Portafolio.Navegacion = (function () {
 
   /** Navega a una de las páginas (para la terminal): sin recargar si se puede; si no, de la forma tradicional. */
   function ir(destino) {
-    const url = new URL(destino, location.href);
+    const url = new URL(destino, document.baseURI);   // baseURI: respeta el <base> de la 404
     if (!esPaginaPropia(url)) { location.href = url.href; return Promise.resolve(); }
     return navegar(url, true);
   }

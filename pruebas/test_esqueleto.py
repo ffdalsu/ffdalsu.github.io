@@ -4,6 +4,8 @@ import pytest
 from playwright.sync_api import Page, expect
 
 PAGINAS = ["index.html", "sobre-mi.html", "projects.html"]
+# con la 404 (F17b): también debe cargar sin errores ni peticiones externas
+CON_404 = PAGINAS + ["404.html"]
 
 
 @pytest.mark.parametrize("pagina", PAGINAS)
@@ -12,7 +14,7 @@ def test_paginas_responden_200(page: Page, base_url: str, pagina: str):
     assert respuesta is not None and respuesta.status == 200
 
 
-@pytest.mark.parametrize("pagina", PAGINAS)
+@pytest.mark.parametrize("pagina", CON_404)
 def test_sin_errores_de_consola(page: Page, base_url: str, pagina: str):
     errores = []
     page.on("console", lambda m: errores.append(m.text) if m.type == "error" else None)
@@ -54,7 +56,7 @@ def test_tema_por_defecto_sigue_al_sistema(page: Page, base_url: str):
     expect(page.locator("html")).to_have_attribute("data-bs-theme", "dark")
 
 
-@pytest.mark.parametrize("pagina", PAGINAS)
+@pytest.mark.parametrize("pagina", CON_404)
 def test_sin_peticiones_externas(page: Page, base_url: str, pagina: str):
     externas = []
     page.on("request", lambda r: externas.append(r.url) if not r.url.startswith((base_url, "data:")) else None)

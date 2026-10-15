@@ -7,6 +7,18 @@
   <meta name="theme-color" content="#EDF0EC">
   <meta name="description" content="Portafolio de Juan David, matemático y desarrollador.">
   <meta name="author" content="Juan David">
+  <!-- vista previa al compartir el enlace (WhatsApp, LinkedIn…): imagen generada con scripts/imagen_compartir.py -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Juan David · Portafolio">
+  <meta property="og:locale" content="es_CO">
+  <meta property="og:title" content="Juan David · Portafolio">
+  <meta property="og:description" content="Portafolio de Juan David, matemático y desarrollador.">
+  <meta property="og:url" content="https://ffdalsu.github.io/">
+  <meta property="og:image" content="https://ffdalsu.github.io/img/compartir.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="bit, el robot de terminal en su barco de papel, junto al nombre Juan David">
+  <meta name="twitter:card" content="summary_large_image">
   <title>Juan David · Portafolio</title>
   <!-- Aplica el tema guardado antes de pintar, para que no se vea un destello del tema equivocado -->
   <script>
@@ -27,7 +39,12 @@
   </script>
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="lib/bootstrap-5.3.3/css/bootstrap.min.css">
-  <link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css">
+  <!-- Font Awesome no bloquea el primer pintado (F17b, Lighthouse): carga en paralelo y se aplica al llegar -->
+  <link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css"></noscript>
+  <!-- las dos fuentes principales llegan antes del primer pintado: sin salto del título al cambiar de fuente (CLS) -->
+  <link rel="preload" href="lib/fuentes/martian-mono-300-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="lib/fuentes/ibm-plex-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="lib/fuentes/fuentes.css">
   <link rel="stylesheet" href="css/estilos.css?v=dev">
 </head>
