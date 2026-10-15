@@ -394,11 +394,8 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F15: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** F11 en `feat/portafolio-f11` (2026-10-15), PR #13: los 5 videos con chiptune + efectos
-  sincronizados (−16 LUFS) en `videos/salida/`, y el sonido ya no exige volver a marcar la opción al recargar o cambiar de
-  página (D32-A: intenta sonar al cargar; si el navegador lo bloquea, aviso y el primer gesto lo arranca). 131 pruebas.
-- **Pendiente de JD:** subir los 5 MP4 a YouTube como no listados y pasar sus ID (van en `data-video-id` de
-  `projects.html`); confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** con los ID, la guía queda cumplida. Luego planear con `ti-plan` la fase «Navegación sin recargar»
-  (D32-B) antes de la terminal.
+- **Dónde quedamos:** **guía cumplida** (punto de entrega seguro, 2026-10-15): los 5 videos con sonido están en YouTube
+  (no listados) y sus ID en `projects.html`. Escudos de los diplomas sin barras de desplazamiento. 133 pruebas.
+- **Pendiente de JD:** confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** planear con `ti-plan` la fase «Navegación sin recargar» (D32-B) antes de la terminal.
 - **Para el refinamiento:** revisar en celular las dos islas lejanas.

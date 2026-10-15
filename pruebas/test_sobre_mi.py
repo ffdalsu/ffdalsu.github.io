@@ -101,3 +101,11 @@ def test_sobre_mi_sin_scroll_horizontal(page: Page, base_url: str, ancho: int):
     page.set_viewport_size({"width": ancho, "height": 800})
     page.goto(f"{base_url}/sobre-mi.html")
     assert page.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth") <= 0
+
+
+def test_escudos_de_los_diplomas_sin_barras(sobre_mi: Page):
+    """El escudo ASCII no muestra barras de desplazamiento (Bootstrap pone overflow:auto en <pre>)."""
+    sobre_mi.locator(".diplomas").scroll_into_view_if_needed()
+    sobre_mi.wait_for_timeout(2200)  # termina el sello
+    desbordes = sobre_mi.locator(".diploma-escudo").evaluate_all("es => es.map(e => getComputedStyle(e).overflow)")
+    assert desbordes and all(d == "visible" for d in desbordes)

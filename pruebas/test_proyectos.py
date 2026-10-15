@@ -1,5 +1,7 @@
 """F5 · Proyectos: tarjetas con miniatura ASCII, modal de video abierto con jQuery y llegada desde las islas."""
 
+import re
+
 import pytest
 from playwright.sync_api import Page, expect
 
@@ -65,6 +67,8 @@ def test_escape_cierra(proyectos: Page):
 
 
 def test_sin_video_muestra_estatica(proyectos: Page):
+    # todos los proyectos ya tienen video; se le quita a uno para probar la pantalla de respaldo
+    proyectos.locator("#portafolio .boton-video").evaluate("b => b.setAttribute('data-video-id', '')")
     proyectos.locator("#portafolio .boton-video").click()
     expect(proyectos.locator(".video-pendiente")).to_be_visible()
     expect(proyectos.locator("#modal-video iframe")).to_be_hidden()
@@ -90,3 +94,10 @@ def test_proyectos_sin_scroll_horizontal(page: Page, base_url: str, ancho: int):
     page.set_viewport_size({"width": ancho, "height": 800})
     page.goto(f"{base_url}/projects.html")
     assert page.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth") <= 0
+
+
+def test_cada_proyecto_tiene_su_video(proyectos: Page):
+    """Los 5 videos subidos a YouTube (no listados): cada botón lleva un ID de 11 caracteres y no se repiten."""
+    ids = proyectos.locator(".boton-video").evaluate_all("bs => bs.map(b => b.dataset.videoId)")
+    assert len(ids) == 5 and len(set(ids)) == 5
+    assert all(re.fullmatch(r"[A-Za-z0-9_-]{11}", i) for i in ids)
