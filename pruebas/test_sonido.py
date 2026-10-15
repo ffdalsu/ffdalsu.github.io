@@ -51,9 +51,12 @@ def test_control_tres_posiciones_y_persiste(inicio: Page, base_url: str):
     assert sono(inicio, "blip")  # activarlo suena
     inicio.goto(f"{base_url}/sobre-mi.html")
     expect(inicio.locator(".opcion-sonido[data-sonido=efectos]")).to_have_attribute("aria-pressed", "true")
-    assert sonido(inicio)["contexto"] is None  # recordado, pero sin audio hasta el próximo gesto
-    inicio.locator("body").click(position={"x": 5, "y": 300})
-    inicio.wait_for_function("Portafolio.Sonido.estado().contexto !== null")
+    # recordado: o el navegador deja sonar de una (sin aviso), o queda en pausa con el aviso hasta un gesto
+    if sonido(inicio)["contexto"] != "running":
+        expect(inicio.locator(".aviso-sonido")).to_be_visible()
+        inicio.locator("body").click(position={"x": 5, "y": 300})
+    inicio.wait_for_function("Portafolio.Sonido.estado().contexto === 'running'")
+    expect(inicio.locator(".aviso-sonido")).to_have_count(0)
 
 
 def test_silencio_no_programa_nada(inicio: Page):
@@ -186,15 +189,27 @@ def test_musica_offline_audible(inicio: Page, variante: str):
 
 
 def test_al_recargar_avisa_y_un_clic_basta(page: Page, base_url: str):
-    """Con el sonido ya elegido, recargar muestra un aviso; el primer clic en cualquier parte arranca todo sin remarcar."""
+    """Si el navegador bloquea el audio al cargar, se ve el aviso; el scroll no lo arranca y el primer clic sí, sin remarcar."""
     page.add_init_script("try { localStorage.setItem('sonido', 'todo'); } catch (e) {}")
     page.goto(f"{base_url}/index.html")
     page.wait_for_function(LISTO)
+    assert sonido(page)["contexto"] == "suspended"  # este Chromium de pruebas exige un gesto
     expect(page.locator(".aviso-sonido")).to_be_visible()
     page.mouse.wheel(0, 600)  # el scroll no cuenta como gesto para el navegador
     page.wait_for_timeout(300)
-    assert sonido(page)["contexto"] is None
+    assert sonido(page)["contexto"] == "suspended" and sonido(page)["ultimos"] == []
     page.mouse.click(700, 500)
     page.wait_for_function("Portafolio.Sonido.estado().musica === true")
     expect(page.locator(".aviso-sonido")).to_have_count(0)
     expect(page.locator(".opcion-sonido[data-sonido=todo]")).to_have_attribute("aria-pressed", "true")
+
+
+def test_si_el_navegador_lo_permite_suena_sin_clic(browser_type, base_url: str):
+    """Como Chrome al llegar por un enlace del sitio: el audio arranca al cargar, sin aviso ni clic."""
+    navegador = browser_type.launch(args=["--autoplay-policy=no-user-gesture-required"])
+    page = navegador.new_page()
+    page.add_init_script("try { localStorage.setItem('sonido', 'todo'); } catch (e) {}")
+    page.goto(f"{base_url}/sobre-mi.html")
+    page.wait_for_function("Portafolio.Sonido.estado().musica === true")
+    assert page.locator(".aviso-sonido").count() == 0
+    navegador.close()
