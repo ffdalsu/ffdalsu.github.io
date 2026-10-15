@@ -531,10 +531,11 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17b: `npm run lighthouse` (local, escritorio) antes de cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** QA hecha (2026-10-15) sobre `550c1b2`: **SHIP**. 8 recorridos críticos en las matrices de tema,
-  ancho, movimiento reducido y teclado, 3 vueltas sin fallas; 277 pruebas en verde; sitio publicado explorado sin
-  errores. Informe: `docs/qa/qa-2026-10-15.md`.
-- **Pendiente de JD:** decidir si el zip usa los nombres del árbol de ejemplo de la guía (`css/styles.css`,
-  `js/scripts.js`, bibliotecas en `css/` y `js/`); confirmar que mostrar los proyectos de Conaltura no choca con alguna
-  política de la empresa.
-- **Siguiente paso:** `ti-entregar` (versión, zip, URL y acta) cuando JD lo ordene.
+- **Dónde quedamos:** **entregado v1.0.0** (2026-10-15). Tag y Release con el zip:
+  https://github.com/ffdalsu/ffdalsu.github.io/releases/tag/v1.0.0 · URL: https://ffdalsu.github.io · acta:
+  `docs/acta-entrega-v1.0.0.md`. QA SHIP sobre `550c1b2`; 277 pruebas en verde.
+- **Decidido:** el zip conserva los nombres de archivo del repo; la guía pide la estructura de carpetas, no los nombres
+  del árbol de ejemplo (JD, 2026-10-15).
+- **Pendiente de JD:** subir el zip y la URL al formulario de entrega; confirmar que mostrar los proyectos de Conaltura
+  no choca con alguna política de la empresa.
+- **Siguiente paso:** ninguno en el ciclo. Si el docente pide cambios: rama, PR y versión 1.0.1 o 1.1.0.
