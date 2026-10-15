@@ -441,9 +441,11 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17: Lighthouse en cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** guía cumplida (2026-10-15): videos con sonido en YouTube y sus ID en `projects.html`. Plan
-  aprobado: F12 celular (menú lateral y bugs del barrido) y F13 navegación sin recargar; el resto pasa a F14 terminal,
-  F15 IA, F16-F17 refinamiento y F18 pulido y entrega. Rama `feat/portafolio-f12` con el plan.
-- **Pendiente de JD:** confirmar en su celular (con el modo oscuro del teléfono activo) que el tema papel ya no se
-  oscurece; confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
-- **Siguiente paso:** F12 · Celular.
+- **Dónde quedamos:** F12 · Celular terminada en `feat/portafolio-f12` (2026-10-15): encabezado de una línea con `[≡]`
+  y menú lateral (offcanvas con jQuery) con páginas, contacto, tema y sonido; luna o sol dentro y bajo el encabezado;
+  borrado por silueta (sin rectángulo alrededor de bit ni de las criaturas); `color-scheme: light dark` y `theme-color`
+  por tema; etiquetas de criaturas dentro de la pantalla; globo de bit bajo el agua en celular; hitos sin texto
+  cortado. Escritorio igual. 154 pruebas en verde. PR abierto.
+- **Pendiente de JD:** confirmar en su celular (modo oscuro del teléfono activo + tema papel) que ya no se oscurece;
+  confirmar que mostrar los proyectos de Conaltura no choca con alguna política de la empresa.
+- **Siguiente paso:** F13 · Navegación sin recargar.

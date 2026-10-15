@@ -14,6 +14,7 @@ Portafolio.SobreMi = (function () {
   const ESCUDO = [' .-------. ', ' |VE | RI| ', ' |---+---| ', ' |  TAS  | ', '  \\     /  ', '   `---´   '];
   let colores = {};
   const vistos = new Set();
+  let desbordes = 0;   // textos que no cupieron en su canvas ni corriéndolos (las pruebas exigen 0)
 
   function leerColores() {
     const s = getComputedStyle(document.documentElement);
@@ -57,9 +58,10 @@ Portafolio.SobreMi = (function () {
         if (e % 2 === 0) r.dibujo(['·'], x, y0 + Math.round((1 - perdida) * (alto - 1)), colores.texto, 1);
       }
       const p = (Math.exp(-epoca / 11) * 0.95 + 0.04).toFixed(3);
-      const leyenda = 'modelo.fit() · época ' + String(epoca).padStart(2, '0') + '/' + epocas + ' · pérdida ' + p;
+      const leyenda = (r.cols < 50 ? 'época ' : 'modelo.fit() · época ') + String(epoca).padStart(2, '0') + '/' + epocas + (r.cols < 50 ? ' · pérd. ' : ' · pérdida ') + p;
       r.dibujo([leyenda], x0 + 1, r.filas - 2, colores.texto, 1, true, colores.fondo);
-      r.dibujo(['* exactitud  · pérdida'], r.cols - 23, y0, colores.tenue, 1, true, colores.fondo);
+      const clave = r.cols < 50 ? '* exact. · pérd.' : '* exactitud  · pérdida';
+      r.dibujo([clave], r.cols - clave.length - 1, y0, colores.tenue, 1, true, colores.fondo);
     },
 
     // CS50x: el escudo se arma línea por línea y corre el primer programa de CS50
@@ -78,7 +80,8 @@ Portafolio.SobreMi = (function () {
         if (visibles) r.dibujo([visibles], cx, 2 + i * 2, i === 2 ? colores.acento : colores.texto, 1);
       });
       if (Math.floor(t * 2) % 2 === 0) r.dibujo(['█'], cx, 2 + Math.min(3, Math.floor(letras / 12)) * 2, colores.tenue, 1);
-      r.dibujo(['CS50x · Introduction to Computer Science'], cx - Math.floor(r.cols * 0.4), r.filas - 2, colores.tenue, 1);
+      const pie = r.cols < 50 ? 'CS50x · Harvard' : 'CS50x · Introduction to Computer Science';
+      r.dibujo([pie], Math.max(0, Math.floor((r.cols - pie.length) / 2)), r.filas - 2, colores.tenue, 1);
     },
 
     // CS50P · SQL · AI: una red neuronal; las señales viajan de los cursos a la salida
@@ -114,7 +117,7 @@ Portafolio.SobreMi = (function () {
           r.dibujo([sello], i * ancho + Math.max(0, Math.floor((ancho - sello.length) / 2)), r.filas - 3, colores.texto, 1, true, colores.fondo);
         }
       });
-      const pie = 'HarvardX · Professional Certificate × 3';
+      const pie = r.cols < 45 ? 'HarvardX · certificado × 3' : 'HarvardX · Professional Certificate × 3';
       r.dibujo([pie], centrar(r, pie), r.filas - 1, colores.tenue, 1);
     },
 
@@ -146,7 +149,17 @@ Portafolio.SobreMi = (function () {
   function animar(canvas) {
     const tipo = canvas.dataset.anim, dibujar = ANIMACIONES[tipo];
     if (!dibujar) return;
-    const r = Portafolio.Rejilla(canvas, { tamFuente: 12 });
+    const r = Portafolio.Rejilla(canvas, { tamFuente: canvas.getBoundingClientRect().width < 340 ? 11 : 12 });
+    // ningún texto se sale del canvas: si no cabe a la derecha se corre hacia adentro (celular)
+    const dibujoOriginal = r.dibujo;
+    r.dibujo = function (filas, col, fila, color, escala, borrar, fondo) {
+      const largo = Math.max.apply(null, filas.map((f) => Array.from(f).length)) * (escala || 1);
+      if (largo > 1 && col + largo > r.cols) {
+        if (largo > r.cols) desbordes++;
+        col = Math.max(0, r.cols - largo);
+      }
+      return dibujoOriginal(filas, col, fila, color, escala, borrar, fondo);
+    };
     let visible = false, inicio = 0;
     const cuadro = (ahora) => {
       if (!visible) return;
@@ -185,5 +198,5 @@ Portafolio.SobreMi = (function () {
     io.observe(contenedor);
   });
 
-  return { estado: function () { return { animacionesVistas: Array.from(vistos) }; } };
+  return { estado: function () { return { animacionesVistas: Array.from(vistos), desbordes: desbordes }; } };
 })();

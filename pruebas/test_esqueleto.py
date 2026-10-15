@@ -26,7 +26,7 @@ def test_menu_navega_entre_las_tres(page: Page, base_url: str):
     page.goto(f"{base_url}/index.html")
     page.get_by_role("link", name="sobre mí").click()
     expect(page).to_have_url(f"{base_url}/sobre-mi.html")
-    expect(page.locator(".menu a[aria-current=page]")).to_have_text("sobre mí")
+    expect(page.locator(".barra .menu a[aria-current=page]")).to_have_text("sobre mí")
     page.get_by_role("link", name="proyectos").click()
     expect(page).to_have_url(f"{base_url}/projects.html")
     page.get_by_role("link", name="inicio").click()
