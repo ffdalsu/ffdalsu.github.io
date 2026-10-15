@@ -9,6 +9,7 @@ window.Portafolio = window.Portafolio || {};
 
 Portafolio.SobreMi = (function () {
   const reducir = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const sonar = (n, d, r) => { if (Portafolio.Sonido) Portafolio.Sonido.efecto(n, d, r); };   // js/sonido/sonido.js
   const SIMBOLOS = ['∑', '∫', 'π', '√', '∞', 'Δ', '∂', 'e'];
   const ESCUDO = [' .-------. ', ' |VE | RI| ', ' |---+---| ', ' |  TAS  | ', '  \\     /  ', '   `---´   '];
   let colores = {};
@@ -174,7 +175,12 @@ Portafolio.SobreMi = (function () {
     // se observa el contenedor: un diploma enrollado (clip-path al 100 %) no tiene área visible y nunca «se vería»
     const contenedor = document.querySelector('.diplomas');
     const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { diplomas.forEach((d) => d.classList.add('desplegado')); io.disconnect(); }
+      if (e.isIntersecting) {
+        diplomas.forEach((d) => d.classList.add('desplegado'));
+        io.disconnect();
+        diplomas.forEach((d, i) => setTimeout(() => sonar('sello'), 1250 + i * 250));
+        setTimeout(() => sonar('fanfarria'), 1350 + diplomas.length * 250);
+      }
     }, { threshold: 0.2 });
     io.observe(contenedor);
   });

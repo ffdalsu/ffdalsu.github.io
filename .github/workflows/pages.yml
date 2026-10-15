@@ -24,6 +24,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      # versionado: cada publicación obliga al navegador a bajar los CSS y JS nuevos (sin esto se mezclan versiones en caché)
+      - name: Versionar CSS y JS con el commit
+        run: sed -i "s/?v=dev/?v=${GITHUB_SHA::7}/g" sitio/*.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: sitio

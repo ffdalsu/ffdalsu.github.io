@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="lib/bootstrap-5.3.3/css/bootstrap.min.css">
   <link rel="stylesheet" href="lib/fontawesome-6.5.2/css/all.min.css">
   <link rel="stylesheet" href="lib/fuentes/fuentes.css">
-  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estilos.css?v=dev">
 </head>
 <body>
   <header class="barra">
@@ -32,10 +32,18 @@
         <li><a href="projects.html" aria-current="page">proyectos</a></li>
         </ul>
       </nav>
+      <div class="controles">
       <div class="control-tema" role="group" aria-label="Tema">
-        <span class="etiqueta" aria-hidden="true">┤ tema ├</span>
+        <span class="etiqueta" aria-hidden="true">┤ ◐ ├</span>
         <button type="button" class="opcion-tema" data-tema="dark" aria-pressed="false">ámbar</button>
         <button type="button" class="opcion-tema" data-tema="light" aria-pressed="false">papel</button>
+      </div>
+      <div class="control-tema control-sonido" role="group" aria-label="Sonido">
+        <span class="etiqueta" aria-hidden="true">┤ ♪ ├</span>
+        <button type="button" class="opcion-sonido" data-sonido="silencio" aria-pressed="true">no</button>
+        <button type="button" class="opcion-sonido" data-sonido="efectos" aria-pressed="false">efectos</button>
+        <button type="button" class="opcion-sonido" data-sonido="todo" aria-pressed="false">+ música</button>
+      </div>
       </div>
     </div>
   </header>
@@ -163,12 +171,14 @@
 
   <script src="lib/jquery-3.7.1/jquery.min.js"></script>
   <script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
-  <script src="js/tema.js"></script>
-  <script src="js/pie.js"></script>
-  <script src="js/titulos.js"></script>
-  <script src="js/contacto.js"></script>
-  <script src="js/ascii/rejilla.js"></script>
-  <script src="js/miniaturas.js"></script>
-  <script src="js/proyectos.js"></script>
+  <script src="js/tema.js?v=dev"></script>
+  <script src="js/sonido/sintetizador.js?v=dev"></script>
+  <script src="js/sonido/sonido.js?v=dev"></script>
+  <script src="js/pie.js?v=dev"></script>
+  <script src="js/titulos.js?v=dev"></script>
+  <script src="js/contacto.js?v=dev"></script>
+  <script src="js/ascii/rejilla.js?v=dev"></script>
+  <script src="js/miniaturas.js?v=dev"></script>
+  <script src="js/proyectos.js?v=dev"></script>
 </body>
 </html>

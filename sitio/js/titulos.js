@@ -12,6 +12,7 @@ Portafolio.Titulos = (function () {
   const RUIDO = '.·:-=+*#%@';
   const MS = 28;
   const reducir = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const sonar = (n, d, r) => { if (Portafolio.Sonido) Portafolio.Sonido.efecto(n, d, r); };   // js/sonido/sonido.js
 
   /** Descifra el primer nodo de texto del elemento. */
   function descifrar(el) {
@@ -23,6 +24,7 @@ Portafolio.Titulos = (function () {
     const intervalo = setInterval(() => {
       paso++;
       const fijas = paso / 1.5;
+      if (Math.floor(fijas) > Math.floor((paso - 1) / 1.5)) sonar('tecleo', { i: Math.floor(fijas) });
       nodo.textContent = letras.map((c, i) => (c === ' ' || i < fijas) ? c : RUIDO[Math.floor(Math.random() * RUIDO.length)]).join('');
       if (fijas >= letras.length) { clearInterval(intervalo); nodo.textContent = final; el.dataset.descifrado = '1'; }
     }, MS);

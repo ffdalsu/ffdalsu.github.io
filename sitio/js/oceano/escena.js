@@ -24,6 +24,8 @@ Portafolio.Oceano = (function () {
   let colores = {}, alto = 0, ancho = 0, escena = null, camara = 0, cajaBit = null, saludo = false;
   let ultimo = 0, msCuadro = 0, profundidad = 0, calientes = 0, tiempo = 0, progreso = 0;
   const reducir = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const sonar = (n, d, r) => { if (Portafolio.Sonido) Portafolio.Sonido.efecto(n, d, r); };   // js/sonido/sonido.js
+  let modoAnterior = 'flota';
 
   function leerColores() {
     const s = getComputedStyle(document.documentElement);
@@ -127,7 +129,9 @@ Portafolio.Oceano = (function () {
 
     // bit, flotando a la altura de la ola bajo su centro
     bit.actualizar(ahora, r.cols, ESCALA_BIT);
-    if (escena.acto >= 2 && !saludo) { saludo = true; bit.hablar(ahora); }
+    if (escena.acto >= 2 && !saludo) { saludo = true; bit.hablar(ahora); sonar('voz', { texto: bit.frase }); }
+    if (bit.modo === 'duerme' && modoAnterior !== 'duerme' && cajaBit) sonar('zz');
+    modoAnterior = bit.modo;
     const s = bit.sprite;
     const anchoBit = s.ancho * ESCALA_BIT;
     const centro = Math.round(bit.x + anchoBit / 2);
@@ -225,8 +229,13 @@ Portafolio.Oceano = (function () {
     document.addEventListener('click', (e) => {
       if (esContenido(e.target) || !sobreAgua(e.clientY)) return;
       const c = columna(e.clientX), f = e.clientY / rejilla.ch;
-      if (cajaBit && c >= bit.x && c <= bit.x + bit.sprite.ancho * ESCALA_BIT && f >= cajaBit.fila - 1 && f <= cajaBit.fila + bit.sprite.alto * ESCALA_BIT) bit.hablar(ahora());
-      else Portafolio.Campo.salpicar(c, ahora() / 1000, filaMundo(e.clientY));
+      if (cajaBit && c >= bit.x && c <= bit.x + bit.sprite.ancho * ESCALA_BIT && f >= cajaBit.fila - 1 && f <= cajaBit.fila + bit.sprite.alto * ESCALA_BIT) {
+        bit.hablar(ahora());
+        sonar('voz', { texto: bit.frase });
+      } else {
+        Portafolio.Campo.salpicar(c, ahora() / 1000, filaMundo(e.clientY));
+        sonar('bloop');
+      }
       redibujar();
     });
     window.addEventListener('scroll', () => { bit.actividad(ahora()); redibujar(); }, { passive: true });

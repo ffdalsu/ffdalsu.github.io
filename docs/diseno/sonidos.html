@@ -1,0 +1,107 @@
+<title>Tablero de sonidos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Martian+Mono:wdth,wght@75..112.5,300..800&display=swap">
+<style>
+/* Tablero de sonidos (F9): una celda por efecto en rejilla con borde fino, como el árbol de habilidades. */
+:root{ --fondo:#EDF0EC; --panel:#E2E7E2; --texto:#1E2B2A; --tenue:#66746E; --acento:#B93C0B; --linea:#B4BFB9;
+  --display:"Martian Mono", Consolas, monospace; --mono:"IBM Plex Mono", Consolas, monospace; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ color-scheme:dark; --fondo:#120D04; --panel:#1B1407; --texto:#FFB547; --tenue:#A57A30; --acento:#FFE2A6; --linea:#4D3812; } }
+:root[data-theme="dark"]{ color-scheme:dark; --fondo:#120D04; --panel:#1B1407; --texto:#FFB547; --tenue:#A57A30; --acento:#FFE2A6; --linea:#4D3812; }
+body{background:var(--fondo); color:var(--texto); font:400 15px/1.6 var(--mono)}
+.env{max-width:1200px; margin-inline:auto; padding:40px clamp(16px,4vw,48px) 80px}
+.cmd{color:var(--tenue); font-size:13px; margin:0 0 10px} .cmd::before{content:"$ "; color:var(--acento)}
+h1{font:800 clamp(30px,5vw,60px)/.95 var(--display); font-variation-settings:"wdth" 112.5; letter-spacing:-.04em; margin:0 0 14px}
+.intro{max-width:72ch; margin:0 0 26px}
+.mandos{display:flex; flex-wrap:wrap; gap:12px 24px; align-items:center; margin:0 0 26px; padding:14px 16px; border:1px solid var(--linea)}
+.mandos label{color:var(--tenue); font-size:13px}
+input[type=range]{accent-color:var(--acento); width:160px; vertical-align:middle}
+.boton{all:unset; cursor:pointer; border:1px solid var(--texto); padding:6px 12px; white-space:nowrap}
+.boton:hover, .boton[aria-pressed="true"]{background:var(--texto); color:var(--fondo)}
+.boton:focus-visible{outline:1px dashed var(--acento); outline-offset:3px}
+.voz{display:flex; gap:8px; align-items:center}
+.voz input{all:unset; border-bottom:1px solid var(--linea); padding:4px 2px; width:220px; color:var(--texto); caret-color:var(--acento)}
+.rejilla{display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%,260px),1fr)); border-top:1px solid var(--linea); border-left:1px solid var(--linea)}
+.efecto{border-right:1px solid var(--linea); border-bottom:1px solid var(--linea); padding:18px 18px 16px; display:flex; flex-direction:column; gap:8px; transition:background-color .15s}
+.efecto.sonando{background:var(--panel)}
+.efecto pre{margin:0; font:600 18px/1.1 var(--mono); color:var(--acento); min-height:2.3em}
+.efecto h2{font:700 17px/1.1 var(--display); margin:0}
+.efecto p{margin:0; font-size:13px; color:var(--tenue)}
+.efecto .boton{align-self:flex-start; margin-top:auto; font-size:13px; padding:4px 10px}
+.nota{color:var(--tenue); font-size:12px; margin-top:20px}
+</style>
+
+<div class="env">
+  <p class="cmd">ls sonidos/</p>
+  <h1>Tablero de sonidos</h1>
+  <p class="intro">Los 13 efectos del sitio, todos sintetizados en el navegador con ondas cuadradas, triangulares y ruido (sin archivos de audio). Escucha cada uno con su botón, prueba la voz de bit escribiéndole algo y oye la «visita de ejemplo» para sentir cómo suenan juntos. En el sitio el sonido arranca apagado y se activa desde el encabezado.</p>
+
+  <div class="mandos">
+    <span><label for="volumen">volumen</label> <input id="volumen" type="range" min="0" max="1" step="0.05" value="0.7"></span>
+    <button class="boton" id="visita" type="button">[ ▶ visita de ejemplo ]</button>
+    <span class="voz"><label for="texto-voz">bit dice&gt;</label><input id="texto-voz" value="¡hola! soy bit" maxlength="16"><button class="boton" id="decir" type="button">[ ▶ ]</button></span>
+  </div>
+
+  <div class="rejilla" id="rejilla"></div>
+  <p class="nota">Todo es determinista: el mismo efecto suena igual cada vez, así los videos se pueden grabar con el mismo sonido.</p>
+</div>
+
+<script src="../../sitio/js/sonido/sintetizador.js"></script>
+<script>
+(function () {
+  const INFO = {
+    'blip': ['[ ▶ ]', 'Clic', 'Al hacer clic en enlaces y botones.'],
+    'tecleo': ['▍▍▍', 'Tecleo', 'Cada letra de un título que se descifra y de una habilidad que se revuelve.'],
+    'bloop': ['.oO@', 'Bloop', 'Al soltar una onda en el agua.'],
+    'voz': ['[oOo]', 'Voz de bit', 'Cuando bit habla: un blip por letra.'],
+    'campana': ['  ◇', 'Campanita', 'Al pasar por una isla o encontrar una criatura.'],
+    'crt-on': ['┌─┐▶', 'CRT encendido', 'Al abrir un modal (video, contacto).'],
+    'crt-off': ['┌─┐■', 'CRT apagado', 'Al cerrar un modal.'],
+    'sello': ['VE|RI', 'Sello', 'Cuando un diploma de Harvard recibe su sello.'],
+    'fanfarria': ['♪♪♪', 'Fanfarria', 'Después del sello de los diplomas.'],
+    'error': ['✗ ✗', 'Error', 'El formulario tiene un campo mal.'],
+    'exito': ['✓', 'Éxito', 'El mensaje se envió.'],
+    'interruptor': ['[■] [ ]', 'Interruptor', 'Al cambiar el tema (ámbar ↔ papel).'],
+    'zz': ['z Z', 'Bit se duerme', 'Cuando nadie hace nada durante 8 s.']
+  };
+  let ctx = null, sint = null, maestro = null;
+  function audio() {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      maestro = ctx.createGain(); maestro.gain.value = +document.getElementById('volumen').value;
+      const comp = ctx.createDynamicsCompressor(); maestro.connect(comp).connect(ctx.destination);
+      sint = Portafolio.Sintetizador(ctx, maestro);
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    return sint;
+  }
+  function sonar(nombre, datos, retraso) {
+    const s = audio(), t = ctx.currentTime + 0.03 + (retraso || 0);
+    if (nombre === 'tecleo' && !(datos && 'i' in datos)) { for (let i = 0; i < 10; i++) s.efectos.tecleo(t + i * 0.042, { i }); }
+    else s.efectos[nombre](t, datos);
+    const celda = document.getElementById('efecto-' + nombre);
+    if (celda) setTimeout(() => { celda.classList.add('sonando'); setTimeout(() => celda.classList.remove('sonando'), 450); }, (retraso || 0) * 1000);
+  }
+  const rejilla = document.getElementById('rejilla');
+  Portafolio.Sintetizador.EFECTOS.forEach((n) => {
+    const [icono, titulo, donde] = INFO[n];
+    const celda = document.createElement('article');
+    celda.className = 'efecto'; celda.id = 'efecto-' + n;
+    celda.innerHTML = '<pre aria-hidden="true"></pre><h2></h2><p></p><button class="boton" type="button">[ ▶ oír ]</button>';
+    celda.querySelector('pre').textContent = icono;
+    celda.querySelector('h2').textContent = titulo;
+    celda.querySelector('p').textContent = donde;
+    celda.querySelector('button').addEventListener('click', () => sonar(n, n === 'voz' ? { texto: document.getElementById('texto-voz').value } : undefined));
+    rejilla.appendChild(celda);
+  });
+  document.getElementById('volumen').addEventListener('input', (e) => { if (maestro) maestro.gain.value = +e.target.value; });
+  document.getElementById('decir').addEventListener('click', () => sonar('voz', { texto: document.getElementById('texto-voz').value }));
+  // visita de ejemplo: lo que oiría alguien en un recorrido típico por el sitio
+  document.getElementById('visita').addEventListener('click', () => {
+    const guion = [['tecleo', 0], ['voz', 1.0, { texto: '¡hola! soy bit' }], ['bloop', 2.2], ['bloop', 2.7], ['campana', 3.5],
+      ['blip', 4.4], ['crt-on', 4.9], ['crt-off', 6.2], ['interruptor', 7.0], ['sello', 7.8], ['fanfarria', 8.1],
+      ['error', 9.4], ['exito', 10.3], ['zz', 11.4]];
+    guion.forEach(([n, d, datos]) => sonar(n, datos, d));
+  });
+})();
+</script>

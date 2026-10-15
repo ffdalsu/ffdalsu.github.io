@@ -28,6 +28,7 @@ Portafolio.Ecosistema = (function () {
   const espejo = (filas) => filas.map((f) => Array.from(f).reverse().map((c) => PARES[c] || c).join(''));
 
   const ESCALA = 1.6;
+  const sonar = (n, d, r) => { if (Portafolio.Sonido) Portafolio.Sonido.efecto(n, d, r); };   // js/sonido/sonido.js
   let criaturas = [], islas = [], acuario = null, contenedor = null;
 
   function iniciar() {
@@ -51,6 +52,7 @@ Portafolio.Ecosistema = (function () {
       k.li.addEventListener('blur', activar(false));
     });
     islas = Array.from(document.querySelectorAll('.isla'));
+    islas.forEach((isla) => ['mouseenter', 'focus'].forEach((ev) => isla.addEventListener(ev, () => sonar('campana'))));
     contenedor = document.querySelector('.horizonte');
   }
 
@@ -73,7 +75,9 @@ Portafolio.Ecosistema = (function () {
       if (y < -4 || y > r.filas + 1) { k.activa = !!k.porItem; return; }
 
       const cerca = puntero && puntero.c >= x - 2 && puntero.c <= x + ancho + etiqueta && Math.abs(puntero.f - (y + 1)) < 3;
+      const antes = k.activa;
       k.activa = !!k.porItem || !!cerca;
+      if (k.activa && !antes) sonar('campana');
       k.li.classList.toggle('activa', k.activa);
 
       const filas = derecha ? k.filas : espejo(k.filas);
