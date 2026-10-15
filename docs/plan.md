@@ -531,10 +531,10 @@ método `estado()` que las pruebas leen.
 - Videos: `ffprobe` en la F7 y, desde la F11, pista AAC no silenciosa. Desde la F17b: `npm run lighthouse` (local, escritorio) antes de cada PR. Antes de entregar: `ti-probar` con veredicto SHIP.
 
 ## Relevo
-- **Dónde quedamos:** cierre completo de pulido hecho en `feat/portafolio-pulido` (2026-10-15): terminal en la barra (D38), hoja de
-  vida visible y descargable en PDF (D39) a dos columnas (D40), fechas reales (D41), velo como estaba (D42), GitHub visible (D43), y
-  las correcciones de la crítica (foco de los modales, saltar al contenido, lectores de pantalla, sonda, criaturas, formulario,
-  celular). Constancia en `docs/diseno/cierre-completo-2026-10-15.md`.
-- **Pendiente de JD:** revisar y fusionar el PR del pulido; confirmar que mostrar los proyectos de Conaltura no choca con alguna
-  política de la empresa; **dar la orden para pasar a QA**.
-- **Siguiente paso:** `ti-probar` (QA con veredicto SHIP) cuando JD lo ordene; luego el zip con la estructura de la guía y la entrega.
+- **Dónde quedamos:** QA hecha (2026-10-15) sobre `550c1b2`: **SHIP**. 8 recorridos críticos en las matrices de tema,
+  ancho, movimiento reducido y teclado, 3 vueltas sin fallas; 277 pruebas en verde; sitio publicado explorado sin
+  errores. Informe: `docs/qa/qa-2026-10-15.md`.
+- **Pendiente de JD:** decidir si el zip usa los nombres del árbol de ejemplo de la guía (`css/styles.css`,
+  `js/scripts.js`, bibliotecas en `css/` y `js/`); confirmar que mostrar los proyectos de Conaltura no choca con alguna
+  política de la empresa.
+- **Siguiente paso:** `ti-entregar` (versión, zip, URL y acta) cuando JD lo ordene.
