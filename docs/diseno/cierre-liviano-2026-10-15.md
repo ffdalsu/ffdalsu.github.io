@@ -10,3 +10,11 @@
   - «cramped-padding» en ventanas y secciones: falso positivo (la barra y el cuerpo van a sangre a propósito).
 - **Anti-genéricos:** sin degradados, sin píldoras, sin sombras difusas, sin hero centrado con dos botones, datos reales
   del perfil público; la mono tiene función (es la estética terminal del sitio, D6).
+
+## Iteración 2 · bit con volumen (pedido de JD)
+- Bit del arranque y de la imagen para compartir: ya no son 9 líneas dibujadas a mano. Ahora es una escena de 96 × 44
+  celdas hecha con formas (distancias con signo) y sombreada con la rampa ` .:-=+*x%#@`: antena con luz, cabeza con
+  pantalla de líneas de barrido, ojos con brillo que parpadean, sonrisa, luces del pecho que laten, brazo que saluda,
+  barco de papel con pliegues, mar en dos ondas y un halo que gira (el anillo de Ghostty). Dentro del sitio sigue el
+  bit pequeño de siempre.
+- Capturas en 1440 (papel y ámbar) y 375 px; sin desborde (scrollWidth = 375). El tamaño de letra se ajusta a la caja.
