@@ -639,7 +639,7 @@ html.arrancando body > *:not(.arranque):not(script) { visibility: hidden; }
   border-bottom: 1px solid var(--linea); color: var(--tenue); font: 12px var(--fuente-texto);
 }
 .arranque-barra::before { content: "● ● ●"; position: absolute; left: 12px; letter-spacing: 2px; color: var(--linea); }
-.arranque-log { margin: 0; padding: 16px; font: min(12px, 3vw)/20px var(--fuente-texto); white-space: pre; overflow: hidden; }
+.arranque-log { margin: 0; padding: 16px; font: min(12px, 2.8vw)/20px var(--fuente-texto); white-space: pre; overflow: hidden; }
 .arranque-bit { position: absolute; left: 50%; bottom: 36px; transform: translateX(-50%); margin: 0; font-family: var(--fuente-texto); white-space: pre; }
 .arranque-bit .acento { color: var(--acento); }
 .arranque-bit .tenue { color: var(--tenue); }

@@ -18,9 +18,9 @@ window.Portafolio = window.Portafolio || {};
 Portafolio.Arranque = (function () {
   const html = document.documentElement;
   const B = Portafolio.BitGrande;
-  // cada renglón mide ANCHO caracteres (los puntos guía se ajustan): así cabe en un celular de 360 px
-  const ANCHO = 44;
-  const linea = (que, cuanto) => '[ ok ] ' + que + ' ' + '.'.repeat(Math.max(3, ANCHO - 9 - que.length - cuanto.length)) + ' ' + cuanto;
+  // cada renglón mide ANCHO caracteres (los puntos guía se ajustan): así cabe en un celular de 360 px con cualquier fuente de respaldo
+  const ANCHO = 42;
+  const linea = (que, cuanto) => '[ ok ] ' + que + ' ' + '.'.repeat(Math.max(2, ANCHO - 9 - que.length - cuanto.length)) + ' ' + cuanto;
   const LOG = [
     'bit-os 2.0 · ffdalsu.github.io',
     linea('montando océano', '3 páginas'),
