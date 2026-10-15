@@ -56,6 +56,8 @@ class Visita:
     def _consola(self, mensaje) -> None:
         # el 404 del propio documento al pedir a propósito una ruta inexistente es lo esperado (R5)
         esperado = "404" in mensaje.text and "no-existe" in (mensaje.location or {}).get("url", "")
+        # Chromium del CI anota a veces este aviso al montar el iframe del video; el sitio no pide esa función
+        esperado = esperado or "compute-pressure is not allowed" in mensaje.text
         if mensaje.type == "error" and not esperado:
             self.errores.append(f"consola: {mensaje.text}")
 
